@@ -1,1 +1,7 @@
+# gradle settings
 .gradle/
+
+# eclipse settings
+.classpath
+.project
+.settings/
