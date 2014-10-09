@@ -1,0 +1,20 @@
+{
+  "name": "hairy-archer",
+  "version": "0.0.1",
+  "homepage": "https://github.com/fmonsalvo/hairy-archer",
+  "authors": [
+    "fmonsalvo <franco.monsalvo@gmail.com>"
+  ],
+  "description": "A project boilerplate for Backbone.js projects",
+  "license": "MIT",
+  "dependencies": {
+    "backbone": "1.1.2",
+    "marionette": "2.2.0",
+    "jquery": "1.11.1",
+    "handlebars": "1.3.0",
+    "modernizr": "2.8.3",
+    "requirejs": "2.1.15",
+    "lodash": "2.4.1",
+    "normalize-css": "3.0.2"
+  }
+}
