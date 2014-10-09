@@ -1,40 +1,95 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE")
-    }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE")
+    classpath("org.flywaydb:flyway-gradle-plugin:3.0")
+    
+  }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
+apply plugin: 'jacoco'
+apply plugin: 'checkstyle' //http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
+
+apply plugin: 'flyway'
+flyway {
+  user = 'sa'
+  password = ''
+  url = 'jdbc:hsqldb:file:./build/hsqldb/podmaster.hsqldb'
+}
+
+// Add provided dependency scope
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+        }
+    }
+    compile.extendsFrom provided
+}
 
 jar {
-    baseName = 'gs-spring-boot'
-    version =  '0.1.0'
+  baseName = 'gs-spring-boot'
+  version =  '0.1.0'
 }
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    // tag::jetty[]
-    compile("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: "spring-boot-starter-tomcat"
-    }
-    compile("org.springframework.boot:spring-boot-starter-jetty")
-    // end::jetty[]
+  provided("org.projectlombok:lombok:1.14.8")
 
-    // tag::actuator[]
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    // end::actuator[]
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+  compile("org.springframework.hateoas:spring-hateoas")
+  compile("org.springframework.boot:spring-boot-starter-data-rest")
+  compile("org.springframework.data:spring-data-rest-webmvc:2.2.0.RELEASE") //override default version
+  compile("org.flywaydb:flyway-core:3.0")
+    
+  // tag::jetty[]
+  compile("org.springframework.boot:spring-boot-starter-web") {
+      exclude module: "spring-boot-starter-tomcat"
+  }
+  compile("org.springframework.boot:spring-boot-starter-jetty")
+  // end::jetty[]
 
-    testCompile("junit:junit")
+  // tag::actuator[]
+  compile("org.springframework.boot:spring-boot-starter-actuator")
+  // end::actuator[]
+
+  testCompile("junit:junit")
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+
+  runtime("org.hsqldb:hsqldb")
+}
+
+sourceSets {
+  integrationTest {
+    java.srcDir file('src/integration-test/java')
+    resources.srcDir('src/integration-test/resources')
+    compileClasspath = sourceSets.main.output + configurations.testRuntime
+    runtimeClasspath = output + compileClasspath
+  }
+}
+
+// http://www.slideshare.net/SpringCentral/cd-pipeline-gradlejenkins
+task integrationTest(type: Test) {
+  description = 'Runs the integration tests.'
+  group = 'verification'
+  testClassesDir = sourceSets.integrationTest.output.classesDir
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  //testResultsDir = file("$testResultsDir/integration")
+}
+
+task jacocoIntegrationTestReport(type: JacocoReport) {
+  sourceSets sourceSets.main
+  executionData 'integration-test' //Verify
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
+  gradleVersion = '2.1'
 }
