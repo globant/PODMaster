@@ -20,13 +20,12 @@ import org.springframework.web.client.RestTemplate;
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 
 public class DashboardResourceTest extends AbstractIntegrationTest {
-  private static final String BASE_URL = "http://localhost:"+SERVER_PORT+"/dashboards";
+  private static final String BASE_URL = "http://localhost:" + SERVER_PORT + "/dashboards";
 
   @Test
   public void shouldCreateAndFollowNewDashboard() {
     String requestJson = DashboardFixtures.createDashboard(Dashboard.DashboardType.Account)
-    .withWidget("Widget Title", "Widget Name")
-    .buildJson();
+        .withWidget("Widget Title", "Widget Name").buildJson();
 
     RestTemplate rest = new TestRestTemplate();
 
@@ -35,20 +34,21 @@ public class DashboardResourceTest extends AbstractIntegrationTest {
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<String> postData = new HttpEntity<String>(requestJson, headers);
 
-    ResponseEntity<Dashboard> postResponse = rest.postForEntity(BASE_URL, postData, Dashboard.class);
+    ResponseEntity<Dashboard> postResponse = rest
+        .postForEntity(BASE_URL, postData, Dashboard.class);
     assertThat(postResponse.getStatusCode(), equalTo(HttpStatus.CREATED));
     assertThat(postResponse.getBody(), nullValue());
-    
+
     URI location = postResponse.getHeaders().getLocation();
     assertThat(location, notNullValue());
     assertThat(location.toString(), startsWith(BASE_URL));
-        
+
     // Follow location
     ResponseEntity<String> getResponse = rest.getForEntity(location.toString(), String.class);
     MediaType contentType = getResponse.getHeaders().getContentType();
     assertThat(contentType, equalTo(MediaType.parseMediaType("application/json;charset=UTF-8")));
-    
+
     System.out.println("XXXX>" + getResponse.getBody());
-    //TODO: Assert that body matches the expected json
+    // TODO: Assert that body matches the expected json
   }
 }

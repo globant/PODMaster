@@ -11,7 +11,7 @@ import com.globant.agilepodmaster.AgilePodMaster.ApplicationConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationConfiguration.class)
 @WebAppConfiguration
-@IntegrationTest({"server.port="+AbstractIntegrationTest.SERVER_PORT, "management.port=0"})
+@IntegrationTest({ "server.port=" + AbstractIntegrationTest.SERVER_PORT, "management.port=0" })
 public abstract class AbstractIntegrationTest {
   public static final int SERVER_PORT = 9090;
 }

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -13,9 +14,12 @@ import com.globant.agilepodmaster.widget.Widget;
 
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor
 public class DashboardWidget extends AbstractEntity {
+  @SuppressWarnings("unused")
   private DashboardWidget() {
+    // required by Hibernate
   }
 
   @ManyToOne(cascade = CascadeType.ALL)

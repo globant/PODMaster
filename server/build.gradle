@@ -14,6 +14,11 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'jacoco'
 apply plugin: 'checkstyle' //http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
+checkstyle {
+   toolVersion = '5.7'
+   configFile = file('build-config/checkstyle/checkstyle-5.7.xml')
+}
+
 
 apply plugin: 'flyway'
 flyway {
@@ -89,6 +94,10 @@ task jacocoIntegrationTestReport(type: JacocoReport) {
   sourceSets sourceSets.main
   executionData 'integration-test' //Verify
 }
+
+distZip.dependsOn check
+distTar.dependsOn check
+bootRun.dependsOn checkstyleMain
 
 task wrapper(type: Wrapper) {
   gradleVersion = '2.1'

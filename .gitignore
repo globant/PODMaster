@@ -1,10 +1,15 @@
 # gradle settings
 .gradle/
 
+# temp folders
+bin/
+build/
+
 # eclipse settings
 .classpath
 .project
 .settings/
 
-bin/
-build/
+# tools
+.checkstyle
+

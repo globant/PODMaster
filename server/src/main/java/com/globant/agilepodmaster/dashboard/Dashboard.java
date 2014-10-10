@@ -20,43 +20,39 @@ import com.globant.agilepodmaster.core.AbstractEntity;
 import com.globant.agilepodmaster.widget.Widget;
 
 @Entity
-@EqualsAndHashCode(callSuper=true)
-@ToString(callSuper=false)
-@JsonAutoDetect(
-  fieldVisibility = JsonAutoDetect.Visibility.ANY
-)
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = false)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Dashboard extends AbstractEntity {
-	public static enum DashboardType {
-	    Account,
-	    Project,
-	    Release,
-	    Sprint,
-	    Pod
-	}
-	
-	@Getter @Setter
-	private boolean locked;
+  public static enum DashboardType {
+    Account, Project, Release, Sprint, Pod
+  }
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@Getter @Setter
-	public Set<DashboardWidget> widgets;
+  @Getter
+  @Setter
+  private boolean locked;
 
-	@NonNull
-	@Getter
-	private DashboardType type;
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @Getter
+  @Setter
+  public Set<DashboardWidget> widgets;
 
-	private Dashboard() {
+  @NonNull
+  @Getter
+  private DashboardType type;
+
+  private Dashboard() {
     this.widgets = new HashSet<DashboardWidget>();
-	}
-	
-	@JsonCreator
-	public Dashboard(@JsonProperty("type") DashboardType type) {
-	  this();
-		this.type = type;
-	}
-	
-	public void addWidget(Widget widget) {
-		DashboardWidget db = new DashboardWidget(widget, false);
-		this.widgets.add(db);
-	}
+  }
+
+  @JsonCreator
+  public Dashboard(@JsonProperty("type") DashboardType type) {
+    this();
+    this.type = type;
+  }
+
+  public void addWidget(Widget widget) {
+    DashboardWidget db = new DashboardWidget(widget, false);
+    this.widgets.add(db);
+  }
 }
