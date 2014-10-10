@@ -95,10 +95,48 @@ task jacocoIntegrationTestReport(type: JacocoReport) {
   executionData 'integration-test' //Verify
 }
 
-distZip.dependsOn check
-distTar.dependsOn check
-bootRun.dependsOn checkstyleMain
-
 task wrapper(type: Wrapper) {
   gradleVersion = '2.1'
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+task checkCoverage(dependsOn: jacocoTestReport) {
+	def LINE_COVERAGE_THRESHOLD = 0.77
+	def BRANCH_COVERAGE_THRESHOLD = 0.11
+	def INSTRUCTION_COVERAGE_THRESHOLD = 0.39
+
+	def missed = { counter -> counter.@missed.text().toInteger() }
+	def covered = { counter -> counter.@covered.text().toInteger() }
+	def coverage = { counter -> covered(counter) / (missed(counter) + covered(counter)) }
+	def counter = { records, name -> records.counter.find{it.@type==name} }
+
+	def xml = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml").text
+
+	def parser = new XmlSlurper() 
+	parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
+	parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); 
+	parser.setFeature("http://xml.org/sax/features/namespaces", false)
+	
+	def records = parser.parseText(xml)
+
+	def line_counter = counter(records, 'LINE')
+	def line_coverage = coverage(line_counter)
+	assert line_coverage >= LINE_COVERAGE_THRESHOLD
+
+	def branch_counter = counter(records, 'BRANCH')
+	def branch_coverage = coverage(branch_counter)
+	assert branch_coverage >= BRANCH_COVERAGE_THRESHOLD
+
+	def instruction_counter = counter(records, 'INSTRUCTION')
+	def instruction_coverage = coverage(instruction_counter)
+	assert instruction_coverage >= INSTRUCTION_COVERAGE_THRESHOLD
+}
+
+check.dependsOn checkCoverage
+distZip.dependsOn check
+distTar.dependsOn check
