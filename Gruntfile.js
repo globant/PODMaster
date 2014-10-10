@@ -146,6 +146,67 @@ module.exports = function(grunt) {
           }
         ]
       }
+    },
+    prompt: {
+      credentials:{
+        options:{
+          questions:[
+            {
+              config:'domain',
+              type:'input',
+              message:'ntlm domain:',
+              default:'globant',
+            },
+            {
+              config:'user',
+              type:'input',
+              message:'ntlm user:',
+              default:'gabriel.pittau',
+            },
+            {
+              config:'pass',
+              type:'password',
+              message:'ntlm password:',
+              default:'',
+            }
+          ]
+        }
+      }
+    },
+    connect: {
+      server: {
+        options: {
+          keepalive:true,
+          port: 9001,
+          hostname: '*',
+          middleware:function(connect,options){
+            var
+              mount = function (dir) {
+                return connect.static(require('path').resolve(dir));
+              },
+              proxy = require('./ntlm-proxy'),
+              log = function (req,resp,next){
+                //grunt.log.writeln(JSON.stringify(req.headers));
+                next();
+              };
+
+            return [
+              log,
+              proxy({
+                baseRE:/^\/service/,
+                replace:'',
+                target:'https://npr0140dxw01.globant.com',
+                domain:grunt.config('domain'),
+                user:grunt.config('user'),
+                pass:grunt.config('pass'),
+              }),
+              mount(options.base),
+              mount('sample'),
+              mount('src')
+            ];
+          }
+        }
+      },
     }
   });
 
@@ -160,6 +221,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-handlebars');
   grunt.loadNpmTasks('grunt-bower-task');
   grunt.loadNpmTasks('grunt-jscs');
+  grunt.loadNpmTasks('grunt-prompt');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'build:dev');
 
@@ -170,4 +233,14 @@ module.exports = function(grunt) {
   grunt.registerTask('build:dev', ['clean', 'bower', 'jshint:all', 'handlebars',
     'csslint:lax', 'copy', 'concat'
   ]);
+    // serve task
+  grunt.registerTask('serve', function(){
+    grunt.task.run([
+    //'connect:livereload',
+    'prompt:credentials',
+    //'configureProxies:server',
+    'connect:server'
+    //'watch'
+    ]);
+  });
 };
