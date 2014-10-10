@@ -25,6 +25,6 @@ public class DashboardRepositoryTest extends AbstractUnitTest {
     assertThat(dashboardCreated, notNullValue());
     assertThat(dashboardCreated.getId(), notNullValue());
 
-    System.out.printf("Dashboard id: %d\n", dashboardCreated.getId());
+    System.out.printf("Dashboard id: %d%n", dashboardCreated.getId());
   }
 }

@@ -13,7 +13,8 @@ For the usage inside an IDE do the following:
    3.1 Set up your ide to use the project checkstyle.xml located at build-config/checkstyle
 4. Install pmd plugin
    4.1 Set up your ide to use the project pmd.xml located at build-config/pmd
-5. Restart Eclipse.
+5. Install findbugs plugin (Eclipse site: http://findbugs.cs.umd.edu/eclipse/)
+6. Restart Eclipse.
 
 ## Start the server
 - gradlew **bootRun**

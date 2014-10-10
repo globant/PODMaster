@@ -23,6 +23,24 @@ checkstyle {
   configFile = file('build-config/checkstyle/checkstyle-5.7.xml')
 }
 
+apply plugin: 'findbugs'
+findbugs {
+  toolVersion = '3.0.0'
+  //includeFilter = file("build-config/findbugs/includeFilter.xml")
+}
+findbugsMain {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+findbugsTest {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
 
 apply plugin: 'flyway'
 flyway {

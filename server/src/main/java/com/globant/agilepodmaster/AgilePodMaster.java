@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 public class AgilePodMaster extends SpringBootServletInitializer {
-  public static String CURIE_NAMESPACE = "podmaster";
+  public static final String CURIE_NAMESPACE = "podmaster";
 
   /**
    * Bootstraps the application in standalone mode (i.e. java -jar).
