@@ -23,7 +23,7 @@ public class DashboardResourceTest extends AbstractIntegrationTest {
   private static final String BASE_URL = "http://localhost:" + SERVER_PORT + "/dashboards";
 
   @Test
-  public void shouldCreateAndFollowNewDashboard() {
+  public void shouldCreateFollowAndDelete() {
     String requestJson = DashboardFixtures.createDashboard(Dashboard.DashboardType.Account)
         .withWidget("Widget Title", "Widget Name").buildJson();
 
@@ -50,5 +50,12 @@ public class DashboardResourceTest extends AbstractIntegrationTest {
 
     System.out.println("XXXX>" + getResponse.getBody());
     // TODO: Assert that body matches the expected json
+    
+    // Delete
+    rest.delete(location);
+
+    // Ensure it's not longer present
+    ResponseEntity<String> getAfterDelete = rest.getForEntity(location.toString(), String.class);
+    assertThat(getAfterDelete.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
   }
 }
