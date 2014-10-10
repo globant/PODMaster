@@ -45,7 +45,6 @@ public class AbstractEntity implements Identifiable<Long> {
   @JsonIgnore
   private final Long id;
 
-  @JsonIgnore
   @Version
   private Integer version;
 
