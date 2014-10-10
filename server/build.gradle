@@ -4,8 +4,7 @@ buildscript {
   }
   dependencies {
     classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE")
-    classpath("org.flywaydb:flyway-gradle-plugin:3.0")
-    
+    classpath("org.flywaydb:flyway-gradle-plugin:3.0")    
   }
 }
 
@@ -13,10 +12,15 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'jacoco'
+apply plugin: 'pmd'
+pmd {
+  ruleSetFiles = files("build-config/pmd/pmd.xml")
+}
+
 apply plugin: 'checkstyle' //http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
 checkstyle {
-   toolVersion = '5.7'
-   configFile = file('build-config/checkstyle/checkstyle-5.7.xml')
+  toolVersion = '5.7'
+  configFile = file('build-config/checkstyle/checkstyle-5.7.xml')
 }
 
 
@@ -29,12 +33,12 @@ flyway {
 
 // Add provided dependency scope
 configurations {
-    provided {
-        dependencies.all { dep ->
-            configurations.default.exclude group: dep.group, module: dep.name
-        }
+  provided {
+    dependencies.all { dep ->
+      configurations.default.exclude group: dep.group, module: dep.name
     }
-    compile.extendsFrom provided
+  }
+  compile.extendsFrom provided
 }
 
 jar {
@@ -49,7 +53,7 @@ repositories {
 dependencies {
   provided("org.projectlombok:lombok:1.14.8")
 
-	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+  compile("org.springframework.boot:spring-boot-starter-data-jpa")
   compile("org.springframework.hateoas:spring-hateoas")
   compile("org.springframework.boot:spring-boot-starter-data-rest")
   compile("org.springframework.data:spring-data-rest-webmvc:2.2.0.RELEASE") //override default version
@@ -57,7 +61,7 @@ dependencies {
     
   // tag::jetty[]
   compile("org.springframework.boot:spring-boot-starter-web") {
-      exclude module: "spring-boot-starter-tomcat"
+    exclude module: "spring-boot-starter-tomcat"
   }
   compile("org.springframework.boot:spring-boot-starter-jetty")
   // end::jetty[]
@@ -67,7 +71,7 @@ dependencies {
   // end::actuator[]
 
   testCompile("junit:junit")
-	testCompile("org.springframework.boot:spring-boot-starter-test")
+  testCompile("org.springframework.boot:spring-boot-starter-test")
 
   runtime("org.hsqldb:hsqldb")
 }
@@ -100,41 +104,41 @@ task wrapper(type: Wrapper) {
 }
 
 jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
+  reports {
+    xml.enabled true
+  }
 }
 
 task checkCoverage(dependsOn: jacocoTestReport) {
-	def LINE_COVERAGE_THRESHOLD = 0.77
-	def BRANCH_COVERAGE_THRESHOLD = 0.11
-	def INSTRUCTION_COVERAGE_THRESHOLD = 0.39
+  def LINE_COVERAGE_THRESHOLD = 0.77
+  def BRANCH_COVERAGE_THRESHOLD = 0.11
+  def INSTRUCTION_COVERAGE_THRESHOLD = 0.39
 
-	def missed = { counter -> counter.@missed.text().toInteger() }
-	def covered = { counter -> counter.@covered.text().toInteger() }
-	def coverage = { counter -> covered(counter) / (missed(counter) + covered(counter)) }
-	def counter = { records, name -> records.counter.find{it.@type==name} }
+  def missed = { counter -> counter.@missed.text().toInteger() }
+  def covered = { counter -> counter.@covered.text().toInteger() }
+  def coverage = { counter -> covered(counter) / (missed(counter) + covered(counter)) }
+  def counter = { records, name -> records.counter.find{it.@type==name} }
 
-	def xml = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml").text
+  def xml = file("$buildDir/reports/jacoco/test/jacocoTestReport.xml").text
 
-	def parser = new XmlSlurper() 
-	parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
-	parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); 
-	parser.setFeature("http://xml.org/sax/features/namespaces", false)
-	
-	def records = parser.parseText(xml)
+  def parser = new XmlSlurper() 
+  parser.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false)
+  parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); 
+  parser.setFeature("http://xml.org/sax/features/namespaces", false)
+  
+  def records = parser.parseText(xml)
 
-	def line_counter = counter(records, 'LINE')
-	def line_coverage = coverage(line_counter)
-	assert line_coverage >= LINE_COVERAGE_THRESHOLD
+  def line_counter = counter(records, 'LINE')
+  def line_coverage = coverage(line_counter)
+  assert line_coverage >= LINE_COVERAGE_THRESHOLD
 
-	def branch_counter = counter(records, 'BRANCH')
-	def branch_coverage = coverage(branch_counter)
-	assert branch_coverage >= BRANCH_COVERAGE_THRESHOLD
+  def branch_counter = counter(records, 'BRANCH')
+  def branch_coverage = coverage(branch_counter)
+  assert branch_coverage >= BRANCH_COVERAGE_THRESHOLD
 
-	def instruction_counter = counter(records, 'INSTRUCTION')
-	def instruction_coverage = coverage(instruction_counter)
-	assert instruction_coverage >= INSTRUCTION_COVERAGE_THRESHOLD
+  def instruction_counter = counter(records, 'INSTRUCTION')
+  def instruction_coverage = coverage(instruction_counter)
+  assert instruction_coverage >= INSTRUCTION_COVERAGE_THRESHOLD
 }
 
 check.dependsOn checkCoverage

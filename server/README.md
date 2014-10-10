@@ -1,6 +1,6 @@
 # Instructions
 
-## IDE setup 
+## IDE setup
 
 For the usage inside an IDE do the following:
 
@@ -9,9 +9,11 @@ For the usage inside an IDE do the following:
    1. Download it from the [project page](http://projectlombok.org/download.html).
    2. Run the JAR (double click or `java -jar …`).
    3. Point it to your Eclipse installation, run the install.
-3. Install checkstyle 5.8 plugin
-   3.1 Set up your ide to use the project checkstyle located at build-config/checkstyle
-4. Restart Eclipse.
+3. Install checkstyle 5.7 plugin
+   3.1 Set up your ide to use the project checkstyle.xml located at build-config/checkstyle
+4. Install pmd plugin
+   4.1 Set up your ide to use the project pmd.xml located at build-config/pmd
+5. Restart Eclipse.
 
 ## Start the server
 - gradlew **bootRun**
