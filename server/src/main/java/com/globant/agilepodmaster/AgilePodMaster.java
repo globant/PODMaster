@@ -49,7 +49,7 @@ public class AgilePodMaster extends SpringBootServletInitializer {
   /**
    * Web specific configuration.
    * 
-   * @author Oliver Gierke
+   * @author Andres Postiglioni
    */
   @Configuration
   @Import({ ApplicationConfiguration.class })

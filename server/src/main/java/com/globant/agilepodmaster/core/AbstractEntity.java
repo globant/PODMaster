@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Base class for entity implementations. Uses a {@link Long} id.
  * 
- * @author Oliver Gierke
+ * @author Andres Postiglioni
  */
 @MappedSuperclass
 @Getter
