@@ -6,9 +6,12 @@
 
   <description>This ruleset checks my code for bad stuff</description>
 
-  <rule ref="rulesets/java/basic.xml"/>
-  <rule ref="rulesets/java/codesize.xml"/>
-  <rule ref="rulesets/java/empty.xml"/>
+  <rule ref="rulesets/basic.xml"/>
+  <rule ref="rulesets/codesize.xml"/>
+  
+  <!-- <rule ref="rulesets/java/basic.xml"/> -->
+  <!-- <rule ref="rulesets/java/codesize.xml"/> -->
+  <!-- <rule ref="rulesets/java/empty.xml"/> -->
 
 <!--   <rule ref="rulesets/java/coupling.xml"/> -->
 <!--   <rule ref="rulesets/java/design.xml"/> -->
