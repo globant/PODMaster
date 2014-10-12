@@ -18,7 +18,8 @@ pmd {
   ruleSetFiles = files("buildSrc/config/pmd/pmd.xml")
 }
 
-apply plugin: 'checkstyle' //http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
+apply plugin: 'checkstyle' 
+//http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
 checkstyle {
   toolVersion = '5.7'
   configFile = file('buildSrc/config/checkstyle/checkstyle-5.7.xml')
@@ -61,7 +62,7 @@ configurations {
 }
 
 jar {
-  baseName = 'gs-spring-boot'
+  baseName = 'agile-podmaster'
   version =  '0.1.0'
 }
 
