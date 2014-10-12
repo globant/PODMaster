@@ -1,0 +1,63 @@
+// Ideas from: http://www.slideshare.net/SpringCentral/cd-pipeline-gradlejenkins
+
+apply plugin: 'jacoco'
+
+sourceSets {
+  integrationTests {
+    java.srcDir file('src/test-integration/java')
+    resources.srcDir('src/test-integration/resources')
+    compileClasspath = sourceSets.main.output + configurations.testRuntime
+    runtimeClasspath = output + compileClasspath
+  }
+
+  allTests {
+    java.srcDirs file('src/test/java'), file('src/test-integration/java')
+    resources.srcDirs('src/test/resources', 'src/test-integration/resources')
+    compileClasspath = sourceSets.main.output + configurations.testRuntime
+    runtimeClasspath = output + compileClasspath
+  }
+}
+
+task testIntegration(type: Test) {
+  description = 'Runs the integration tests.'
+  group = 'verification'
+  testClassesDir = sourceSets.integrationTests.output.classesDir
+  classpath = sourceSets.integrationTests.runtimeClasspath
+}
+
+task testAll(type: Test) {
+  description = 'Runs all the tests.'
+  group = 'verification'
+  testClassesDir = sourceSets.allTests.output.classesDir
+  classpath = sourceSets.allTests.runtimeClasspath
+}
+
+task jacocoTestAllReport(type: JacocoReport, dependsOn: testAll) {
+  sourceSets sourceSets.main
+  executionData testAll
+}
+
+task jacocoTestIntegrationReport(type: JacocoReport, dependsOn: testIntegration) {
+  sourceSets sourceSets.main
+  executionData testIntegration
+}
+
+jacocoTestIntegrationReport {
+  reports {
+    xml.enabled true
+  }
+}
+
+jacocoTestAllReport {
+  reports {
+    xml.enabled true
+  }
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled true
+  }
+}
+jacocoTestReport.dependsOn test
+
