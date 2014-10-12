@@ -2,25 +2,26 @@ package com.globant.agilepodmaster.dashboard;
 
 import lombok.RequiredArgsConstructor;
 
+import com.globant.agilepodmaster.test.utils.JsonBuilder;
 import com.globant.agilepodmaster.widget.Widget;
 
 @RequiredArgsConstructor
-public class DashboardFixtures {
+public class DashboardJsonFixtures extends JsonBuilder<Dashboard> {
   private final Dashboard dashboard;
 
-  public static DashboardFixtures createDashboard(Dashboard.DashboardType type) {
-    return new DashboardFixtures(new Dashboard(type));
+  public static DashboardJsonFixtures createDashboard(Dashboard.DashboardType type) {
+    return new DashboardJsonFixtures(new Dashboard(type));
   }
 
-  public DashboardFixtures withWidget(String title, String name) {
+  public DashboardJsonFixtures withWidget(String title, String name) {
     return this.withWidget(title, name, 10, 20);
   }
 
-  public DashboardFixtures withWidget(String title, String name, int height, int width) {
+  public DashboardJsonFixtures withWidget(String title, String name, int height, int width) {
     return this.withWidget(title, name, height, width, String.format("%s - %s", title, name));
   }
 
-  public DashboardFixtures withWidget(String title, String name, int height, int width,
+  public DashboardJsonFixtures withWidget(String title, String name, int height, int width,
       String viewName) {
     Widget widget = new Widget();
     widget.setName(name);

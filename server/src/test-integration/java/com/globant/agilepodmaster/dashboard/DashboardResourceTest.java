@@ -24,7 +24,7 @@ public class DashboardResourceTest extends AbstractIntegrationTest {
 
   @Test
   public void shouldCreateFollowAndDelete() {
-    String requestJson = DashboardFixtures.createDashboard(Dashboard.DashboardType.Account)
+    String requestJson = DashboardJsonFixtures.createDashboard(Dashboard.DashboardType.Account)
         .withWidget("Widget Title", "Widget Name").buildJson();
 
     RestTemplate rest = new TestRestTemplate();

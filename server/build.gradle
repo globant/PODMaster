@@ -12,6 +12,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 apply plugin: 'jacoco'
+
 apply plugin: 'pmd'
 pmd {
   ruleSetFiles = files("build-config/pmd/pmd.xml")
@@ -96,8 +97,8 @@ dependencies {
 
 sourceSets {
   integrationTest {
-    java.srcDir file('src/integration-test/java')
-    resources.srcDir('src/integration-test/resources')
+    java.srcDir file('src/test-integration/java')
+    resources.srcDir('src/test-integration/resources')
     compileClasspath = sourceSets.main.output + configurations.testRuntime
     runtimeClasspath = output + compileClasspath
   }
@@ -112,9 +113,19 @@ task integrationTest(type: Test) {
   //testResultsDir = file("$testResultsDir/integration")
 }
 
+task testAll(type: Test, dependsOn: [test, integrationTest]) {
+  description = 'Runs all the tests.'
+  group = 'verification'
+}
+
+task jacocoAllTestReport(type: JacocoReport) {
+  sourceSets sourceSets.main
+  executionData testAll
+}
+
 task jacocoIntegrationTestReport(type: JacocoReport) {
   sourceSets sourceSets.main
-  executionData 'integration-test' //Verify
+  executionData integrationTest
 }
 
 task wrapper(type: Wrapper) {
