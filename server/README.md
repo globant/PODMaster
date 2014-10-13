@@ -16,6 +16,9 @@ For the usage inside an IDE do the following:
 5. Install findbugs plugin (Eclipse site: http://findbugs.cs.umd.edu/eclipse/)
 6. Restart Eclipse.
 
+## Generate eclipse project
+- gradlew **eclipse**
+
 ## Start the server
 - gradlew **bootRun**
 
