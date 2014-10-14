@@ -4,7 +4,6 @@ buildscript {
   }
   dependencies {
     classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE")
-    classpath("org.flywaydb:flyway-gradle-plugin:3.0")    
   }
 }
 
@@ -43,14 +42,6 @@ findbugsTest {
   }
 }
 
-
-apply plugin: 'flyway'
-flyway {
-  user = 'sa'
-  password = ''
-  url = 'jdbc:hsqldb:file:./build/hsqldb/podmaster.hsqldb'
-}
-
 // Add provided dependency scope
 configurations {
   provided {
@@ -63,7 +54,7 @@ configurations {
 
 jar {
   baseName = 'agile-podmaster'
-  version =  '0.1.0'
+  version =  '0.1'
 }
 
 repositories {
@@ -77,7 +68,6 @@ dependencies {
   compile("org.springframework.hateoas:spring-hateoas")
   compile("org.springframework.boot:spring-boot-starter-data-rest")
   compile("org.springframework.data:spring-data-rest-webmvc:2.2.0.RELEASE") //override default version
-  compile("org.flywaydb:flyway-core:3.0")
     
   // tag::jetty[]
   compile("org.springframework.boot:spring-boot-starter-web") {
@@ -90,9 +80,11 @@ dependencies {
   compile("org.springframework.boot:spring-boot-starter-actuator")
   // end::actuator[]
 
+  runtime("org.liquibase:liquibase-core")
+
   testCompile("junit:junit")
   testCompile("org.springframework.boot:spring-boot-starter-test")
-
+  
   runtime("org.hsqldb:hsqldb")
 }
 

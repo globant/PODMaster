@@ -3,7 +3,6 @@ package com.globant.agilepodmaster.dashboard;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
@@ -32,9 +31,9 @@ public class Dashboard extends AbstractEntity {
   @Setter
   private boolean locked;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @Getter
   @Setter
+  @OneToMany(mappedBy = "dashboard")
   public Set<DashboardWidget> widgets;
 
   @NonNull
@@ -52,7 +51,7 @@ public class Dashboard extends AbstractEntity {
   }
 
   public void addWidget(Widget widget) {
-    DashboardWidget db = new DashboardWidget(widget, false);
+    DashboardWidget db = new DashboardWidget(this, widget, false);
     this.widgets.add(db);
   }
 }

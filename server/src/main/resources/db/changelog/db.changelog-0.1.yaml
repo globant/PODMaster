@@ -1,0 +1,122 @@
+--- 
+databaseChangeLog: 
+  - 
+    changeSet: 
+      id: 1
+      author: andres.postiglioni
+      changes: 
+        - 
+          createTable: 
+            tableName: dashboard
+            columns: 
+              - 
+                column: 
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints: 
+                    primaryKey: true
+              - 
+                column: 
+                  name: version
+                  type: INTEGER
+                  constraints: 
+                    nullable: false
+              - 
+                column: 
+                  name: locked
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+              - 
+                column: 
+                  name: type
+                  type: INTEGER
+                  constraints: 
+                    nullable: false
+        - 
+          createTable: 
+            tableName: widget
+            columns: 
+              - 
+                column: 
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints: 
+                    primaryKey: true
+              - 
+                column: 
+                  name: version
+                  type: INTEGER
+                  constraints: 
+                    nullable: false
+              - 
+                column: 
+                  name: title
+                  type: VARCHAR(255)
+                  constraints: 
+                    nullable: true
+              - 
+                column: 
+                  name: name
+                  type: VARCHAR(255)
+                  constraints: 
+                    nullable: true
+              - 
+                column: 
+                  name: view_name
+                  type: VARCHAR(255)
+                  constraints: 
+                    nullable: true
+              - 
+                column: 
+                  name: height
+                  type: INTEGER
+                  constraints: 
+                    nullable: false
+              - 
+                column: 
+                  name: width
+                  type: INTEGER
+                  constraints: 
+                    nullable: false
+        - 
+          createTable: 
+            tableName: dashboard_widget
+            columns: 
+              - 
+                column: 
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints: 
+                    primaryKey: true
+              - 
+                column: 
+                  name: version
+                  type: INTEGER
+                  constraints: 
+                    nullable: false
+              - 
+                column: 
+                  name: collapsed
+                  type: BOOLEAN
+                  constraints: 
+                    nullable: false
+              - 
+                column: 
+                  name: dashboard_id
+                  type: BIGINT
+                  constraints: 
+                    foreignKeyName: dashboard_widget_dashboard_fk
+                    nullable: false
+                    refrences: dashboard
+              - 
+                column: 
+                  name: widget_id
+                  type: BIGINT
+                  constraints: 
+                    foreignKeyName: dashboard_widget_widget_fk
+                    nullable: false
+                    references: widget

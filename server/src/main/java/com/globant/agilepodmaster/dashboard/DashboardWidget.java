@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globant.agilepodmaster.core.AbstractEntity;
 import com.globant.agilepodmaster.widget.Widget;
 
@@ -22,6 +23,11 @@ public class DashboardWidget extends AbstractEntity {
     // required by Hibernate
   }
 
+  @NonNull
+  @ManyToOne
+  @JsonIgnore
+  private Dashboard dashboard;
+  
   @ManyToOne(cascade = CascadeType.ALL)
   @NonNull
   private Widget widget;
