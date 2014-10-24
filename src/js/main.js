@@ -1,3 +1,4 @@
+'use strict';
 requirejs(['require','config/amd.js'],function(require){
   require(
     [

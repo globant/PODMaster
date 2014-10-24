@@ -146,6 +146,30 @@ module.exports = function(grunt) {
           }
         ]
       }
+    },
+    connect: {
+      server: {
+        options: {
+          keepalive:true,
+          port: 9001,
+          hostname: '*',
+          middleware:function(connect){
+            var
+              mount = function (dir) {
+                return connect.static(require('path').resolve(dir));
+              },
+              log = function (req,resp,next){
+                //grunt.log.writeln(JSON.stringify(req.headers));
+                next();
+              };
+
+            return [
+              log,
+              mount('src')
+            ];
+          }
+        }
+      },
     }
   });
 
@@ -160,6 +184,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-handlebars');
   grunt.loadNpmTasks('grunt-bower-task');
   grunt.loadNpmTasks('grunt-jscs');
+  grunt.loadNpmTasks('grunt-prompt');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', 'build:dev');
 
@@ -170,4 +196,10 @@ module.exports = function(grunt) {
   grunt.registerTask('build:dev', ['clean', 'bower', 'jshint:all', 'handlebars',
     'csslint:lax', 'copy', 'concat'
   ]);
+    // serve task
+  grunt.registerTask('serve', function(){
+    grunt.task.run([
+    'connect:server'
+    ]);
+  });
 };
