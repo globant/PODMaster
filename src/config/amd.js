@@ -43,7 +43,6 @@ require.config({
       exports: 'Modernizr'
     },
 
-
     'hbs': {
       deps: ['underscore', 'handlebars']
     },

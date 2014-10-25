@@ -2,26 +2,26 @@ define(
   [
     'marionette',
     '../../entities/dashboard.model',
-    'templateregistry'
+    'hbs!app/modules/dashboard/dashboard'
   ],
-  function(Marionette, DashboardModel, JST) {
+  function(Marionette, DashboardModel, template) {
     'use strict';
 
     var DashboardView = Marionette.LayoutView.extend({
 
-      el: 'section',
+      //el: 'section',
 
-      template: 'dashboard.hbs',
+      template: template,
+      regions:{
+        menu:'#menu',
+        content: '#content'
+      },
 
       initialize: function() {
         this.model = new DashboardModel();
-        this.tplFunction = JST[this.template];
         this.model.fetch();
-        this.listenTo(this.model, 'change', this.render);
+        //this.listenTo(this.model, 'change', this.render);
       },
-
-      render: function() {
-      }
 
     });
 

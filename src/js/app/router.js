@@ -9,7 +9,7 @@ define(
       controller : new DashboardController(),
 
       appRoutes: {
-        'index': 'handleDefaultRoute'
+        '': 'handleDefaultRoute'
       },
 
       initialize: function() {
