@@ -89,9 +89,9 @@ dependencies {
 }
 
 task coverageCheck(type: JacocoCoverageCheck) {
-  lineThreshold = 0.78
-  branchThreshold = 0.11
-  instructionThreshold = 0.39
+  lineThreshold = 0.86
+  branchThreshold = 0.15
+  instructionThreshold = 0.49
   
   reportTask = jacocoTestAllReport
 } 

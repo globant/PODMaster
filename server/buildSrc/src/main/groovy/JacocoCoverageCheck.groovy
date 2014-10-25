@@ -19,6 +19,10 @@ class JacocoCoverageCheck extends DefaultTask {
     def reportFile = reportTask.outputs.files.filter{it.name == (reportTask.name + '.xml')}.singleFile
     JacocoXMLReport report = new JacocoXMLReport(reportFile)
     
+    logger.info "LINE Coverage: " + report.coverage('LINE')
+    logger.info "BRANCH Coverage: " + report.coverage('BRANCH')
+    logger.info "INSTRUCTION Coverage: " + report.coverage('INSTRUCTION')
+
     assert report.coverage('LINE') >= lineThreshold
     assert report.coverage('BRANCH') >= branchThreshold
     assert report.coverage('INSTRUCTION') >= instructionThreshold
