@@ -7,14 +7,33 @@ module.exports = function(grunt) {
       PATH_ASSETS_IMG = PATH_ASSETS + '/img',
       PATH_DEPLOY_ASSETS = 'public';
 
-  // ==========================================================================
-  // Project configuration
-  // ==========================================================================
+  //##Project configuration
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    //##Annotated source generation with docco
+    //run with `grunt docs`
+    "docco": {
+      docs:{
+        src:[
+            //Files to include
+            './Gruntfile.js',
+            'src/config/amd.js'
+        ],
+        //options:
+        //- layout: style
+        //- output: dir to generate docs
+        options:{
+          layout: 'classic',
+          output: 'annotated-source'
+        }
+      }
+    },
+
+    //##Clean task
     clean: [PATH_DEPLOY_ASSETS],
 
+    //##Bower task
     bower: {
       install: {
         options: {
@@ -25,6 +44,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Copy task
     copy: {
       main: {
         expand: true,
@@ -34,6 +54,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Requirejs (optimizer) task
     requirejs: {
       compile: {
         options: {
@@ -53,7 +74,7 @@ module.exports = function(grunt) {
       }
     },
 
-    // js linting options
+    //##jshint task
     jshint: {
       all: [
         'Gruntfile.js', PATH_ASSETS_JS + '/**/*.js',
@@ -62,7 +83,7 @@ module.exports = function(grunt) {
       ]
     },
 
-    //Code Convention checking
+    //##Code Convention checking
     jscs: {
       files: {
         src: [
@@ -76,6 +97,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Template compiler
     handlebars: {
       compile: {
         options: {
@@ -92,6 +114,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Contatenation task
     concat: {
       css: {
         src: ['src/vendor/normalize-css/normalize.css', PATH_ASSETS_CSS + '/*.css'],
@@ -100,6 +123,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Css minification task
     cssmin: {
       all: {
         src: PATH_DEPLOY_ASSETS +
@@ -109,6 +133,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Css linting task
     csslint: {
       lax: {
         rules: {
@@ -119,6 +144,7 @@ module.exports = function(grunt) {
       }
     },
 
+    //##Image minification
     imagemin: {
       png: {
         options: {
@@ -147,6 +173,8 @@ module.exports = function(grunt) {
         ]
       }
     },
+
+    //##Development server task
     connect: {
       server: {
         options: {
@@ -173,6 +201,7 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-docco');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
