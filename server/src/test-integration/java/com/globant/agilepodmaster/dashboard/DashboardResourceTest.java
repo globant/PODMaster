@@ -20,10 +20,11 @@ import org.springframework.web.client.RestTemplate;
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 
 public class DashboardResourceTest extends AbstractIntegrationTest {
-  private static final String BASE_URL = "http://localhost:" + SERVER_PORT + "/dashboards";
 
   @Test
   public void shouldCreateFollowAndDelete() {
+    final String BASE_URL = "http://localhost:" + this.getServerPort() + "/dashboards";
+
     String requestJson = DashboardJsonFixtures.createDashboard(Dashboard.DashboardType.Account)
         .withWidget("Widget Title", "Widget Name").buildJson();
 
