@@ -66,6 +66,7 @@ dependencies {
 
   compile("org.springframework.boot:spring-boot-starter-data-jpa")
   compile("org.springframework.hateoas:spring-hateoas")
+  compile("org.springframework.security:spring-security-core:2.0.2")
   compile("org.springframework.boot:spring-boot-starter-data-rest")
   compile("org.springframework.data:spring-data-rest-webmvc:2.2.0.RELEASE") //override default version
     
