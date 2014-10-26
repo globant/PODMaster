@@ -1,33 +1,19 @@
 define(
   [
+    'backbone',
     'marionette',
-    'handlebars',
     './router',
-    'templateregistry'
+    './modules/dashboard/dashboard.controller'
   ],
-  function(Marionette, Handlebars, Router, JST) {
+  function(Backbone, Marionette, Router, Controller ) {
     'use strict';
 
     var Application = new Marionette.Application();
 
-    Application.addInitializer(function(options) {
-      new Router();
-    });
-
-    Application.on('before:start', function(options) {
-      Marionette.Renderer.render = function(template, data) {
-        if (!JST[template]) {
-          throw "Template '" + template + "' not found!";
-        }
-        return JST[template](data);
-      };
-    });
-
-    Application.on('start', function(options) {
-
-      Application.addRegions({
-        mainRegion: '.main'
-      });
+    Application.on('start', function() {
+      Application.controller = new Controller();
+      Application.router = new Router({controller: Application.controller});
+      Backbone.history.start();
     });
 
     return Application;

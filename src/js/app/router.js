@@ -1,23 +1,16 @@
 define(
   [
-    'marionette',
-    './modules/dashboard/dashboard.controller',
+    'marionette'
   ],
-  function(Marionette, DashboardController) {
+  function(Marionette) {
+    'use strict';
 
-    var DashboardRouter = Marionette.AppRouter.extend({
-      controller : new DashboardController(),
-
+    var AppRouter = Marionette.AppRouter.extend({
       appRoutes: {
         '': 'handleDefaultRoute'
-      },
-
-      initialize: function() {
-        Backbone.history.start();
       }
-
     });
 
-    return DashboardRouter;
+    return AppRouter;
   }
 );

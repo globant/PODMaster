@@ -10,11 +10,10 @@ define(
 
     var DashboardController = Marionette.Controller.extend({
 
-      initialize: function(options) {
-      },
-
-      handleDefaultRoute: function(path) {
+      handleDefaultRoute: function() {
+        //jshint unused:false
         var dashboardView = new DashboardView();
+        dashboardView.render();
       }
 
     });

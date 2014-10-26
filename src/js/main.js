@@ -1,13 +1,12 @@
-'use strict';
+/* global requirejs */
 requirejs(['require','config/amd.js'],function(require){
+  'use strict';
   require(
     [
-      'app/router'
+      'app/application'
     ],
-    function(Router) {
-      'use strict';
-
-      new Router();
+    function(App) {
+      App.start();
     }
   );
 });
