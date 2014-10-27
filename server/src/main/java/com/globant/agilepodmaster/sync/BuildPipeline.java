@@ -8,7 +8,8 @@ import com.globant.agilepodmaster.pod.ReaderStep;
 public class BuildPipeline<T> {
   private final Builder<T> builder;
   
-  public BuildPipeline<T> accept(ReaderStep step) {
+  @SuppressWarnings("unchecked")
+  public BuildPipeline<T> accept(@SuppressWarnings("rawtypes") ReaderStep step) {
     step.readInto(builder);
     return this;
   }
