@@ -2,14 +2,12 @@ package com.globant.agilepodmaster.sync.reading.jira;
 
 import com.globant.agilepodmaster.sync.AbortSyncException;
 
-import org.springframework.security.util.EncryptionUtils;
+import org.acegisecurity.util.EncryptionUtils;
 import org.springframework.util.StringUtils;
 
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-
 
 @Data
 @RequiredArgsConstructor
