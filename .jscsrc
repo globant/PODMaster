@@ -78,6 +78,6 @@
   "disallowImplicitTypeConversion": ["string"],
 
   "excludeFiles": [
-    "www/js/vendor/**"
+    "src/js/vendor/**"
   ]
 }

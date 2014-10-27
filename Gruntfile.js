@@ -97,7 +97,7 @@ module.exports = function(grunt) {
       }
     },
 
-    //##Template compiler
+    //##Template compiler (deprecated)
     handlebars: {
       compile: {
         options: {
@@ -181,7 +181,7 @@ module.exports = function(grunt) {
           keepalive:true,
           port: 9001,
           hostname: '*',
-          middleware:function(connect){
+          middleware:function(connect) {
             var
               mount = function (dir) {
                 return connect.static(require('path').resolve(dir));
