@@ -43,21 +43,19 @@ public abstract class BaseTaskReader extends BaseJiraReader {
 
   /**
    * Constructor.
-   * @param syncContext
    * @param jiraCustomSettings
    */
-  public BaseTaskReader(SyncContext syncContext,
-      JiraCustomSettings jiraCustomSettings) {
-    super(syncContext, jiraCustomSettings);
+  public BaseTaskReader(JiraCustomSettings jiraCustomSettings) {
+    super(jiraCustomSettings);
   }
 
-  protected List<TaskData> getTaskTree(ProjectDataSet projectDataSet, String jql) {
+  protected List<TaskData> getTaskTree(ProjectDataSet.Builder builder, String jql) {
     List<Issue> issues = searchIssues(jql, DEFAUL_FIELD_LIST);
 
     List<TaskData> taskList = new ArrayList<TaskData>();
 
     for (Issue issue : issues) {
-      TaskData task = mapIssueToPodMember(projectDataSet, issue);
+      TaskData task = mapIssueToPodMember(builder, issue);
       if (task != null) {
         taskList.add(task);
       }
@@ -112,7 +110,7 @@ public abstract class BaseTaskReader extends BaseJiraReader {
     return date;
   }
   
-  private TaskData mapIssueToPodMember(ProjectDataSet projectDataSet,
+  private TaskData mapIssueToPodMember(ProjectDataSet.Builder builder,
       Issue issue) {
     PodData pod = null;
     PodMemberData member = null;
@@ -127,23 +125,23 @@ public abstract class BaseTaskReader extends BaseJiraReader {
           .getEmailAddress();
 
 
-      member = projectDataSet.getPodMemberByUsername(issueEmailAddress);
+      member = builder.getPodMemberByUsername(issueEmailAddress);
       if (member != null) {
         taskData.setPodMember(member.getEmail());
-        pod = projectDataSet.getPodByUsername(issueEmailAddress);
+        pod = builder.getPodByUsername(issueEmailAddress);
       } else {
         if (!jiraCustomSettings.isIgnoreTasksForUnknownMembers()) {
-          pod = projectDataSet.getOrCreatePod(PodData.PodTypeData.EXTERNAL);
-          syncContext.warn("External user found on '{0}': '{1}'", issue.key,
-              issue.fields.assignee.emailAddress);
+          pod = builder.getOrCreatePod(PodData.PodTypeData.EXTERNAL);
+          builder.getSyncContext().warn("External user found on '{0}': '{1}'",
+              issue.key, issue.fields.assignee.emailAddress);
         } else {
-          syncContext.warn("Ignoring item '{0}' for '{1}'", issue.key,
-              issue.fields.assignee.emailAddress);
+          builder.getSyncContext().warn("Ignoring item '{0}' for '{1}'",
+              issue.key, issue.fields.assignee.emailAddress);
           return null;
         }
       }
     } else {
-      pod = projectDataSet.getOrCreatePod(PodData.PodTypeData.UNASSIGNED);
+      pod = builder.getOrCreatePod(PodData.PodTypeData.UNASSIGNED);
     }
 
 

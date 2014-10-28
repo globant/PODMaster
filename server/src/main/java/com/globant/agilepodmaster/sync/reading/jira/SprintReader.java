@@ -34,23 +34,15 @@ public class SprintReader extends BaseTaskReader {
   /**
    * Constructor.
    * 
-   * @param syncContext
    * @param jiraCustomSettings
    */
-  public SprintReader(SyncContext syncContext,
-      JiraCustomSettings jiraCustomSettings) {
-    super(syncContext, jiraCustomSettings);
+  public SprintReader(JiraCustomSettings jiraCustomSettings) {
+    super(jiraCustomSettings);
   }
-
-  @Override
-  protected String getName() {
-    return "Jira Sprints Reader";
-  }
-
   
   //TODO Define preconditions : POD & MEMBERS should exist.
   @Override
-  public void read(ProjectDataSet projectDataSet) {
+  public void readInto(ProjectDataSet.Builder builder) {
 
     ResponseEntity<SprintList> responseEntity = restClient.exchange(rootUrl
         + SPRINT_LIST_URL, HttpMethod.GET, request, SprintList.class,
@@ -59,13 +51,13 @@ public class SprintReader extends BaseTaskReader {
     SprintList sprintList = responseEntity.getBody();
 
     if (!CollectionUtils.isEmpty(sprintList.getSprints())) {
-      syncContext.info("Found {0} sprints", sprintList.getSprints().size());
+      builder.getSyncContext().info("Found {0} sprints", sprintList.getSprints().size());
     } else {
-      syncContext.warn("No Sprint information found");
+      builder.getSyncContext().warn("No Sprint information found");
     }
 
     for (SprintItem sprint : sprintList.getSprints()) {
-      syncContext.info("Processing sprint '{0}'", sprint.getName());
+      builder.getSyncContext().info("Processing sprint '{0}'", sprint.getName());
 
       ResponseEntity<SprintReport> responseReportEntity = restClient.exchange(
           rootUrl + SPRINT_REPORT_URL, HttpMethod.GET, request,
@@ -73,7 +65,7 @@ public class SprintReader extends BaseTaskReader {
           sprint.getId());
 
       // #warning Not currently importing Releases (fix versions)
-      ReleaseData release = getOrCreateReleaseFor(projectDataSet, null);
+      ReleaseData release = builder.getOrCreateReleaseFor(null);
 
       SprintReport sprintReport = responseReportEntity.getBody();
 
@@ -90,18 +82,18 @@ public class SprintReader extends BaseTaskReader {
         }
 
         SprintData sprintData = new SprintData(sprint.getName(), release
-            .getSprints().size() + 1, getJiraDate(syncContext,
-            jiraSprint.getStartDate()), getJiraDate(syncContext,
+            .getSprints().size() + 1, getJiraDate(builder.getSyncContext(),
+            jiraSprint.getStartDate()), getJiraDate(builder.getSyncContext(),
             jiraSprint.getEndDate()), progress);
 
         release.getSprints().add(sprintData);
-        List<TaskData> tasks = getTaskTree(projectDataSet,
+        List<TaskData> tasks = getTaskTree(builder,
             "sprint=" + sprint.getId());
         sprintData.getSprintTasks().addAll(tasks);
-        syncContext.info("Collected {0} items", tasks.size());
+        builder.getSyncContext().info("Collected {0} items", tasks.size());
 
       } else {
-        syncContext.warn(
+        builder.getSyncContext().warn(
             "Skipping sprint '{0}', due to invalid or empty dates",
             sprint.getName());
       }

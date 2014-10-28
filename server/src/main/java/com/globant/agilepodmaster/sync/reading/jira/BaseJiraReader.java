@@ -1,7 +1,6 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
-import com.globant.agilepodmaster.sync.SyncContext;
-import com.globant.agilepodmaster.sync.reading.BaseReader;
+import com.globant.agilepodmaster.sync.reading.Reader;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
@@ -19,7 +18,7 @@ import lombok.Getter;
  * @author jose.dominguez@globant.com
  *
  */
-public abstract class BaseJiraReader extends BaseReader {
+public abstract class BaseJiraReader implements Reader {
   
   @Getter
   protected JiraCustomSettings jiraCustomSettings;
@@ -31,12 +30,9 @@ public abstract class BaseJiraReader extends BaseReader {
   /**
    * BaseJiraReader constructor.
    * 
-   * @param syncContext synchronization process context.
    * @param jiraCustomSettings Jira settings.
    */
-  public BaseJiraReader(SyncContext syncContext,
-      JiraCustomSettings jiraCustomSettings) {
-    super(syncContext);
+  public BaseJiraReader(JiraCustomSettings jiraCustomSettings) {
 
     this.jiraCustomSettings = jiraCustomSettings;
 
