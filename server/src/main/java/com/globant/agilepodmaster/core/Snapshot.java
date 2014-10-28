@@ -7,30 +7,33 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Snapshot represents a set of data read from different data sources through
+ * the synchronization process. It is associated to a product.
+ * 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class Snapshot extends AbstractEntity {
-  
-  @SuppressWarnings("unused")
-  private Snapshot() {
-    // required by Hibernate
-  }
-  
+
   @NonNull
   public String name;
-  
+
   @NonNull
   @ManyToOne
   @JsonIgnore
-  private Project project;
-  
+  private Product product;
+
   @NonNull
   public Date creationDate;
 

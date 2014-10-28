@@ -5,21 +5,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Project of a Product. 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor(access=AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class Project extends AbstractEntity {
-  
-  @SuppressWarnings("unused")
-  private Project() {
-    // required by Hibernate
-  }
   
   @NonNull
   public String name;

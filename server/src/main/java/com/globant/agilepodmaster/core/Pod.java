@@ -5,24 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor(access=AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class Pod extends AbstractEntity {
   
   public static enum Type {
     Internal, External, Unassigned
-  }
-  
-  @SuppressWarnings("unused")
-  private Pod() {
-    // required by Hibernate
   }
   
   @NonNull
@@ -31,7 +27,7 @@ public class Pod extends AbstractEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
-  private Snapshot snapshot;
+  private Sprint sprint;
   
   public Type type;
 

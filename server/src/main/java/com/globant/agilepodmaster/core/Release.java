@@ -7,21 +7,24 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+/**
+ * A Release groups sprints and a backlog. It is for just one project and one
+ * snapshot.
+ * 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor(access=AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class Release extends AbstractEntity {
-  
-  @SuppressWarnings("unused")
-  private Release() {
-    // required by Hibernate
-  }
   
   public int number;
   
@@ -31,7 +34,12 @@ public class Release extends AbstractEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
-  private Snapshot Snapshot;
+  private Snapshot snapshot;
+  
+  @NonNull
+  @ManyToOne
+  @JsonIgnore
+  private Product product;
   
   public Date creationDate;
 

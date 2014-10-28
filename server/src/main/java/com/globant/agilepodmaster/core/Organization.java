@@ -2,21 +2,22 @@ package com.globant.agilepodmaster.core;
 
 import javax.persistence.Entity;
 
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Organization whose metrics we want to show.
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor(access=AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class Organization extends AbstractEntity {
-  
-  @SuppressWarnings("unused")
-  private Organization() {
-    // required by Hibernate
-  }
   
   @NonNull
   public String name;

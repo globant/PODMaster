@@ -7,21 +7,23 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+/**
+ * Represents a set of tasks.
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
+@NoArgsConstructor(access=AccessLevel.PRIVATE)
 public class Sprint extends AbstractEntity {
-  
-  @SuppressWarnings("unused")
-  private Sprint() {
-    // required by Hibernate
-  }
   
   public int number;
   
