@@ -1,6 +1,6 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
-import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
+import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
@@ -14,19 +14,19 @@ import java.util.List;
  * @author jose.dominguez@globant.com
  *
  */
-public class ReleaseReader extends BaseTaskReader {
+public class ReleasesReader extends BaseTaskReader {
 
   /**
    * Constructor.
    * 
    * @param jiraCustomSettings
    */
-  public ReleaseReader(JiraCustomSettings jiraCustomSettings) {
+  public ReleasesReader(JiraCustomSettings jiraCustomSettings) {
     super(jiraCustomSettings);
   }
-  
+
   @Override
-  public void readInto(ProjectDataSet.Builder builder) {
+  public void readInto(ReleasesBuilder builder) {
 
     List<SprintItem> sprints = getSprintList();
 
@@ -41,16 +41,19 @@ public class ReleaseReader extends BaseTaskReader {
 
       Sprint jiraSprint = getSprint(sprint.getId());
 
-      builder = builder.withRelease(null);
+      builder = builder.addRelease(null);
 
       if (sprintIsValid(jiraSprint)) {
 
-        builder = builder.addSprint(sprint.getName(), jiraSprint);
+        builder = builder.addSprint(sprint.getName(), jiraSprint.startDate,
+            jiraSprint.endDate);
 
         List<Issue> sprintIssues = getSprintIssues(sprint.getId());
 
+        // TODO Add more fields. Builder should not know anything about JIRA.
         for (Issue issue : sprintIssues) {
-          builder = builder.addSprintTask(issue.getKey(), issue.getFields());
+          builder = builder.addSprintTask(issue.getKey(), issue.getFields()
+              .getSummary(), null, null, null, null, null);
         }
         builder.infoMessage("Collected " + sprintIssues.size()
             + " sprint issues");
@@ -63,11 +66,11 @@ public class ReleaseReader extends BaseTaskReader {
 
     List<Issue> backlogIssues = getBacklogIssues();
     for (Issue issue : backlogIssues) {
-      builder = builder.addBacklogTask(issue.getKey(), issue.getFields());
+      builder = builder.addBacklogTask(issue.getKey(), issue.getFields()
+          .getSummary(), null, null, null, null, null);
     }
     builder.infoMessage("Collected " + backlogIssues.size() + "backlog issues");
 
-    builder.build();
 
   }
 

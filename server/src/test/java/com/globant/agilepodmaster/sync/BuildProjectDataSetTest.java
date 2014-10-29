@@ -5,23 +5,24 @@ import static org.junit.Assert.assertTrue;
 import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
 import com.globant.agilepodmaster.sync.datamodel.SprintData;
 import com.globant.agilepodmaster.sync.datamodel.TaskData;
+import com.globant.agilepodmaster.sync.datamodel.ProjectDataSetBuilder;
 import com.globant.agilepodmaster.sync.reading.jira.AccessToken;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
-import com.globant.agilepodmaster.sync.reading.jira.ReleaseReader;
+import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
-import org.junit.Ignore;
+import org.junit.Ignore;    
 import org.junit.Test;
 
 import java.util.List;
 
 public class BuildProjectDataSetTest {
-  
+
   private SyncContext context;
   private JiraCustomSettings settings;
 
   public BuildProjectDataSetTest() {
     context = new SyncContext(1, false);
-    
+
     settings = new JiraCustomSettings();
     settings.setJiraRoot("https://jira.corp.globant.com/");
     settings.setJiraProjectName("Pod Master");
@@ -42,20 +43,19 @@ public class BuildProjectDataSetTest {
   @Ignore
   @Test
   public void test() {
-    
-    ReleaseReader releaseReader = new ReleaseReader(settings);   
-    
-    ProjectDataSet projectDataSet = new ProjectDataSet.Builder(context)
-       .add(releaseReader)
-       .build();
-    
+
+    ReleasesReader releaseReader = new ReleasesReader(settings);
+
+    ProjectDataSet projectDataSet = new ProjectDataSetBuilder(context).addReader(
+        releaseReader).build();
+
     List<SprintData> sprints = projectDataSet.getReleases().get(0).getSprints();
     assertTrue(sprints.size() > 0);
     assertTrue(sprints.get(0).getSprintTasks().size() > 0);
-    
+
     List<TaskData> backlog = projectDataSet.getReleases().get(0).getBacklog();
     assertTrue(backlog.size() > 0);
-    
+
   }
 
 }

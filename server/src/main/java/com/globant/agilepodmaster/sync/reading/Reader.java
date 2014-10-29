@@ -1,12 +1,8 @@
 package com.globant.agilepodmaster.sync.reading;
 
-import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
-
-
-public interface Reader {
+public interface Reader<T> {
   
-  public void readInto(ProjectDataSet.Builder builder);
+  public void readInto(T builder);
 
 }
-
 
