@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Issue {
 
@@ -20,7 +20,7 @@ public class Issue {
 
   public Fields fields;
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public class Fields {
     public String summary;
@@ -59,7 +59,7 @@ public class Issue {
 
     // endregion
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Timetracking {
       public String originalEstimate;
@@ -75,7 +75,7 @@ public class Issue {
       public Integer timeSpentSeconds;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Issuetype {
       public String self;
@@ -91,7 +91,7 @@ public class Issue {
       public Boolean subtask;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Priority {
       public String self;
@@ -103,7 +103,7 @@ public class Issue {
       public String name;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class CustomField {
       public String id;
@@ -111,7 +111,7 @@ public class Issue {
       public String value;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class ReferenceField {
       public String id;
@@ -119,7 +119,7 @@ public class Issue {
       public String name;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Assignee {
       public String self;
@@ -134,16 +134,17 @@ public class Issue {
 
       public Boolean active;
 
-      @JsonIgnoreProperties(ignoreUnknown=true)
+      @JsonIgnoreProperties(ignoreUnknown = true)
       @Data
       public class AvatarUrls {
+        @SuppressWarnings("checkstyle:membername")
         public String __invalid_name__16x16;
-
+        @SuppressWarnings("checkstyle:membername")
         public String __invalid_name__48x48;
       }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Resolution {
       public String self;
@@ -155,7 +156,7 @@ public class Issue {
       public String name;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Status {
       public String self;
@@ -168,7 +169,7 @@ public class Issue {
 
       public String id;
     }
-    
+
   }
-  
+
 }

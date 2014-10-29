@@ -12,18 +12,18 @@ import lombok.Setter;
  * @author jose.dominguez@globant.com
  *
  */
-public class SyncContext{
-  
+public class SyncContext {
+
   @Getter
   private int projectId;
-  
+
   @Getter
   private boolean testRun;
-  
+
   @Getter
-  @Setter  
+  @Setter
   public int elementCount;
-  
+
   @Getter
   public List<SyncLogEntry> logEntries;
 
@@ -50,9 +50,10 @@ public class SyncContext{
     log(format, "Error", arguments);
   }
 
-  
+
   /**
-   * This class represents a log record of SyncContext. 
+   * This class represents a log record of SyncContext.
+   * 
    * @author jose.dominguez@globant.com
    *
    */
@@ -83,6 +84,6 @@ public class SyncContext{
     }
 
   }
-  
+
 
 }

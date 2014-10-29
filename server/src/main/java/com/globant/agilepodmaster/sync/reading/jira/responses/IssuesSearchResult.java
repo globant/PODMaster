@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class IssuesSearchResult {
   

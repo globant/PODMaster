@@ -6,9 +6,8 @@ import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
 import com.globant.agilepodmaster.sync.datamodel.SprintData;
 import com.globant.agilepodmaster.sync.datamodel.TaskData;
 import com.globant.agilepodmaster.sync.reading.jira.AccessToken;
-import com.globant.agilepodmaster.sync.reading.jira.BacklogReader;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
-import com.globant.agilepodmaster.sync.reading.jira.SprintReader;
+import com.globant.agilepodmaster.sync.reading.jira.ReleaseReader;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class BuildProjectDataSetTest {
         .setBugpriorityMapping("1 - Blocker | 2 - Very High, 3 - High, 4 - Medium, 5 - Low");
     settings.setSeverityMapping("Blocker, Major, Minor, Trivial");
 
-    AccessToken accessToken = new AccessToken("jose.dominguez", "xxx",
+    AccessToken accessToken = new AccessToken("jose.dominguez", "XXXX",
         "jira access token");
     settings.setAccessToken(accessToken.Encrypt());
   }
@@ -44,12 +43,10 @@ public class BuildProjectDataSetTest {
   @Test
   public void test() {
     
-    BacklogReader backlogReader = new BacklogReader(settings);
-    SprintReader sprintReader = new SprintReader(settings);   
+    ReleaseReader releaseReader = new ReleaseReader(settings);   
     
     ProjectDataSet projectDataSet = new ProjectDataSet.Builder(context)
-       .add(backlogReader)
-       .add(sprintReader)
+       .add(releaseReader)
        .build();
     
     List<SprintData> sprints = projectDataSet.getReleases().get(0).getSprints();

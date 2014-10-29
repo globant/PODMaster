@@ -22,7 +22,7 @@ import lombok.NonNull;
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Sprint extends AbstractEntity {
   
   public int number;

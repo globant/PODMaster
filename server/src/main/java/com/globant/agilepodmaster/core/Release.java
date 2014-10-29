@@ -22,7 +22,7 @@ import lombok.NonNull;
  */
 @Entity
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class Release extends AbstractEntity {
   

@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class SprintReport {
 
@@ -14,7 +14,7 @@ public class SprintReport {
 
   public Sprint sprint;
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public class Contents {
 
@@ -36,7 +36,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public class Sprint {
 
@@ -54,7 +54,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class CompletedIssue {
 
@@ -98,7 +98,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class TrackingStatistic {
 
@@ -108,7 +108,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class StatFieldValue {
 
@@ -118,7 +118,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class IncompletedIssue {
 
@@ -156,7 +156,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class StatFieldValue2 {
 
@@ -166,7 +166,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class TrackingStatistic2 {
 
@@ -176,7 +176,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class StatFieldValue3 {
 
@@ -186,7 +186,7 @@ public class SprintReport {
 
   }
   
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class TrackingStatistic3 {
 
@@ -196,7 +196,7 @@ public class SprintReport {
 
   }
   
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class PuntedIssue {
 
@@ -234,7 +234,7 @@ public class SprintReport {
 
   }
   
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class CompletedIssuesEstimateSum {
 
@@ -244,7 +244,7 @@ public class SprintReport {
 
   }
   
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class IncompletedIssuesEstimateSum {
 
@@ -254,7 +254,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class AllIssuesEstimateSum {
 
@@ -264,7 +264,7 @@ public class SprintReport {
 
   }
 
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class PuntedIssuesEstimateSum {
 

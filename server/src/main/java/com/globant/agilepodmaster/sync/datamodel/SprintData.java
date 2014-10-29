@@ -18,19 +18,15 @@ public class SprintData implements Serializable {
 
   public Date endDate;
 
-  public float progress;
-
   public String tag;
 
   public List<TaskData> sprintTasks;
 
-  public SprintData(final String name, final int number, final Date startDate, final Date endDate,
-      final float progress) {
+  public SprintData(final String name, final int number, final Date startDate, final Date endDate) {
     this.name = name;
     this.number = number;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.progress = progress;
     sprintTasks = new ArrayList<TaskData>();
   }
   

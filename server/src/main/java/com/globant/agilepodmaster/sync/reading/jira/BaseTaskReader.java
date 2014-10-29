@@ -1,28 +1,23 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
-import com.globant.agilepodmaster.sync.SyncContext;
-import com.globant.agilepodmaster.sync.datamodel.PodData;
-import com.globant.agilepodmaster.sync.datamodel.PodData.PodMemberData;
-import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
-import com.globant.agilepodmaster.sync.datamodel.TaskData;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.IssuesSearchResult;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Base class for all Jira Tasks readers.
- * TODO try to eliminate this class. It is only used to reuse methods.
+ * Base class for all Jira Tasks readers. TODO try to eliminate this class. It
+ * is only used to reuse methods.
  * 
  * @author jose.dominguez@globant.com
  *
@@ -30,132 +25,85 @@ import java.util.Locale;
 public abstract class BaseTaskReader extends BaseJiraReader {
 
   private static final int MAX_SEARCH_SIZE = 60;
-  
+
   private static final String DEFAUL_FIELD_LIST = "key,parent,priority,summary"
       + ",components,assignee,created,issuetype,status,resolution"
       + ",resolutiondate,timetracking,labels";
-  
+
+  private static final String SPRINT_LIST_URL = "rest/greenhopper/1.0/"
+      + "sprintquery/{id}?includeFutureSprints=true&"
+      + "includeHistoricSprints=true";
+
+  private static final String SPRINT_REPORT_URL = "rest/greenhopper/1.0/"
+      + "rapid/charts/sprintreport?rapidViewId={rapidViewId}&sprintId="
+      + "{sprintId}";
+
   private static final String SEARCH_URL = "rest/api/latest/search?jql={jql}"
       + "&fields={fields},{customFields}&startAt={startAt}&maxResults={pageSize}";
 
-  
   private List<String> customFields = new ArrayList<String>();
 
   /**
    * Constructor.
+   * 
    * @param jiraCustomSettings
    */
   public BaseTaskReader(JiraCustomSettings jiraCustomSettings) {
     super(jiraCustomSettings);
   }
 
-  protected List<TaskData> getTaskTree(ProjectDataSet.Builder builder, String jql) {
-    List<Issue> issues = searchIssues(jql, DEFAUL_FIELD_LIST);
+  protected List<SprintItem> getSprintList() {
+    ResponseEntity<SprintList> responseEntity = restClient.exchange(rootUrl
+        + SPRINT_LIST_URL, HttpMethod.GET, request, SprintList.class,
+        jiraCustomSettings.getJiraRapidViewId());
+    SprintList sprintList = responseEntity.getBody();
+    return sprintList.getSprints();
+  }
 
-    List<TaskData> taskList = new ArrayList<TaskData>();
+  protected Sprint getSprint(final int sprintId) {
+    ResponseEntity<SprintReport> responseReportEntity = restClient.exchange(
+        rootUrl + SPRINT_REPORT_URL, HttpMethod.GET, request,
+        SprintReport.class, jiraCustomSettings.getJiraRapidViewId(), sprintId);
+    SprintReport sprintReport = responseReportEntity.getBody();
+    return sprintReport.getSprint();
+  }
 
-    for (Issue issue : issues) {
-      TaskData task = mapIssueToPodMember(builder, issue);
-      if (task != null) {
-        taskList.add(task);
+
+  protected List<Issue> getSprintIssues(final int sprintId) {
+    return searchIssues("sprint=" + sprintId, DEFAUL_FIELD_LIST);
+  }
+
+  protected List<Issue> getBacklogIssues() {
+    return searchIssues("sprint=null AND project=\""
+        + jiraCustomSettings.jiraProjectName + "\"", DEFAUL_FIELD_LIST);
+  }
+
+  private List<Issue> searchIssues(String jql, String fields) {
+    List<Issue> issues = new ArrayList<Issue>();
+    boolean moreContent = true;
+    int startAt = 0;
+    while (moreContent) {
+      ResponseEntity<IssuesSearchResult> responseEntity = restClient.exchange(
+          rootUrl + SEARCH_URL, HttpMethod.GET, request,
+          IssuesSearchResult.class, jql, fields,
+          StringUtils.collectionToCommaDelimitedString(this.customFields),
+          startAt, MAX_SEARCH_SIZE);
+
+      IssuesSearchResult issuesSearchResult = responseEntity.getBody();
+
+      if (CollectionUtils.isEmpty(issuesSearchResult.getIssues())) {
+        break;
+      }
+
+      issues.addAll(issuesSearchResult.getIssues());
+
+      startAt = issuesSearchResult.getStartAt() + MAX_SEARCH_SIZE + 1;
+      if (startAt > issuesSearchResult.getTotal()) {
+        moreContent = false;
       }
     }
-    // TODO Calculate Sub tasks.
-    return taskList;
+    return issues;
   }
-
-  private List<Issue> searchIssues(String jql, String fields)
-  {
-      List<Issue> issues = new ArrayList<Issue>();
-      boolean moreContent = true;
-      int startAt = 0;
-      while (moreContent)
-      {
-        ResponseEntity<IssuesSearchResult> responseEntity = restClient.exchange(
-            rootUrl + SEARCH_URL,
-            HttpMethod.GET, 
-            request, 
-            IssuesSearchResult.class,
-            jql,
-            fields,
-            StringUtils.collectionToCommaDelimitedString(this.customFields),
-            startAt,
-            MAX_SEARCH_SIZE);
-        
-        IssuesSearchResult issuesSearchResult = responseEntity.getBody();
-
-        if (CollectionUtils.isEmpty(issuesSearchResult.getIssues())) {
-              break;
-          }
-
-          issues.addAll(issuesSearchResult.getIssues());
-
-          startAt = issuesSearchResult.getStartAt() + MAX_SEARCH_SIZE + 1;
-          if (startAt > issuesSearchResult.getTotal())
-              moreContent = false;
-      }
-      return issues;
-  }
-
- 
-
-  // TODO do it independent of JIRA format
-  protected Date getJiraDate(final SyncContext syncContext, final String sDate) {
-    Date date = null;
-    try {
-      date = new SimpleDateFormat("d/M/y", Locale.ENGLISH).parse(sDate);
-    } catch (ParseException e) {
-      syncContext.error("Invalid date format:{0}", sDate);
-    }
-    return date;
-  }
-  
-  private TaskData mapIssueToPodMember(ProjectDataSet.Builder builder,
-      Issue issue) {
-    PodData pod = null;
-    PodMemberData member = null;
-
-    TaskData taskData = new TaskData();
-
-    if (issue.getFields().getAssignee() != null
-        && !StringUtils.isEmpty(issue.getFields().getAssignee()
-            .getEmailAddress())) {
-
-      String issueEmailAddress = issue.getFields().getAssignee()
-          .getEmailAddress();
-
-
-      member = builder.getPodMemberByUsername(issueEmailAddress);
-      if (member != null) {
-        taskData.setPodMember(member.getEmail());
-        pod = builder.getPodByUsername(issueEmailAddress);
-      } else {
-        if (!jiraCustomSettings.isIgnoreTasksForUnknownMembers()) {
-          pod = builder.getOrCreatePod(PodData.PodTypeData.EXTERNAL);
-          builder.getSyncContext().warn("External user found on '{0}': '{1}'",
-              issue.key, issue.fields.assignee.emailAddress);
-        } else {
-          builder.getSyncContext().warn("Ignoring item '{0}' for '{1}'",
-              issue.key, issue.fields.assignee.emailAddress);
-          return null;
-        }
-      }
-    } else {
-      pod = builder.getOrCreatePod(PodData.PodTypeData.UNASSIGNED);
-    }
-
-
-    taskData.setKey(issue.getKey().substring(0,
-        Math.min(issue.getKey().length(), 100)));
-    taskData.setName(issue.getFields().getSummary()
-        .substring(0, Math.min(issue.getFields().getSummary().length(), 100)));
-    taskData.setPod(pod.getName());
-
-    // TODO Finish with this mapping
-
-    return taskData;
-  }
-
 
 
 

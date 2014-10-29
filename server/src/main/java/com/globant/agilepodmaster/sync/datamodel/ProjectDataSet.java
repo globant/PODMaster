@@ -3,12 +3,18 @@ package com.globant.agilepodmaster.sync.datamodel;
 import com.globant.agilepodmaster.sync.SyncContext;
 import com.globant.agilepodmaster.sync.datamodel.PodData.PodMemberData;
 import com.globant.agilepodmaster.sync.reading.Reader;
+import com.globant.agilepodmaster.sync.reading.jira.responses.Issue.Fields;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import lombok.Data;
 import lombok.Getter;
@@ -36,14 +42,20 @@ public class ProjectDataSet implements Serializable {
   public List<ReleaseData> releases;
 
 
-  @Data
+  
   public static class Builder {
 
+    @Getter
     private List<PodData> pods;
+    
+    @Getter
     private List<ReleaseData> releases;
 
-    @Getter
-    protected SyncContext syncContext;
+    private SyncContext syncContext;
+    
+    private ReleaseData defaultRelease;
+    
+    private SprintData defaultSprint;
 
     public Builder(SyncContext syncContext) {
       this.syncContext = syncContext;
@@ -56,19 +68,12 @@ public class ProjectDataSet implements Serializable {
       return this;
     }
 
-    public ProjectDataSet build() {
-      return new ProjectDataSet(pods, releases);
-    }
-
-    // utility methods
-    
     /**
-     * Return release if exists. Or create a release if does not exists. If name
-     * is empty a "default" release is created.
+     * Create a release if does not exists. If name is empty a "default" release
+     * is created.
      */
-    public ReleaseData getOrCreateReleaseFor(final String releaseName) {
+    public Builder withRelease(final String releaseName) {
 
-      ReleaseData defaultRelease = null;
 
       if (StringUtils.isEmpty(releaseName)) {
 
@@ -83,7 +88,7 @@ public class ProjectDataSet implements Serializable {
           defaultRelease = new ReleaseData("Default", true);
           releases.add(defaultRelease);
         }
-        return defaultRelease;
+        return this;
       }
 
       for (ReleaseData release : releases) {
@@ -98,8 +103,69 @@ public class ProjectDataSet implements Serializable {
         releases.add(defaultRelease);
 
       }
-      return defaultRelease;
+      return this;
     }
+    
+    public Builder addSprint(String name, Sprint jiraSprint) {
+      SprintData sprintData = new SprintData(name, defaultRelease.getSprints()
+          .size() + 1, getJiraDate(jiraSprint.getStartDate()),
+          getJiraDate(jiraSprint.getEndDate()));
+
+      defaultRelease.getSprints().add(sprintData);
+      defaultSprint = sprintData;
+      
+      return this;
+
+    }
+    
+    public Builder addSprintTask(String key, Fields fields) {
+
+      TaskData taskData = new TaskData();
+
+      taskData.setKey(key.substring(0, Math.min(key.length(), 100)));
+      taskData.setName(fields.getSummary().substring(0,
+          Math.min(fields.getSummary().length(), 100)));
+      // TODO set the rest of the fields
+      defaultSprint.getSprintTasks().add(taskData);
+
+      return this;
+    }
+    
+    public Builder addBacklogTask(String key, Fields fields) {
+
+      TaskData taskData = new TaskData();
+
+      taskData.setKey(key.substring(0, Math.min(key.length(), 100)));
+      taskData.setName(fields.getSummary().substring(0,
+          Math.min(fields.getSummary().length(), 100)));
+      // TODO set the rest of the fields
+      defaultRelease.getBacklog().add(taskData);
+
+      return this;
+    }
+    
+
+    public ProjectDataSet build() {
+      // TODO Calculate Sub tasks.
+      // TODO Add members to tasks.
+      
+      
+      return new ProjectDataSet(pods, releases);
+    }
+    
+
+    public void warnMessage(String message) {
+      syncContext.warn(message);
+    }
+    
+    public void infoMessage(String message) {
+      syncContext.info(message);
+    }
+    
+    public void errorMessage(String message) {
+      syncContext.error(message);
+    }
+    
     
     public PodMemberData getPodMemberByUsername(String externalUsername) {
       PodMemberData podMemberResult = null;
@@ -155,6 +221,20 @@ public class ProjectDataSet implements Serializable {
       }
       return podResult;
     }
+    
+    // TODO do it independent of JIRA format
+    private Date getJiraDate(final String theDate) {
+      Date date = null;
+      try {
+        date = new SimpleDateFormat("d/M/y", Locale.ENGLISH).parse(theDate);
+      } catch (ParseException e) {
+        syncContext.error("Invalid date format:{0}", theDate);
+      }
+      return date;
+    }
+
+
+    
 
   }
 

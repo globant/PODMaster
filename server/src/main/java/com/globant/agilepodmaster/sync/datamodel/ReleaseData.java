@@ -36,4 +36,6 @@ public class ReleaseData implements Serializable {
     highlights = new ArrayList<HighlightData>();
   }
   
+  
+  
 }

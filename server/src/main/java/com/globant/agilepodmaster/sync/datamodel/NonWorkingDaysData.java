@@ -12,6 +12,6 @@ public class NonWorkingDaysData implements Serializable {
 
   public String podMemberEmail;
 
-  public Date OffWorkDate;
+  public Date offWorkDate;
   
 }

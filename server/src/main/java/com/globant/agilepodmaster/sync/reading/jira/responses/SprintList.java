@@ -6,7 +6,7 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class SprintList {
 
@@ -16,7 +16,7 @@ public class SprintList {
 
 
   
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class SprintItem {
     public int id;

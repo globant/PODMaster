@@ -27,6 +27,7 @@
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>
     
+    <module name="SuppressWarningsFilter" />
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
     <module name="FileTabCharacter">
@@ -175,5 +176,6 @@
             <property name="option" value="NL"/>
             <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR "/>
         </module>
+        <module name="SuppressWarningsHolder" />
     </module>
 </module>

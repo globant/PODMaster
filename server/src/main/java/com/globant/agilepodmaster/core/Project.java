@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Entity
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class Project extends AbstractEntity {
   

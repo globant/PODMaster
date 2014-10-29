@@ -15,7 +15,7 @@ import com.globant.agilepodmaster.widget.Widget;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
 public class DashboardWidget extends AbstractEntity {
   @SuppressWarnings("unused")
