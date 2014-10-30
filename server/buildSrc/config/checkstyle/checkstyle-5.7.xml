@@ -37,12 +37,16 @@
         <module name="JavadocType">
           <property name="severity" value="warning"/>
         </module>
-        <module name="JavadocMethod">
+        <module name="JavadocMethod"> 
+          <property name="scope" value="public"/>
           <property name="severity" value="warning"/>
-        </module>        
+        </module>  
+<!--               
         <module name="JavadocVariable">
+        <property name="scope" value="public"/>
           <property name="severity" value="warning"/>
         </module>
+-->        
         <module name="JavadocStyle">
           <property name="severity" value="warning"/>
         </module>
