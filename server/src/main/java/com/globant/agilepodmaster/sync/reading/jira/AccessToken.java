@@ -2,7 +2,6 @@ package com.globant.agilepodmaster.sync.reading.jira;
 
 import com.globant.agilepodmaster.sync.AbortSyncException;
 
-import org.acegisecurity.util.EncryptionUtils;
 import org.springframework.util.StringUtils;
 
 import lombok.Data;
@@ -26,13 +25,13 @@ public class AccessToken {
   public String purpose;
 
 
-  public String Encrypt() {
+  public String encrypt() {
 
     return EncryptionUtils.encrypt(KEY, String.format("%s:|:%s:|:%s:|:%s",
         "ProjectDashboard", username, password, purpose));
   }
 
-  public static AccessToken Decrypt(String encryptedToken,
+  public static AccessToken decrypt(String encryptedToken,
       String expectedPurpose) {
     String token = EncryptionUtils.decrypt(KEY, encryptedToken);
     String[] parts = StringUtils.tokenizeToStringArray(token, ":|:");

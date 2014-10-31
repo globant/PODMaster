@@ -33,7 +33,7 @@ public class Sprint extends AbstractEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
-  private Release relase;
+  private Release release;
   
   public Date startDate;
 

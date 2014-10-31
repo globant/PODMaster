@@ -7,11 +7,11 @@ public interface ReleasesBuilder extends BuilderLog {
   ReleasesBuilder addSprint(String name, String startDate, String endDate);
 
   ReleasesBuilder addSprintTask(String issueKey, String summary, String type,
-      String Status, String owner, String severity,
+      String status, String owner, String severity,
       String priority);
 
   ReleasesBuilder addBacklogTask(String issueKey, String summary, String type,
-      String Status, String owner, String severity,
+      String status, String owner, String severity,
       String priority);
   
   

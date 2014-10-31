@@ -48,7 +48,8 @@ public class ProjectDataSetBuilder implements PodsBuilder, ReleasesBuilder {
     return this;
   }
 
-  public PodsBuilder addMember(String name, String role) {
+  public PodsBuilder addMember(String firstName, String lastName, String email,
+      String role) {
     return this;
   }
 
@@ -103,7 +104,7 @@ public class ProjectDataSetBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   public ReleasesBuilder addSprintTask(String issueKey, String summary,
-      String type, String Status, String owner, String severity, String priority) {
+      String type, String status, String owner, String severity, String priority) {
     TaskData taskData = new TaskData();
 
     // TODO look for a better way to truncate
@@ -115,7 +116,7 @@ public class ProjectDataSetBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   public ReleasesBuilder addBacklogTask(String issueKey, String summary,
-      String type, String Status, String owner, String severity, String priority) {
+      String type, String status, String owner, String severity, String priority) {
 
     TaskData taskData = new TaskData();
 

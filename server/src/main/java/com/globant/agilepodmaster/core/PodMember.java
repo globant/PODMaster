@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +17,22 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class PodMember extends AbstractEntity {
-  
+
+  @Getter
   @NonNull
   public String firstName;
-  
+
+  @Getter
   @NonNull
   public String lastName;
-  
+
+  @Getter
   @NonNull
   public String email;
-  
+
   @NonNull
   @ManyToOne
   @JsonIgnore
   private Pod pod;
-  
+
 }

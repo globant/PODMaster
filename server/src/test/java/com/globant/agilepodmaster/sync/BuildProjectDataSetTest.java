@@ -37,7 +37,7 @@ public class BuildProjectDataSetTest {
 
     AccessToken accessToken = new AccessToken("jose.dominguez", "XXXX",
         "jira access token");
-    settings.setAccessToken(accessToken.Encrypt());
+    settings.setAccessToken(accessToken.encrypt());
   }
 
   @Ignore

@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,15 @@ public class Pod extends AbstractEntity {
     Internal, External, Unassigned
   }
   
+  @Getter
   @NonNull
-  public String name;
+  private String name;
   
-  @NonNull
+  //@NonNull
   @ManyToOne
   @JsonIgnore
   private Sprint sprint;
+    
   
   public Type type;
 

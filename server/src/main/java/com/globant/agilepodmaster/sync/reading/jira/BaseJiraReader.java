@@ -37,7 +37,7 @@ public abstract class BaseJiraReader implements Reader<ReleasesBuilder> {
 
     this.jiraCustomSettings = jiraCustomSettings;
 
-    AccessToken token = AccessToken.Decrypt(
+    AccessToken token = AccessToken.decrypt(
         jiraCustomSettings.getAccessToken(), "jira access token");
 
     final String plainCreds = token.getUsername() + ":" + token.getPassword();

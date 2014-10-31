@@ -39,7 +39,7 @@ public class Release extends AbstractEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
-  private Product product;
+  private Project project;
   
   public Date creationDate;
 

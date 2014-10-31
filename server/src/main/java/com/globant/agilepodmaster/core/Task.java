@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -46,17 +47,17 @@ public class Task extends AbstractEntity {
   @NonNull
   public String name;
 
-  public float effort;
+  public double effort;
 
-  public float estimated;
+  public double estimated;
 
-  public float actual;
+  public double actual;
 
-  public float remaining;
+  public double remaining;
 
-  public float accuracy;
+  public double accuracy;
 
-  public Status taskStatus;
+  public Status status;
 
   public Severity severity;
 
@@ -66,6 +67,8 @@ public class Task extends AbstractEntity {
 
   public Date createdDate;
 
+  @OneToOne
+  @JsonIgnore
   public Task parentTask;
 
   @ManyToOne
