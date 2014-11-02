@@ -2,20 +2,25 @@ package com.globant.agilepodmaster.sync;
 
 import static org.junit.Assert.assertTrue;
 
+import com.globant.agilepodmaster.AbstractUnitTest;
+import com.globant.agilepodmaster.core.PodRepository;
+import com.globant.agilepodmaster.dashboard.DashboardRepository;
 import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
+import com.globant.agilepodmaster.sync.datamodel.ProjectDataSetBuilder;
 import com.globant.agilepodmaster.sync.datamodel.SprintData;
 import com.globant.agilepodmaster.sync.datamodel.TaskData;
-import com.globant.agilepodmaster.sync.datamodel.ProjectDataSetBuilder;
 import com.globant.agilepodmaster.sync.reading.jira.AccessToken;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
+import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
-import org.junit.Ignore;    
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-public class BuildProjectDataSetTest {
+public class BuildProjectDataSetTest extends AbstractUnitTest {
 
   private SyncContext context;
   private JiraCustomSettings settings;
@@ -33,21 +38,34 @@ public class BuildProjectDataSetTest {
     settings.setPriorityMapping("Blocker | Critical, Major, Minor, Trivial");
     settings
         .setBugpriorityMapping("1 - Blocker | 2 - Very High, 3 - High, 4 - Medium, 5 - Low");
-    settings.setSeverityMapping("Blocker, Major, Minor, Trivial");
-
-    AccessToken accessToken = new AccessToken("jose.dominguez", "XXXX",
-        "jira access token");
-    settings.setAccessToken(accessToken.encrypt());
+    settings.setSeverityMapping("Blocker, Major, Minor, Trivial");    
   }
+  
+  @Autowired
+  private JiraRestClient jiraRestClient;  
+  
+  @Autowired
+  ReleasesReader releasesReader;
 
-  @Ignore
+  @Autowired
+  DashboardRepository repo;
+  
   @Test
   public void test() {
+/*
+    AccessToken accessToken = new AccessToken("jose.dominguez", "Octubre4628",
+        "jira access token");
+    AccessToken token = AccessToken.decrypt(accessToken, "jira access token");
+*/    
+    
+    jiraRestClient.initialize("jose.dominguez", "Octubre4628",
+        "https://jira.corp.globant.com/");
 
-    ReleasesReader releaseReader = new ReleasesReader(settings);
+    releasesReader.setRestJiraClient(jiraRestClient);
+    releasesReader.setSettings(settings);
 
-    ProjectDataSet projectDataSet = new ProjectDataSetBuilder(context).addReader(
-        releaseReader).build();
+    ProjectDataSet projectDataSet = new ProjectDataSetBuilder(context)
+        .addReader(releasesReader).build();
 
     List<SprintData> sprints = projectDataSet.getReleases().get(0).getSprints();
     assertTrue(sprints.size() > 0);

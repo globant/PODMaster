@@ -1,34 +1,42 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import com.globant.agilepodmaster.sync.reading.Reader;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import lombok.Setter;
+
 /**
+ * Reads releases, sprints, task, backlog.
  * @author jose.dominguez@globant.com
  *
  */
-public class ReleasesReader extends BaseTaskReader {
+@Service
+public class ReleasesReader implements Reader<ReleasesBuilder> {
 
-  /**
-   * Constructor.
-   * 
-   * @param jiraCustomSettings
-   */
-  public ReleasesReader(JiraCustomSettings jiraCustomSettings) {
-    super(jiraCustomSettings);
-  }
+  @Setter
+  private JiraRestClient restJiraClient;
+
+  @Setter
+  private JiraCustomSettings settings;
 
   @Override
   public void readInto(ReleasesBuilder builder) {
 
-    List<SprintItem> sprints = getSprintList();
+    Assert.notNull(restJiraClient, "RestJiraClient must not be null");
+    Assert.notNull(settings, "JiraCustomSettings must not be null");
+
+    List<SprintItem> sprints = restJiraClient.getSprintList(settings
+        .getJiraRapidViewId());
 
     if (!CollectionUtils.isEmpty(sprints)) {
       builder.infoMessage("Found " + sprints.size() + " sprints");
@@ -39,7 +47,8 @@ public class ReleasesReader extends BaseTaskReader {
     for (SprintItem sprint : sprints) {
       builder.infoMessage("Processing sprint: " + sprint.getName());
 
-      Sprint jiraSprint = getSprint(sprint.getId());
+      Sprint jiraSprint = restJiraClient.getSprint(sprint.getId(),
+          settings.getJiraRapidViewId());
 
       builder = builder.addRelease(null);
 
@@ -48,7 +57,8 @@ public class ReleasesReader extends BaseTaskReader {
         builder = builder.addSprint(sprint.getName(), jiraSprint.startDate,
             jiraSprint.endDate);
 
-        List<Issue> sprintIssues = getSprintIssues(sprint.getId());
+        List<Issue> sprintIssues = restJiraClient.getSprintIssues(sprint
+            .getId());
 
         // TODO Add more fields. Builder should not know anything about JIRA.
         for (Issue issue : sprintIssues) {
@@ -64,7 +74,8 @@ public class ReleasesReader extends BaseTaskReader {
       }
     }
 
-    List<Issue> backlogIssues = getBacklogIssues();
+    List<Issue> backlogIssues = restJiraClient.getBacklogIssues(settings
+        .getJiraProjectName());
     for (Issue issue : backlogIssues) {
       builder = builder.addBacklogTask(issue.getKey(), issue.getFields()
           .getSummary(), null, null, null, null, null);

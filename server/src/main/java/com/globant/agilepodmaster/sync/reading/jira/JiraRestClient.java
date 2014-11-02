@@ -7,23 +7,37 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintI
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Base class for all Jira Tasks readers. TODO try to eliminate this class. It
- * is only used to reuse methods.
+ * This class gets data through Jira API Rest.
  * 
  * @author jose.dominguez@globant.com
  *
  */
-public abstract class BaseTaskReader extends BaseJiraReader {
+@Service
+public class JiraRestClient {
 
+  @Autowired
+  private RestTemplate restTemplate;
+  /*
+   * @Autowired private Credencials Credencials;
+   */
   private static final int MAX_SEARCH_SIZE = 60;
 
   private static final String DEFAUL_FIELD_LIST = "key,parent,priority,summary"
@@ -43,27 +57,53 @@ public abstract class BaseTaskReader extends BaseJiraReader {
 
   private List<String> customFields = new ArrayList<String>();
 
+  protected HttpEntity<String> request;
+
+  protected String rootUrl;
+
+
   /**
-   * Constructor.
+   * initialize RestTemplate component to connect to Jira.
    * 
-   * @param jiraCustomSettings
+   * @param username Jira user.
+   * @param password Jira pass.
+   * @param jiraRoot root path where Jira is running.
    */
-  public BaseTaskReader(JiraCustomSettings jiraCustomSettings) {
-    super(jiraCustomSettings);
+
+  public void initialize(final String username, final String password,
+      final String jiraRoot) {
+
+    Assert.notNull(username, "username must not be null");
+    Assert.notNull(password, "password must not be null");
+    Assert.notNull(jiraRoot, "JiraRoot must not be null");
+
+    final String plainCreds = username + ":" + password;
+    final byte[] plainCredsBytes = plainCreds.getBytes();
+    final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+    final String base64Creds = new String(base64CredsBytes);
+
+    final HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(new MediaType("application",
+        "json")));
+    headers.add("Authorization", "Basic " + base64Creds);
+
+    request = new HttpEntity<String>(headers);
+    rootUrl = jiraRoot;
+
   }
 
-  protected List<SprintItem> getSprintList() {
-    ResponseEntity<SprintList> responseEntity = restClient.exchange(rootUrl
+  protected List<SprintItem> getSprintList(final String rapidViewId) {
+    ResponseEntity<SprintList> responseEntity = restTemplate.exchange(rootUrl
         + SPRINT_LIST_URL, HttpMethod.GET, request, SprintList.class,
-        jiraCustomSettings.getJiraRapidViewId());
+        rapidViewId);
     SprintList sprintList = responseEntity.getBody();
     return sprintList.getSprints();
   }
 
-  protected Sprint getSprint(final int sprintId) {
-    ResponseEntity<SprintReport> responseReportEntity = restClient.exchange(
+  protected Sprint getSprint(final int sprintId, final String rapidViewId) {
+    ResponseEntity<SprintReport> responseReportEntity = restTemplate.exchange(
         rootUrl + SPRINT_REPORT_URL, HttpMethod.GET, request,
-        SprintReport.class, jiraCustomSettings.getJiraRapidViewId(), sprintId);
+        SprintReport.class, rapidViewId, sprintId);
     SprintReport sprintReport = responseReportEntity.getBody();
     return sprintReport.getSprint();
   }
@@ -73,9 +113,9 @@ public abstract class BaseTaskReader extends BaseJiraReader {
     return searchIssues("sprint=" + sprintId, DEFAUL_FIELD_LIST);
   }
 
-  protected List<Issue> getBacklogIssues() {
-    return searchIssues("sprint=null AND project=\""
-        + jiraCustomSettings.jiraProjectName + "\"", DEFAUL_FIELD_LIST);
+  protected List<Issue> getBacklogIssues(final String projectName) {
+    return searchIssues("sprint=null AND project=\"" + projectName + "\"",
+        DEFAUL_FIELD_LIST);
   }
 
   private List<Issue> searchIssues(String jql, String fields) {
@@ -83,11 +123,11 @@ public abstract class BaseTaskReader extends BaseJiraReader {
     boolean moreContent = true;
     int startAt = 0;
     while (moreContent) {
-      ResponseEntity<IssuesSearchResult> responseEntity = restClient.exchange(
-          rootUrl + SEARCH_URL, HttpMethod.GET, request,
-          IssuesSearchResult.class, jql, fields,
-          StringUtils.collectionToCommaDelimitedString(this.customFields),
-          startAt, MAX_SEARCH_SIZE);
+      ResponseEntity<IssuesSearchResult> responseEntity = restTemplate
+          .exchange(rootUrl + SEARCH_URL, HttpMethod.GET, request,
+              IssuesSearchResult.class, jql, fields,
+              StringUtils.collectionToCommaDelimitedString(this.customFields),
+              startAt, MAX_SEARCH_SIZE);
 
       IssuesSearchResult issuesSearchResult = responseEntity.getBody();
 
@@ -104,7 +144,6 @@ public abstract class BaseTaskReader extends BaseJiraReader {
     }
     return issues;
   }
-
 
 
 }
