@@ -71,6 +71,7 @@ dependencies {
   
   compile("commons-codec:commons-codec:1.9")
   compile("org.hamcrest:hamcrest-core:1.2.1")
+  compile("org.apache.httpcomponents:httpclient:4.3.2")
     
   // tag::jetty[]
   compile("org.springframework.boot:spring-boot-starter-web") {

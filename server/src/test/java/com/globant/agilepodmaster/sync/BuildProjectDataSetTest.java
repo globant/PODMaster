@@ -3,20 +3,18 @@ package com.globant.agilepodmaster.sync;
 import static org.junit.Assert.assertTrue;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
-import com.globant.agilepodmaster.core.PodRepository;
 import com.globant.agilepodmaster.dashboard.DashboardRepository;
 import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
 import com.globant.agilepodmaster.sync.datamodel.ProjectDataSetBuilder;
 import com.globant.agilepodmaster.sync.datamodel.SprintData;
 import com.globant.agilepodmaster.sync.datamodel.TaskData;
-import com.globant.agilepodmaster.sync.reading.jira.AccessToken;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
 import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -50,6 +48,7 @@ public class BuildProjectDataSetTest extends AbstractUnitTest {
   @Autowired
   DashboardRepository repo;
   
+  @Ignore
   @Test
   public void test() {
 /*
@@ -58,7 +57,7 @@ public class BuildProjectDataSetTest extends AbstractUnitTest {
     AccessToken token = AccessToken.decrypt(accessToken, "jira access token");
 */    
     
-    jiraRestClient.initialize("jose.dominguez", "Octubre4628",
+    jiraRestClient.initialize("jose.dominguez", "AAAA",
         "https://jira.corp.globant.com/");
 
     releasesReader.setRestJiraClient(jiraRestClient);
