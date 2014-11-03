@@ -14,13 +14,13 @@ public class PodData implements Serializable {
     INTERNAL, EXTERNAL, UNASSIGNED
   }
 
-  public String name;
+  private String name;
 
-  public String officeName;
+  private String officeName;
 
-  public PodTypeData podType;
+  private PodTypeData podType;
 
-  public List<PodMemberData> podMembers;
+  private List<PodMemberData> podMembers;
 
   public PodData(PodTypeData podType) {
     this.podType = podType;
@@ -31,19 +31,19 @@ public class PodData implements Serializable {
   @Data
   public class PodMemberData implements Serializable {
     
-    public String firstName;
+    private String firstName;
 
-    public String lastName;
+    private String lastName;
 
-    public String email;
+    private String email;
 
-    public String externalUsername;
+    private String externalUsername;
 
-    public String officeName;
+    private String officeName;
 
-    public String roleCode;
+    private String roleCode;
 
-    public float dailyHours;
+    private float dailyHours;
 
     public float hourlyRate;
 

@@ -10,19 +10,19 @@ import lombok.Data;
 @Data
 public class SnapshotData implements Serializable {
   
-  public Date startDate;
+  private Date startDate;
 
-  public Date endDate;
+  private Date endDate;
 
-  public String summary;
+  private String summary;
 
-  public String mainClientContactName;
+  private String mainClientContactName;
 
-  public String mainClientContactEmail;
+  private String mainClientContactEmail;
 
-  public List<BuildMetricData> buildMetrics;
+  private List<BuildMetricData> buildMetrics;
 
-  public List<CodeMetricsGroupData> codeMetrics;
+  private List<CodeMetricsGroupData> codeMetrics;
 
   public SnapshotData() {
     buildMetrics = new ArrayList<BuildMetricData>();

@@ -26,10 +26,10 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class Release extends AbstractEntity {
   
-  public int number;
+  private int number;
   
   @NonNull
-  public String name;
+  private String name;
   
   @NonNull
   @ManyToOne
@@ -41,6 +41,6 @@ public class Release extends AbstractEntity {
   @JsonIgnore
   private Project project;
   
-  public Date creationDate;
+  private Date creationDate;
 
 }

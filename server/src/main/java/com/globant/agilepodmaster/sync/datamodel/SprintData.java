@@ -10,17 +10,17 @@ import lombok.Data;
 @Data
 public class SprintData implements Serializable {
   
-  public int number;
+  private int number;
 
-  public String name;
+  private String name;
 
-  public Date startDate;
+  private Date startDate;
 
-  public Date endDate;
+  private Date endDate;
 
-  public String tag;
+  private String tag;
 
-  public List<TaskData> sprintTasks;
+  private List<TaskData> sprintTasks;
 
   public SprintData(final String name, final int number, final Date startDate, final Date endDate) {
     this.name = name;

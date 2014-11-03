@@ -19,15 +19,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProjectDataSet implements Serializable {
 
-  public SnapshotData snapshot;
+  private SnapshotData snapshot;
 
-  public List<NonWorkingDaysData> nonWorkingDays;
-
-  @NonNull
-  public List<PodData> pods;
+  private List<NonWorkingDaysData> nonWorkingDays;
 
   @NonNull
-  public List<ReleaseData> releases;
+  private List<PodData> pods;
+
+  @NonNull
+  private List<ReleaseData> releases;
 
 
 

@@ -27,7 +27,6 @@ public class BuildProjectDataSetTest extends AbstractUnitTest {
     context = new SyncContext(1, false);
 
     settings = new JiraCustomSettings();
-    settings.setJiraRoot("https://jira.corp.globant.com/");
     settings.setJiraProjectName("Pod Master");
     settings.setJiraRapidViewId("362");
     settings.setIgnoreTasksForUnknownMembers(false);
@@ -51,14 +50,6 @@ public class BuildProjectDataSetTest extends AbstractUnitTest {
   @Ignore
   @Test
   public void test() {
-/*
-    AccessToken accessToken = new AccessToken("jose.dominguez", "Octubre4628",
-        "jira access token");
-    AccessToken token = AccessToken.decrypt(accessToken, "jira access token");
-*/    
-    
-    jiraRestClient.initialize("jose.dominguez", "AAAA",
-        "https://jira.corp.globant.com/");
 
     releasesReader.setRestJiraClient(jiraRestClient);
     releasesReader.setSettings(settings);

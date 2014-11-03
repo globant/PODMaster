@@ -30,14 +30,11 @@ import java.util.List;
  * @author jose.dominguez@globant.com
  *
  */
-@Service
 public class JiraRestClient {
 
   @Autowired
   private RestTemplate restTemplate;
-  /*
-   * @Autowired private Credencials Credencials;
-   */
+
   private static final int MAX_SEARCH_SIZE = 60;
 
   private static final String DEFAUL_FIELD_LIST = "key,parent,priority,summary"
@@ -61,16 +58,15 @@ public class JiraRestClient {
 
   protected String rootUrl;
 
-
   /**
-   * initialize RestTemplate component to connect to Jira.
+   * Constructor.
    * 
    * @param username Jira user.
    * @param password Jira pass.
    * @param jiraRoot root path where Jira is running.
    */
 
-  public void initialize(final String username, final String password,
+  public JiraRestClient(final String username, final String password,
       final String jiraRoot) {
 
     Assert.notNull(username, "username must not be null");

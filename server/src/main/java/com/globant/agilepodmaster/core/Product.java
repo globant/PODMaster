@@ -23,13 +23,13 @@ import lombok.RequiredArgsConstructor;
 public class Product extends AbstractEntity {
   
   @NonNull
-  public String name;
+  private String name;
   
   @NonNull
   @ManyToOne
   @JsonIgnore
   private Organization organization;
   
-  public String description;
+  private String description;
 
 }

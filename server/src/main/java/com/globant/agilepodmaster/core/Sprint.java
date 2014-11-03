@@ -28,15 +28,15 @@ public class Sprint extends AbstractEntity {
   public int number;
   
   @NonNull
-  public String name;
+  private String name;
   
   @NonNull
   @ManyToOne
   @JsonIgnore
   private Release release;
   
-  public Date startDate;
+  private Date startDate;
 
-  public Date endDate;
+  private Date endDate;
 
 }

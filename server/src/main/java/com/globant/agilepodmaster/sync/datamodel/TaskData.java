@@ -10,47 +10,47 @@ import lombok.Data;
 @Data
 public class TaskData implements Serializable {
   
-  public String key;
+  private String key;
 
-  public String name;
+  private String name;
 
-  public String environment;
+  private String environment;
 
-  public String component;
+  private String component;
 
-  public String activity;
+  private String activity;
 
-  public String pod;
+  private String pod;
 
-  public String podMember;
+  private String podMember;
 
-  public float effort;
+  private float effort;
 
-  public float estimated;
+  private float estimated;
 
-  public float actual;
+  private float actual;
 
-  public float remaining;
+  private float remaining;
 
-  public String statusCode;
+  private String statusCode;
 
-  public String severityCode;
+  private String severityCode;
 
-  public String priorityCode;
+  private String priorityCode;
 
-  public String typeCode;
+  private String typeCode;
 
-  public Date createdDate;
+  private Date createdDate;
 
-  public Date endDate;
+  private Date endDate;
 
-  public boolean external;
+  private boolean external;
 
-  public Date fixDate;
+  private Date fixDate;
 
-  public int reopenCount;
+  private int reopenCount;
 
-  public List<TaskData> subTasks;
+  private List<TaskData> subTasks;
 
   public TaskData() {
     subTasks = new ArrayList<TaskData>();

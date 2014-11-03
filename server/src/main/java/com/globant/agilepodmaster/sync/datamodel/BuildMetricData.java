@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 public class BuildMetricData implements Serializable {
   
-  public String name;
+  private String name;
 
-  public int buildScore;
+  private int buildScore;
 
-  public int testsScore;
+  private int testsScore;
 
-  public boolean noTestsExpected;
+  private boolean noTestsExpected;
 
-  public int testsFailedCount;
+  private int testsFailedCount;
 
-  public int testsTotalCount;
+  private int testsTotalCount;
   
 }

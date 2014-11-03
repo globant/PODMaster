@@ -8,10 +8,10 @@ import lombok.Data;
 @Data
 public class HighlightData implements Serializable {
   
-  public String title;
+  private String title;
 
-  public String description;
+  private String description;
 
-  public Date highlightDate;
+  private Date highlightDate;
   
 }

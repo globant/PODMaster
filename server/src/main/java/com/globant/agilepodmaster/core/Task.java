@@ -28,48 +28,48 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Task extends AbstractEntity {
 
-  public static enum Status {
+  private static enum Status {
     Pending, InProgress, Closed
   }
 
-  public static enum Type {
+  private static enum Type {
     UserStory, Bug, Task
   }
 
-  public static enum Priority {
+  private static enum Priority {
     Low, Medium, High, Critical
   }
 
-  public static enum Severity {
+  private static enum Severity {
     Low, Medium, High, Critical
   }
 
   @NonNull
-  public String name;
+  private String name;
 
-  public double effort;
+  private double effort;
 
-  public double estimated;
+  private double estimated;
 
-  public double actual;
+  private double actual;
 
-  public double remaining;
+  private double remaining;
 
-  public double accuracy;
+  private double accuracy;
 
-  public Status status;
+  private Status status;
 
-  public Severity severity;
+  private Severity severity;
 
-  public Priority priority;
+  private Priority priority;
 
-  public Type type;
+  private Type type;
 
-  public Date createdDate;
+  private Date createdDate;
 
   @OneToOne
   @JsonIgnore
-  public Task parentTask;
+  private Task parentTask;
 
   @ManyToOne
   @JsonIgnore

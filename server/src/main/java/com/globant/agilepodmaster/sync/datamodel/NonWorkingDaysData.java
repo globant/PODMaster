@@ -8,10 +8,10 @@ import lombok.Data;
 @Data
 public class NonWorkingDaysData implements Serializable {
   
-  public String pod;
+  private String pod;
 
-  public String podMemberEmail;
+  private String podMemberEmail;
 
-  public Date offWorkDate;
+  private Date offWorkDate;
   
 }

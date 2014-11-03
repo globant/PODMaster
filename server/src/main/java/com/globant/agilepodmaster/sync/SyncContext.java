@@ -22,10 +22,10 @@ public class SyncContext {
 
   @Getter
   @Setter
-  public int elementCount;
+  private int elementCount;
 
   @Getter
-  public List<SyncLogEntry> logEntries;
+  private List<SyncLogEntry> logEntries;
 
   public SyncContext(final int projectId, final boolean testRun) {
     this.projectId = projectId;

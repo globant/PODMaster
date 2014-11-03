@@ -70,8 +70,7 @@ dependencies {
   compile("org.springframework.data:spring-data-rest-webmvc:2.2.0.RELEASE") //override default version
   
   compile("commons-codec:commons-codec:1.9")
-  compile("org.hamcrest:hamcrest-core:1.2.1")
-  compile("org.apache.httpcomponents:httpclient:4.3.2")
+  compile("org.apache.httpcomponents:httpclient")
     
   // tag::jetty[]
   compile("org.springframework.boot:spring-boot-starter-web") {

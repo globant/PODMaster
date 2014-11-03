@@ -32,6 +32,6 @@ public class Pod extends AbstractEntity {
   private Sprint sprint;
     
   
-  public Type type;
+  private Type type;
 
 }

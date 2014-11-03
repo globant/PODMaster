@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class Snapshot extends AbstractEntity {
 
   @NonNull
-  public String name;
+  private String name;
 
   @NonNull
   @ManyToOne
@@ -35,6 +35,6 @@ public class Snapshot extends AbstractEntity {
   private Product product;
 
   @NonNull
-  public Date creationDate;
+  private Date creationDate;
 
 }

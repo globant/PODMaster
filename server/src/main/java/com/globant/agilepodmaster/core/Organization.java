@@ -20,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class Organization extends AbstractEntity {
   
   @NonNull
-  public String name;
+  private String name;
 
-  public String description;
+  private String description;
 
 }

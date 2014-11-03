@@ -43,8 +43,6 @@ public class JiraRestClientTest extends AbstractUnitTest {
   @Before
   public void setUp() {
     mockServer = MockRestServiceServer.createServer(restTemplate);
-    jiraRestClient.initialize("jose.dominguez", "qwert",
-        "https://jira.corp.globant.com/");
   }
 
   /**

@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class RiskData implements Serializable {
 
-  public String title;
+  private String title;
 
-  public String description;
+  private String description;
 
-  public String likelihoodCode;
+  private String likelihoodCode;
 
-  public String impactCode;
+  private String impactCode;
 
 }

@@ -11,33 +11,33 @@ import lombok.Data;
 @Data
 public class DataSource {
  
-  public static enum DataSourceType {
+  private static enum DataSourceType {
     Jira, Jenkins
   }
 
-  public String serializedSettings;
+  private String serializedSettings;
 
-  public boolean syncSnapshot;
+  private boolean syncSnapshot;
 
-  public boolean syncBacklog;
+  private boolean syncBacklog;
 
-  public boolean syncSprints;
+  private boolean syncSprints;
 
-  public boolean syncPods;
+  private boolean syncPods;
 
-  public boolean syncNonWorkingDays;
+  private boolean syncNonWorkingDays;
 
-  public boolean syncHighlights;
+  private boolean syncHighlights;
 
-  public boolean syncRisks;
+  private boolean syncRisks;
 
-  public boolean syncBuildMetrics;
+  private boolean syncBuildMetrics;
 
-  public boolean syncCodeMetrics;
+  private boolean syncCodeMetrics;
 
-  public DataSourceType dataSourceType;
+  private DataSourceType dataSourceType;
 
-  public byte[] bytes;
+  private byte[] bytes;
 
 
 }

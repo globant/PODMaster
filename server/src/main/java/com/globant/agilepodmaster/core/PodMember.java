@@ -20,15 +20,15 @@ public class PodMember extends AbstractEntity {
 
   @Getter
   @NonNull
-  public String firstName;
+  private String firstName;
 
   @Getter
   @NonNull
-  public String lastName;
+  private String lastName;
 
   @Getter
   @NonNull
-  public String email;
+  private String email;
 
   @NonNull
   @ManyToOne

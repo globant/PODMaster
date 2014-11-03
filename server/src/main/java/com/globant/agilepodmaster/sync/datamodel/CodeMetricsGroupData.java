@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class CodeMetricsGroupData implements Serializable {
 
-  public static enum MetricDataTrend {
+  private static enum MetricDataTrend {
     BETTER(1), SAME(0), WORSE(-1);
 
     private final int levelCode;
@@ -19,7 +19,7 @@ public class CodeMetricsGroupData implements Serializable {
     }
   }
 
-  public static enum MetricDataVariance {
+  private static enum MetricDataVariance {
     BIGUP(2), UP(1), NONE(0), DOWN(-1), BIGDOWN(-2);
 
     private final int levelCode;
@@ -29,28 +29,28 @@ public class CodeMetricsGroupData implements Serializable {
     }
   }
 
-  public String name;
+  private String name;
 
-  public List<CodeMetricData> metrics;
+  private List<CodeMetricData> metrics;
 
-  public CodeMetricsGroupData() {
+  private CodeMetricsGroupData() {
     metrics = new ArrayList<CodeMetricData>();
   }
 
   @Data
-  public class CodeMetricData implements Serializable {
+  private class CodeMetricData implements Serializable {
 
-    public String key;
+    private String key;
 
-    public String name;
+    private String name;
 
-    public float value;
+    private float value;
 
-    public String valueFormatted;
+    private String valueFormatted;
 
-    public MetricDataTrend trend;
+    private MetricDataTrend trend;
 
-    public MetricDataVariance variance;
+    private MetricDataVariance variance;
 
   }
 }
