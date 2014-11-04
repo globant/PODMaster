@@ -1,28 +1,25 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.IssuesSearchResult;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
-
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This class gets data through Jira API Rest.
@@ -31,8 +28,6 @@ import java.util.List;
  *
  */
 public class JiraRestClient {
-
-  @Autowired
   private RestTemplate restTemplate;
 
   private static final int MAX_SEARCH_SIZE = 60;
@@ -64,15 +59,14 @@ public class JiraRestClient {
    * @param username Jira user.
    * @param password Jira pass.
    * @param jiraRoot root path where Jira is running.
+   * @param jiraAPI the rest template used to access the jira api
    */
 
-  public JiraRestClient(final String username, final String password,
-      final String jiraRoot) {
-
-    Assert.notNull(username, "username must not be null");
-    Assert.notNull(password, "password must not be null");
-    Assert.notNull(jiraRoot, "JiraRoot must not be null");
-
+  protected JiraRestClient(
+      final String username, 
+      final String password,
+      final String jiraRoot, 
+      final RestTemplate jiraAPI) {
     final String plainCreds = username + ":" + password;
     final byte[] plainCredsBytes = plainCreds.getBytes();
     final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
@@ -85,6 +79,7 @@ public class JiraRestClient {
 
     request = new HttpEntity<String>(headers);
     rootUrl = jiraRoot;
+    restTemplate = jiraAPI;
 
   }
 

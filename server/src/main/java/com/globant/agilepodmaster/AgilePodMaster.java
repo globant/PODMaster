@@ -1,7 +1,5 @@
 package com.globant.agilepodmaster;
 
-import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -32,10 +30,11 @@ public class AgilePodMaster extends SpringBootServletInitializer {
   }
 
   /**
-   * Allows the application to be started when being deployed into a Servlet 3 container.
+   * Allows the application to be started when being deployed into a Servlet 3
+   * container.
    * 
    * @see org.springframework.boot.web.SpringBootServletInitializer#
-   * configure(org.springframework.boot.builder.SpringApplicationBuilder)
+   *      configure(org.springframework.boot.builder.SpringApplicationBuilder)
    */
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -49,23 +48,14 @@ public class AgilePodMaster extends SpringBootServletInitializer {
   static class ApplicationConfiguration {
     @Bean
     public RestTemplate restTemplate() {
-      HttpComponentsClientHttpRequestFactory factory = 
-          new HttpComponentsClientHttpRequestFactory();
+      HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
       factory.setReadTimeout(50000);
       factory.setConnectTimeout(15000);
+      
       RestTemplate restTemplate = new RestTemplate(factory);
+
       return restTemplate;
     }
-    
-    @Bean
-    public JiraRestClient jiraRestClient() {
-      JiraRestClient jiraRestClient = new JiraRestClient(
-          "jose.dominguez",
-          "XXXX", 
-          "https://jira.corp.globant.com/");
-      return jiraRestClient;
-    }
-
   }
 
   /**

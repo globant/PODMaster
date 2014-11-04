@@ -2,26 +2,46 @@ package com.globant.agilepodmaster.sync;
 
 import static org.junit.Assert.assertTrue;
 
-import com.globant.agilepodmaster.AbstractUnitTest;
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
+
+import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.dashboard.DashboardRepository;
 import com.globant.agilepodmaster.sync.datamodel.ProjectDataSet;
 import com.globant.agilepodmaster.sync.datamodel.ProjectDataSetBuilder;
 import com.globant.agilepodmaster.sync.datamodel.SprintData;
 import com.globant.agilepodmaster.sync.datamodel.TaskData;
+import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
 import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-
-public class BuildProjectDataSetTest extends AbstractUnitTest {
-
+public class BuildProjectDataSetTest extends AbstractIntegrationTest {
   private SyncContext context;
   private JiraCustomSettings settings;
+  
+  @Autowired
+  ReleasesReader releasesReader;
+
+  @Autowired
+  RestTemplate restTemplate;
+
+  @Autowired
+  DashboardRepository repo;
+ 
+  @Value("${podmaster.test.jira.username}")
+  private String username;
+  
+  @Value("${podmaster.test.jira.password}")
+  private String password;
+  
+  @Value("${podmaster.test.jira.urlroot:https://jira.corp.globant.com/}")
+  private String urlRoot;
 
   public BuildProjectDataSetTest() {
     context = new SyncContext(1, false);
@@ -38,18 +58,13 @@ public class BuildProjectDataSetTest extends AbstractUnitTest {
     settings.setSeverityMapping("Blocker, Major, Minor, Trivial");    
   }
   
-  @Autowired
-  private JiraRestClient jiraRestClient;  
-  
-  @Autowired
-  ReleasesReader releasesReader;
-
-  @Autowired
-  DashboardRepository repo;
-  
-  @Ignore
-  @Test
+  @Ignore @Test
   public void test() {
+    JiraRestClient jiraRestClient = new JiraAPIFactory()
+      .withCredentials(username, password)
+      .withTemplate(restTemplate)
+      .withUrlRoot(urlRoot)
+      .create();
 
     releasesReader.setRestJiraClient(jiraRestClient);
     releasesReader.setSettings(settings);
@@ -63,7 +78,5 @@ public class BuildProjectDataSetTest extends AbstractUnitTest {
 
     List<TaskData> backlog = projectDataSet.getReleases().get(0).getBacklog();
     assertTrue(backlog.size() > 0);
-
   }
-
 }

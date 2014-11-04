@@ -7,10 +7,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import com.globant.agilepodmaster.AbstractUnitTest;
-import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import com.globant.agilepodmaster.AbstractUnitTest;
+import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 /**
  * Testing Jira responses.
@@ -28,21 +28,21 @@ import java.util.List;
  *
  */
 public class JiraRestClientTest extends AbstractUnitTest {
-  
-  @Autowired
+  private MockRestServiceServer mockServer;
   private JiraRestClient jiraRestClient;
-  
-  @Autowired
-  private RestTemplate restTemplate;
-  
-  MockRestServiceServer mockServer;
 
   /**
    * Creating mock and initialization.
    */
   @Before
   public void setUp() {
-    mockServer = MockRestServiceServer.createServer(restTemplate);
+    RestTemplate template = new RestTemplate();
+    mockServer = MockRestServiceServer.createServer(template);
+    jiraRestClient = new JiraAPIFactory()
+      .withTemplate(template)
+      .withCredentials("dummy", "credentials")
+      .withUrlRoot("https://jira.corp.globant.com/")
+      .create();
   }
 
   /**
