@@ -17,13 +17,16 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Spring Boot application.
+ */
 public class AgilePodMaster extends SpringBootServletInitializer {
   public static final String CURIE_NAMESPACE = "podmaster";
 
   /**
    * Bootstraps the application in standalone mode (i.e. java -jar).
    * 
-   * @param args
+   * @param args main arguments.
    */
   public static void main(String[] args) {
     SpringApplication.run(WebConfiguration.class, args);
@@ -34,13 +37,17 @@ public class AgilePodMaster extends SpringBootServletInitializer {
    * container.
    * 
    * @see org.springframework.boot.web.SpringBootServletInitializer#
-   *      configure(org.springframework.boot.builder.SpringApplicationBuilder)
+   * configure(org.springframework.boot.builder.SpringApplicationBuilder)
    */
+  @SuppressWarnings("javadoc")
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
     return application.sources(WebConfiguration.class);
   }
 
+  /**
+   * Application Configuration. 
+   */
   @Configuration
   @EnableAsync
   @EnableAutoConfiguration

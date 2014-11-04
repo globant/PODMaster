@@ -21,6 +21,11 @@ import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
 import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
+/**
+ * Integration test for Jira Readers.
+ * @author jose.dominguez@globant.com
+ *
+ */
 public class BuildProjectDataSetTest extends AbstractIntegrationTest {
   private SyncContext context;
   private JiraCustomSettings settings;
@@ -43,8 +48,11 @@ public class BuildProjectDataSetTest extends AbstractIntegrationTest {
   @Value("${podmaster.test.jira.urlroot:https://jira.corp.globant.com/}")
   private String urlRoot;
 
+  /**
+   * Constructor.
+   */
   public BuildProjectDataSetTest() {
-    context = new SyncContext(1, false);
+    context = new SyncContext(1 );
 
     settings = new JiraCustomSettings();
     settings.setJiraProjectName("Pod Master");
@@ -58,8 +66,11 @@ public class BuildProjectDataSetTest extends AbstractIntegrationTest {
     settings.setSeverityMapping("Blocker, Major, Minor, Trivial");    
   }
   
+  /**
+   * Test for ProjectDataSetBuilder.
+   */
   @Ignore @Test
-  public void test() {
+  public void testProjectDataSetBuilder() {
     JiraRestClient jiraRestClient = new JiraAPIFactory()
       .withCredentials(username, password)
       .withTemplate(restTemplate)

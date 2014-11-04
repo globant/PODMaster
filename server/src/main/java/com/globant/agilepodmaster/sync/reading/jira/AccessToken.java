@@ -8,6 +8,11 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Token used to encrypt user/pass for different purposes.
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Data
 @RequiredArgsConstructor
 public class AccessToken {
@@ -25,12 +30,22 @@ public class AccessToken {
   public String purpose;
 
 
+  /**
+   * Encrypt members data.
+   * @return an encrypted string.
+   */
   public String encrypt() {
 
     return EncryptionUtils.encrypt(KEY, String.format("%s:|:%s:|:%s:|:%s",
         "ProjectDashboard", username, password, purpose));
   }
 
+  /**
+   * Decrypt a token, validates purpose and creates a AccessToken.
+   * @param encryptedToken encrypted token to be decrypted.
+   * @param expectedPurpose purposed to validate the encryptedToken.
+   * @return AccessToken created with data decrypted.
+   */
   public static AccessToken decrypt(String encryptedToken,
       String expectedPurpose) {
     String token = EncryptionUtils.decrypt(KEY, encryptedToken);

@@ -7,20 +7,19 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.util.List;
+import com.globant.agilepodmaster.AbstractUnitTest;
+import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import com.globant.agilepodmaster.AbstractUnitTest;
-import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
+import java.util.List;
 
 /**
  * Testing Jira responses.

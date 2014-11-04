@@ -185,7 +185,7 @@ public class ProjectDataSetBuilder implements PodsBuilder, ReleasesBuilder {
     try {
       date = new SimpleDateFormat("d/M/y", Locale.ENGLISH).parse(theDate);
     } catch (ParseException e) {
-      syncContext.error("Invalid date format:{0}", theDate);
+      syncContext.error("Invalid date format:" + theDate);
     }
     return date;
   }

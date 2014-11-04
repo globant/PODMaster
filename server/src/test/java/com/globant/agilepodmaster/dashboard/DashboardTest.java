@@ -7,8 +7,15 @@ import org.junit.Test;
 
 import com.globant.agilepodmaster.dashboard.Dashboard.DashboardType;
 
+/**
+ * Test for Dashboard entity.
+ *
+ */
 public class DashboardTest {
 
+  /**
+   * Test equals.
+   */
   @Test
   public void equals() {
     Dashboard dashboard = new Dashboard(DashboardType.Account);

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * This class manages basically logging during synchonization process. 
+ * This class manages basically logging during synchronization process.
+ * 
  * @author jose.dominguez@globant.com
  *
  */
@@ -18,61 +20,59 @@ public class SyncContext {
   private int projectId;
 
   @Getter
-  private boolean testRun;
-
-  @Getter
   @Setter
   private int elementCount;
 
   @Getter
   private List<SyncLogEntry> logEntries;
 
-  public SyncContext(final int projectId, final boolean testRun) {
+  /**
+   * Constructor.
+   * 
+   * @param projectId the project id.
+   */
+  public SyncContext(final int projectId) {
     this.projectId = projectId;
-    this.testRun = testRun;
     logEntries = new ArrayList<SyncLogEntry>();
   }
 
-  private void log(String format, String eventType, Object... arguments) {
-    logEntries.add(new SyncLogEntry(logEntries.size() + 1, eventType, String
-        .format(format, arguments)));
+  /**
+   * Logs info message.
+   * @param message the message.
+   */
+  public void info(String message) {
+    logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Info", message));
   }
 
-  public void info(String format, Object... arguments) {
-    log(format, "Info", arguments);
+  /**
+   * Logs warn message.
+   * @param message the message.
+   */
+  public void warn(String message) {
+    logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Warn", message));
   }
 
-  public void warn(String format, Object... arguments) {
-    log(format, "Warn", arguments);
-  }
-
-  public void error(String format, Object... arguments) {
-    log(format, "Error", arguments);
+  /**
+   * Logs error message.
+   * @param message the message.
+   */
+  public void error(String message) {
+    logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Error", message));
   }
 
 
   /**
    * This class represents a log record of SyncContext.
-   * 
-   * @author jose.dominguez@globant.com
-   *
    */
+  @Data
   class SyncLogEntry {
 
-    @Getter
-    @Setter
     public int sequence;
 
-    @Getter
-    @Setter
     public Date createdDate;
 
-    @Getter
-    @Setter
     public String eventType;
 
-    @Getter
-    @Setter
     public String message;
 
     public SyncLogEntry(final int sequence, final String eventType,
