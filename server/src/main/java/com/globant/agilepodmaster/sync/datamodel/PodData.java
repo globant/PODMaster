@@ -7,9 +7,18 @@ import java.util.List;
 
 import lombok.Data;
 
+/**
+ * DTO that represents a POD taken from a data source.
+ * 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Data
 public class PodData implements Serializable {
 
+  /**
+   * Kind of Pods.
+   */
   public static enum PodTypeData {
     INTERNAL, EXTERNAL, UNASSIGNED
   }
@@ -22,12 +31,21 @@ public class PodData implements Serializable {
 
   private List<PodMemberData> podMembers;
 
+  /**
+   * Constructor.
+   * @param podType type of POD.
+   */
   public PodData(PodTypeData podType) {
     this.podType = podType;
     podMembers = new ArrayList<PodMemberData>();
   }
 
-
+  /**
+   * DTO that represents a memeber of a pod taken from a data source.
+   * 
+   * @author jose.dominguez@globant.com
+   *
+   */
   @Data
   public class PodMemberData implements Serializable {
     
@@ -38,8 +56,6 @@ public class PodData implements Serializable {
     private String email;
 
     private String externalUsername;
-
-    private String officeName;
 
     private String roleCode;
 

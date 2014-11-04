@@ -28,18 +28,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Task extends AbstractEntity {
 
+  /**
+   * Kind of statuses of Tasks.
+   */
   private static enum Status {
     Pending, InProgress, Closed
   }
 
+  /**
+   * Kind of types of Tasks.
+   */
   private static enum Type {
     UserStory, Bug, Task
   }
 
+  /**
+   * Kind of priorities of Tasks.
+   */
   private static enum Priority {
     Low, Medium, High, Critical
   }
 
+  /**
+   * Kind of severities of Tasks.
+   */  
   private static enum Severity {
     Low, Medium, High, Critical
   }

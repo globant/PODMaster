@@ -7,6 +7,12 @@ import java.util.List;
 
 import lombok.Data;
 
+/**
+ * DTO that represents a task taken from a data source.
+ * 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Data
 public class TaskData implements Serializable {
   
@@ -52,6 +58,9 @@ public class TaskData implements Serializable {
 
   private List<TaskData> subTasks;
 
+  /**
+   * Constructor.
+   */
   public TaskData() {
     subTasks = new ArrayList<TaskData>();
   }

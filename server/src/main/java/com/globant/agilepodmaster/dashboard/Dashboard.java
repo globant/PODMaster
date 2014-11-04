@@ -18,11 +18,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.globant.agilepodmaster.core.AbstractEntity;
 import com.globant.agilepodmaster.widget.Widget;
 
+/**
+ * Entity that represents a Dashboard.
+ * @author Andres Postiglioni
+ *
+ */
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = false)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Dashboard extends AbstractEntity {
+  
+  /**
+   * Kind of Dashboards.
+   */
   public static enum DashboardType {
     Account, Project, Release, Sprint, Pod
   }
@@ -44,12 +53,20 @@ public class Dashboard extends AbstractEntity {
     this.widgets = new HashSet<DashboardWidget>();
   }
 
+  /**
+   * Constructor.
+   * @param type type of dashboard.
+   */
   @JsonCreator
   public Dashboard(@JsonProperty("type") DashboardType type) {
     this();
     this.type = type;
   }
 
+  /**
+   * Add a widget to this dashboard.
+   * @param widget the widget to add.
+   */
   public void addWidget(Widget widget) {
     DashboardWidget db = new DashboardWidget(this, widget, false);
     this.widgets.add(db);

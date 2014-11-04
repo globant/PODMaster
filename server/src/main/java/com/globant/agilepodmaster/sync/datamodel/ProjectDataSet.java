@@ -31,11 +31,16 @@ public class ProjectDataSet implements Serializable {
 
 
 
-  public PodMemberData getPodMemberByUsername(String externalUsername) {
+  /**
+   * Search in this DTO for a pod member by user name.
+   * @param username the user name.
+   * @return a PodMember object or null.
+   */
+  public PodMemberData getPodMemberByUsername(String username) {
     PodMemberData podMemberResult = null;
     for (PodData pod : pods) {
       for (PodMemberData podMember : pod.getPodMembers()) {
-        if (podMember.getExternalUsername().equalsIgnoreCase(externalUsername)) {
+        if (podMember.getExternalUsername().equalsIgnoreCase(username)) {
           podMemberResult = podMember;
           break;
         }
@@ -44,11 +49,16 @@ public class ProjectDataSet implements Serializable {
     return podMemberResult;
   }
 
-  public PodData getPodByUsername(String externalUsername) {
+  /**
+   * Search in this DTO for a pod  by user name.
+   * @param username the user name.
+   * @return a Pod object or null.
+   */
+  public PodData getPodByUsername(String username) {
     PodData podResult = null;
     for (PodData pod : pods) {
       for (PodMemberData podMember : pod.getPodMembers()) {
-        if (podMember.getExternalUsername().equalsIgnoreCase(externalUsername)) {
+        if (podMember.getExternalUsername().equalsIgnoreCase(username)) {
           podResult = pod;
           break;
         }
@@ -57,6 +67,11 @@ public class ProjectDataSet implements Serializable {
     return podResult;
   }
 
+  /**
+   * Search in this DTO for a pod  by pod name.
+   * @param podName the pod name.
+   * @return a Pod object or null.
+   */
   public PodData getPodByName(String podName) {
     PodData podResult = null;
     for (PodData pod : pods) {
@@ -68,6 +83,11 @@ public class ProjectDataSet implements Serializable {
     return podResult;
   }
 
+  /**
+   * Search in this DTO for a pod  by type.
+   * @param type the pod type.
+   * @return a Pod object or null.
+   */
   public PodData getOrCreatePod(PodData.PodTypeData type) {
     PodData podResult = null;
     for (PodData pod : pods) {

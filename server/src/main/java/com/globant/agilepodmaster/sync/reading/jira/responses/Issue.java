@@ -6,168 +6,214 @@ import java.util.List;
 
 import lombok.Data;
 
+/**
+ * Jira issue.
+ * @author jose.dominguez@globant.com
+ *
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Issue {
+  
+  private String expand;
 
-  public String expand;
+  private String id;
 
-  public String id;
+  private String self;
 
-  public String self;
+  private String key;
 
-  public String key;
+  private Fields fields;
 
-  public Fields fields;
-
+  /**
+   * Jira issue fields.
+   */
   @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public class Fields {
-    public String summary;
+    private String summary;
 
-    public Timetracking timetracking;
+    private Timetracking timetracking;
 
-    public Issuetype issuetype;
+    private Issuetype issuetype;
 
-    public Priority priority;
+    private Priority priority;
 
-    public Status status;
+    private Status status;
 
-    public String created;
+    private String created;
 
-    public Assignee assignee;
+    private Assignee assignee;
 
-    public Resolution resolution;
+    private Resolution resolution;
 
-    public List<ReferenceField> components;
+    private List<ReferenceField> components;
 
-    public String resolutiondate;
+    private String resolutiondate;
 
-    public Issue parent;
+    private Issue parent;
 
-    public List<String> labels;
+    private List<String> labels;
 
     // region custom fields
 
-    public CustomField severity;
+    private CustomField severity;
 
-    public float storypoints;
+    private float storypoints;
 
-    public CustomField bugpriority;
+    private CustomField bugpriority;
 
-    public CustomField bugenvironment;
+    private CustomField bugenvironment;
 
     // endregion
 
+    /**
+     * Jira issue fields Timetracking.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Timetracking {
-      public String originalEstimate;
+      private String originalEstimate;
 
-      public String remainingEstimate;
+      private String remainingEstimate;
 
-      public int originalEstimateSeconds;
+      private int originalEstimateSeconds;
 
-      public int remainingEstimateSeconds;
+      private int remainingEstimateSeconds;
 
-      public String timeSpent;
+      private String timeSpent;
 
-      public Integer timeSpentSeconds;
+      private Integer timeSpentSeconds;
     }
 
+    /**
+     * Jira issue fields Issuetype.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Issuetype {
-      public String self;
+      @SuppressWarnings({ "hiding" })
+      private String self;
 
-      public String id;
+      @SuppressWarnings({ "hiding" })
+      private String id;
 
-      public String description;
+      private String description;
 
-      public String iconUrl;
+      private String iconUrl;
 
-      public String name;
+      private String name;
 
-      public Boolean subtask;
+      private Boolean subtask;
     }
 
+    /**
+     * Jira issue fields priority.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Priority {
-      public String self;
+      @SuppressWarnings({ "hiding" })
+      private String self;
 
-      public String id;
+      @SuppressWarnings({ "hiding" })
+      private String id;
 
-      public String iconUrl;
+      private String iconUrl;
 
-      public String name;
+      private String name;
     }
 
+    /**
+     * Jira issue fields custom field..
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class CustomField {
-      public String id;
+      @SuppressWarnings({ "hiding" })
+      private String id;
 
-      public String value;
+      private String value;
     }
 
+    /**
+     * Jira issue fields referenced field.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class ReferenceField {
-      public String id;
+      @SuppressWarnings({ "hiding" })
+      private String id;
 
-      public String name;
+      private String name;
     }
 
+    /**
+     * Jira issue fields assigned.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Assignee {
-      public String self;
+      @SuppressWarnings({ "hiding" })
+      private String self;
 
-      public String name;
+      private String name;
 
-      public String emailAddress;
+      private String emailAddress;
 
-      public AvatarUrls avatarUrls;
+      private AvatarUrls avatarUrls;
 
-      public String displayName;
+      private String displayName;
 
-      public Boolean active;
+      private Boolean active;
 
+      /**
+       * Jira issue fields assigned AvatarUrls.
+       */
       @JsonIgnoreProperties(ignoreUnknown = true)
       @Data
       public class AvatarUrls {
         @SuppressWarnings("checkstyle:membername")
-        public String __invalid_name__16x16;
+        private String __invalid_name__16x16;
         @SuppressWarnings("checkstyle:membername")
-        public String __invalid_name__48x48;
+        private String __invalid_name__48x48;
       }
     }
 
+    /**
+     * Jira issue fields reslution.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Resolution {
-      public String self;
+      @SuppressWarnings({ "hiding" })
+      private String self;
 
-      public String id;
+      @SuppressWarnings({ "hiding" })
+      private String id;
 
-      public String description;
+      private String description;
 
-      public String name;
+      private String name;
     }
 
+    /**
+     * Jira issue fields status.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public class Status {
-      public String self;
+      @SuppressWarnings({ "hiding" })
+      private String self;
 
-      public String description;
+      private String description;
 
-      public String iconUrl;
+      private String iconUrl;
 
-      public String name;
+      private String name;
 
-      public String id;
+      @SuppressWarnings({ "hiding" })
+      private String id;
     }
 
   }

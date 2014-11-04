@@ -1,12 +1,17 @@
 package com.globant.agilepodmaster.sync.datamodel;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import lombok.Data;
 
+/**
+ * DTO that represents a snapshot taken from a data source.
+ * This was taken for AgileTracker. It will be possibly remove.
+ * 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Data
 public class SnapshotData implements Serializable {
   
@@ -19,14 +24,5 @@ public class SnapshotData implements Serializable {
   private String mainClientContactName;
 
   private String mainClientContactEmail;
-
-  private List<BuildMetricData> buildMetrics;
-
-  private List<CodeMetricsGroupData> codeMetrics;
-
-  public SnapshotData() {
-    buildMetrics = new ArrayList<BuildMetricData>();
-    codeMetrics = new ArrayList<CodeMetricsGroupData>();
-  }
      
 }

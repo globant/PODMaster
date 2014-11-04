@@ -13,6 +13,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.globant.agilepodmaster.core.AbstractEntity;
 import com.globant.agilepodmaster.widget.Widget;
 
+/**
+ * Entity that represents a Dashboard.
+ * @author Andres Postiglioni
+ *
+ */
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)

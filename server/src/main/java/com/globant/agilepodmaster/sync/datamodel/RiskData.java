@@ -4,6 +4,12 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+/**
+ * DTO that represents a risk taken from a data source.
+ * 
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Data
 public class RiskData implements Serializable {
 

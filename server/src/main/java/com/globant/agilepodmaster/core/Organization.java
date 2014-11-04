@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Organization whose metrics we want to show.
+ * Entity Organization whose metrics we want to show.
  * @author jose.dominguez@globant.com
  *
  */

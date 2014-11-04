@@ -21,7 +21,8 @@ public class PodsReader implements Reader<PodsBuilder> {
 
   /**
    * Constructor.
-   * 
+   * @param podRepository repository for Pods.
+   * @param podMemberRepository  repository for Pod Members.
    */
   public PodsReader(PodRepository podRepository,
       PodMemberRepository podMemberRepository) {

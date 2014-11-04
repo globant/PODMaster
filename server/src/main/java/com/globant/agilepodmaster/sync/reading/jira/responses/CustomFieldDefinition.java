@@ -2,23 +2,32 @@ package com.globant.agilepodmaster.sync.reading.jira.responses;
 
 import lombok.Data;
 
+/**
+ * Jira custom fields definition. 
+ * @author jose.dominguez@globant.com
+ */
 @Data
 public class CustomFieldDefinition {
 
-  public String id;
-  public String name;
-  public boolean custom;
-  public boolean orderable;
-  public boolean navigable;
-  public boolean searchable;
-  public Schema schema;
+  private String id;
+  private String name;
+  private boolean custom;
+  private boolean orderable;
+  private boolean navigable;
+  private boolean searchable;
+  private Schema schema;
 
+  /**
+   * Jira custom fields schema.
+   *
+   */
+  @Data
   public class Schema {
-    public String type;
-    public String custom;
-    public int customId;
-    public String system;
-    public String items;
+    private String type;
+    private String schemaCustom;
+    private int customId;
+    private String system;
+    private String items;
   }
 
 }

@@ -54,8 +54,8 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
       if (sprintIsValid(jiraSprint)) {
 
-        builder = builder.addSprint(sprint.getName(), jiraSprint.startDate,
-            jiraSprint.endDate);
+        builder = builder.addSprint(sprint.getName(), jiraSprint.getStartDate(),
+            jiraSprint.getEndDate());
 
         List<Issue> sprintIssues = restJiraClient.getSprintIssues(sprint
             .getId());
