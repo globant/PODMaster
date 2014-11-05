@@ -50,7 +50,7 @@ module.exports = function(grunt) {
       api:{
         //Files to include
         files:{
-            'pub/index.html':['blueprints/api.md']
+            'pub/docs/index.html':['blueprints/api.md']
         },
         options:{
           theme: 'slate-multi'
@@ -60,6 +60,9 @@ module.exports = function(grunt) {
 
     //##API mock server
     //run with `grunt shell:apimock`
+    //###Atention:
+    // this is a sort of hack to start api-mock in background.
+    // TODO: use `grunt-apimock` or use `api-mock` as a node module integrated as a express app
     shell: {
       apimock:{
         command: 'api-mock blueprints/api.md -p 3000 -k',
@@ -82,7 +85,15 @@ module.exports = function(grunt) {
       }
     },
 
-    //##Development server task
+    //##Development server and proxies task
+    //run with `grunt serve`
+    //### Note & TODO:
+    //The hal-browser is (currently) outside of this project.
+    //This code assume that hal-browser repo is cloned one level up
+    // ```
+    // cd ..
+    // git clone  https://github.com/mikekelly/hal-browser.git
+    // ```
     connect: {
       server: {
         options: {
@@ -91,15 +102,35 @@ module.exports = function(grunt) {
           hostname: '*',
           middleware:function(connect) {
             var
+              //the proxy server:
+              proxy = require('grunt-connect-proxy/lib/utils').proxyRequest,
+              //the static content server:
               mount = function (dir) {
                 return connect.static(require('path').resolve(dir));
               };
 
+            //returns the middlewares
             return [
-              mount('pub')
+              proxy,
+              //mount static content
+              mount('pub'),
+              //mount (static) hal-browser
+              mount('../hal-browser')
             ];
           }
-        }
+        },
+        //config to redirect requests from `/api` to `127.0.0.1:3000/api`
+        proxies: [
+          {
+              context: '/api',
+              host: '127.0.0.1',
+              port: 3000,
+              https: false,
+              //changeOrigin not necessary
+              changeOrigin: false,
+              xforward: false
+          }
+        ]
       },
     }
   });
@@ -108,20 +139,35 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-docco');
   grunt.loadNpmTasks('grunt-shell-spawn');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-connect-proxy');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-aglio');
   grunt.loadNpmTasks('grunt-apimock');
 
-  //grunt.registerTask('default', 'build');
+  grunt.registerTask('default', 'start');
 
-  // serve task
+  //### Server and Development proxy
+  // Configure Proxies and start the connect server
+  grunt.registerTask('serve', function() {
+    grunt.task.run([
+    'configureProxies:server',
+    'connect:server'
+    ]);
+  });
+
+  //### start all task
   grunt.registerTask('start', function() {
     grunt.task.run([
+    // Generate annotated source documentation
     'docco:docs',
+    // Generate API documentation
     'aglio:api',
+    // Render markdown content
     'markdown:all',
+    // Start the API mock server
     'shell:apimock',
-    'connect:server'
+    // Start development server
+    'serve'
     ]);
   });
 };

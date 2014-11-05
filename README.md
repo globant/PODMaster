@@ -24,16 +24,19 @@
   grunt start &
   ```
 
+##IMPORTANT!
+
+  All Urls depends on a host called `dev.agilepods.globant.com`, to get all this stuff working properly, the client must to edit their *hosts file* to point to the development server IP
+
 #### Explore the API
 
-  - [Browse the API documentation](http://10.200.10.223:3002/)
-  - [Browse the API mocks](http://10.200.10.223:3001/browser.html#http://10.200.10.223:3000/api/users/kevin)
-  - [Browse the annotated source](http://10.200.10.223:3002/annotated-source/Gruntfile.html)
-  - [Browse this README](http://10.200.10.223:3002/README.html)
+  - [Browse the API documentation](/docs/)
+  - [Browse the API mocks](/browser.html#/api/users/kevin)
+  - [Browse the annotated source](/annotated-source/Gruntfile.html)
+  - [Browse this README](/README.html)
 
 ## TODOs:
 
-  - Change all references to `http://10.200.10.223` to something like `http://dev.agilepods.globant.com`
   - Change grunt-connect to grunt-express, then we can:
     - use api-mock as a (restartable) middleware
     - use `grunt stop` and `grunt restart`

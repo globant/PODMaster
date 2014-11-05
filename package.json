@@ -12,6 +12,7 @@
     "grunt-aglio": "~0.3.1",
     "grunt-apimock": "~0.1.2",
     "grunt-shell-spawn": "~0.3.0",
-    "grunt-markdown": "~0.6.1"
+    "grunt-markdown": "~0.6.1",
+    "grunt-connect-proxy": "~0.1.11"
   }
 }

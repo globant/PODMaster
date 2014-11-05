@@ -1,5 +1,4 @@
 FORMAT: 1A
-HOST: https://agilepods.globant.com
 
 # Agile PODS
 Aigle PODS API is a dashboard application service
@@ -20,19 +19,19 @@ User related resources
 
     + Header
 
-            Link: <http://10.200.10.223:3000/api/users/~>;rel="self"
+            Link: </api/users/~>;rel="self"
 
     + Body
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/users/~"},
+                    "self":{"href":"/api/users/~"},
                     "curies":{
                       "name":"ap",
-                      "href":"http://10.200.10.223:3002/#page:{rel}",
+                      "href":"/docs/#page:{rel}",
                       "templated":true
                     },
-                    "dashboard":{"href":"http://10.200.10.223:3000/api/users/~/dashboard"},
+                    "dashboard":{"href":"/api/users/~/dashboard"},
                 }
             }
 
@@ -46,21 +45,21 @@ User related resources
 
     + Header
 
-            Link: <http://10.200.10.223:3000/api/users/kevin>;rel="self"
+            Link: </api/users/kevin>;rel="self"
 
     + Body
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/users/kevin"},
+                    "self":{"href":"/api/users/kevin"},
                       "curies":[
                       {
                         "name":"ap",
-                        "href":"http://10.200.10.223:3002/#page:{rel}",
+                        "href":"/docs/#page:{rel}",
                         "templated":true
                       }
                     ],
-                    "ap:dashboard":{"href":"http://10.200.10.223:3000/api/dashboards/1stLevel"}
+                    "ap:dashboard":{"href":"/api/dashboards/1stLevel"}
                 },
                 "name":"Kevin",
                 "type":"1st level",
@@ -79,14 +78,14 @@ User related resources
 
     + Header
 
-            Link: <http://10.200.10.223:3000/api/users/wil>;rel="self"
+            Link: </api/users/wil>;rel="self"
 
     + Body
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/users/wil"},
-                    "dashboard":{"href":"http://10.200.10.223:3000/api/dashboards/2ndLevel"}
+                    "self":{"href":"/api/users/wil"},
+                    "dashboard":{"href":"/api/dashboards/2ndLevel"}
                 },
                 "name":"Wil",
                 "type":"2nd level",
@@ -108,16 +107,16 @@ Dashboard related resources
 
     + Header
 
-            Link: <http://10.200.10.223:3000/api/dashboards/1stLevel>;rel="self"
+            Link: </api/dashboards/1stLevel>;rel="self"
 
     + Body
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/dashboards/1stLevel"},
+                    "self":{"href":"/api/dashboards/1stLevel"},
                     "views":[
-                        {"name":"products","href":"http://10.200.10.223:3000/api/views/products"},
-                        {"name":"pods","href":"http://10.200.10.223:3000/api/views/pods"}
+                        {"name":"products","href":"/api/views/products"},
+                        {"name":"pods","href":"/api/views/pods"}
                     ]
                 }
             }
@@ -133,16 +132,16 @@ Dashboard related resources
 
     + Header
 
-            Link: <http://10.200.10.223:3000/api/dashboards/2ndLevel>;rel="self"
+            Link: </api/dashboards/2ndLevel>;rel="self"
 
     + Body
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/dashboards/2ndLevel"},
+                    "self":{"href":"/api/dashboards/2ndLevel"},
                     "views":[
-                        {"name":"products","href":"http://10.200.10.223:3000/api/views/products"},
-                        {"name":"pods","href":"http://10.200.10.223:3000/api/views/pods"}
+                        {"name":"products","href":"/api/views/products"},
+                        {"name":"pods","href":"/api/views/pods"}
                     ]
                 }
             }
@@ -170,9 +169,9 @@ Views related resources
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/views/master"},
+                    "self":{"href":"/api/views/master"},
                     "instances":[
-                        {"name":"master","href":"http://10.200.10.223:3000/api/views/master/abcdef01234567889"}}
+                        {"name":"master","href":"/api/views/master/abcdef01234567889"}}
                     ]
                 }
             }
@@ -197,10 +196,10 @@ Widgets related resources
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/api/widgets/?name=velocity;view=products;view_items=product1,product2;time_period=quarter;when=2014Q1"},
+                    "self":{"href":"/api/widgets/?name=velocity;view=products;view_items=product1,product2;time_period=quarter;when=2014Q1"},
                     "widgets":[
-                        {"name":"velocity","href":"http://10.200.10.223:3000/widgets/velocity"},
-                        {"name":"ecosystem","href":"http://10.200.10.223:3000/widgets/ecosystem"}
+                        {"name":"velocity","href":"/widgets/velocity"},
+                        {"name":"ecosystem","href":"/widgets/ecosystem"}
                     ]
                 }
             }
@@ -251,7 +250,7 @@ A single Widget object with all its details
 
             {
                 "_links":{
-                    "self":{"href":"http://10.200.10.223:3000/widgets?name=velocity;view=products;items=product1,product2"}
+                    "self":{"href":"/widgets?name=velocity;view=products;items=product1,product2"}
                 },
 
                 "_embedded":{
