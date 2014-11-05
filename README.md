@@ -18,15 +18,18 @@
   npm install -g api-mock
   ```
 
+#### Deploy hal-browser one level up on the file system hierarchy
+  ```
+  cd ..
+  git clone  https://github.com/mikekelly/hal-browser.git
+
+  ```
+
 #### Start all services
   start `grunt start` as a background task (ie: `grunt start &`)
   ```
   grunt start &
   ```
-
-##IMPORTANT!
-
-  All Urls depends on a host called `dev.agilepods.globant.com`, to get all this stuff working properly, the client must to edit their *hosts file* to point to the development server IP
 
 #### Explore the API
 
