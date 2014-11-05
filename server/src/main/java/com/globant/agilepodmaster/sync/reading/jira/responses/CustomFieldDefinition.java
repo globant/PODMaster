@@ -22,7 +22,7 @@ public class CustomFieldDefinition {
    *
    */
   @Data
-  public class Schema {
+  public static class Schema {
     private String type;
     private String schemaCustom;
     private int customId;

@@ -39,10 +39,10 @@ public class BuildProjectDataSetTest extends AbstractIntegrationTest {
   @Autowired
   DashboardRepository repo;
  
-  @Value("${podmaster.test.jira.username}")
+  @Value("${podmaster.test.jira.username:jose.dominguez}")
   private String username;
   
-  @Value("${podmaster.test.jira.password}")
+  @Value("${podmaster.test.jira.password:xxxx}")
   private String password;
   
   @Value("${podmaster.test.jira.urlroot:https://jira.corp.globant.com/}")
@@ -69,7 +69,8 @@ public class BuildProjectDataSetTest extends AbstractIntegrationTest {
   /**
    * Test for ProjectDataSetBuilder.
    */
-  @Ignore @Test
+  @Ignore
+  @Test
   public void testProjectDataSetBuilder() {
     JiraRestClient jiraRestClient = new JiraAPIFactory()
       .withCredentials(username, password)

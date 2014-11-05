@@ -180,10 +180,10 @@ public class ProjectDataSetBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   // TODO do it independent of DataSource format
-  private Date getDate(final String theDate) {
+  protected Date getDate(final String theDate) {
     Date date = null;
     try {
-      date = new SimpleDateFormat("d/M/y", Locale.ENGLISH).parse(theDate);
+      date = new SimpleDateFormat("dd/MMM/yy", Locale.ENGLISH).parse(theDate);
     } catch (ParseException e) {
       syncContext.error("Invalid date format:" + theDate);
     }

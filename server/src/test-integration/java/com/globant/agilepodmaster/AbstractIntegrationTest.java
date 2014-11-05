@@ -8,6 +8,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.globant.agilepodmaster.AgilePodMaster.ApplicationConfiguration;
 
+/**
+ * Base class for all integration tests.
+ * @author Andres Postiglioni.
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ApplicationConfiguration.class)
 @WebAppConfiguration

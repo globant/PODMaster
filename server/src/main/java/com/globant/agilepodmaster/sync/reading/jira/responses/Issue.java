@@ -13,6 +13,7 @@ import lombok.Data;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@SuppressWarnings("PMD")
 public class Issue {
   
   private String expand;
@@ -30,7 +31,8 @@ public class Issue {
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
-  public class Fields {
+  @SuppressWarnings("PMD")
+  public static class Fields {
     private String summary;
 
     private Timetracking timetracking;
@@ -72,7 +74,7 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Timetracking {
+    public static class Timetracking {
       private String originalEstimate;
 
       private String remainingEstimate;
@@ -91,11 +93,9 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Issuetype {
-      @SuppressWarnings({ "hiding" })
+    public static class Issuetype {
       private String self;
 
-      @SuppressWarnings({ "hiding" })
       private String id;
 
       private String description;
@@ -112,11 +112,9 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Priority {
-      @SuppressWarnings({ "hiding" })
+    public static class Priority {
       private String self;
 
-      @SuppressWarnings({ "hiding" })
       private String id;
 
       private String iconUrl;
@@ -129,8 +127,7 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class CustomField {
-      @SuppressWarnings({ "hiding" })
+    public static class CustomField {
       private String id;
 
       private String value;
@@ -141,8 +138,7 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class ReferenceField {
-      @SuppressWarnings({ "hiding" })
+    public static class ReferenceField {
       private String id;
 
       private String name;
@@ -153,8 +149,7 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Assignee {
-      @SuppressWarnings({ "hiding" })
+    public static class Assignee {
       private String self;
 
       private String name;
@@ -172,7 +167,7 @@ public class Issue {
        */
       @JsonIgnoreProperties(ignoreUnknown = true)
       @Data
-      public class AvatarUrls {
+      public static class AvatarUrls {
         @SuppressWarnings("checkstyle:membername")
         private String __invalid_name__16x16;
         @SuppressWarnings("checkstyle:membername")
@@ -185,11 +180,9 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Resolution {
-      @SuppressWarnings({ "hiding" })
+    public static class Resolution {
       private String self;
 
-      @SuppressWarnings({ "hiding" })
       private String id;
 
       private String description;
@@ -202,8 +195,7 @@ public class Issue {
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Status {
-      @SuppressWarnings({ "hiding" })
+    public static class Status {
       private String self;
 
       private String description;
@@ -212,7 +204,6 @@ public class Issue {
 
       private String name;
 
-      @SuppressWarnings({ "hiding" })
       private String id;
     }
 

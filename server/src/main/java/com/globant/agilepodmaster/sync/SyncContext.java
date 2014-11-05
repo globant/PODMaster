@@ -65,7 +65,7 @@ public class SyncContext {
    * This class represents a log record of SyncContext.
    */
   @Data
-  class SyncLogEntry {
+  private static class SyncLogEntry {
 
     public int sequence;
 

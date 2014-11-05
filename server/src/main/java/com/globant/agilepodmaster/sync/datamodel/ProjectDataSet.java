@@ -1,6 +1,6 @@
 package com.globant.agilepodmaster.sync.datamodel;
 
-import com.globant.agilepodmaster.sync.datamodel.PodData.PodMemberData;
+import com.globant.agilepodmaster.sync.datamodel.PodMemberData;
 
 import java.io.Serializable;
 import java.util.List;

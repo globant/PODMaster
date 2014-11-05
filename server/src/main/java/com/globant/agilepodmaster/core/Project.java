@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Project of a Product. 
@@ -30,6 +31,7 @@ public class Project extends AbstractEntity {
   @JsonIgnore
   private Product product;
   
+  @Setter
   private String description;
 
 }

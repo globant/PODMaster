@@ -20,6 +20,8 @@ import javax.crypto.spec.DESedeKeySpec;
  *
  */
 public final class EncryptionUtils {
+  
+  private static final String UTF8_CHARSET = "UTF8";
 
   private EncryptionUtils() {
   }
@@ -33,9 +35,9 @@ public final class EncryptionUtils {
    */
   public static String encrypt(String key, String input) {
     isValidKey(key);
-    final byte[] cipherText = cipher(key, stringToByteArray(input),
+    final byte[] cipherText = cipher(key, stringToByteArray(input, UTF8_CHARSET),
         Cipher.ENCRYPT_MODE);
-    return byteArrayToString(Base64.encodeBase64(cipherText));
+    return byteArrayToString(Base64.encodeBase64(cipherText), UTF8_CHARSET);
   }
 
   /**
@@ -49,8 +51,9 @@ public final class EncryptionUtils {
   public static String decrypt(String key, String input) {
     Assert.hasText(key, "A key is required to attempt decryption");
     final byte[] cipherText = cipher(key,
-        Base64.decodeBase64(stringToByteArray(input)), Cipher.DECRYPT_MODE);
-    return byteArrayToString(cipherText);
+        Base64.decodeBase64(stringToByteArray(input, UTF8_CHARSET)),
+        Cipher.DECRYPT_MODE);
+    return byteArrayToString(cipherText, UTF8_CHARSET);
   }
 
   private static void isValidKey(String key) {
@@ -60,29 +63,30 @@ public final class EncryptionUtils {
   }
 
 
-  private static byte[] stringToByteArray(String input) {
+  private static byte[] stringToByteArray(String input, String charset) {
     Assert.hasLength(input, "Input required");
     try {
-      return input.getBytes("UTF-8");
-    } catch (UnsupportedEncodingException fallbackToDefault) {
-      return input.getBytes();
+      return input.getBytes(charset);
+    } catch (UnsupportedEncodingException e) {
+      throw new EncryptionException(e.getMessage(), e);
     }
   }
 
 
-  private static String byteArrayToString(byte[] byteArray) {
+  private static String byteArrayToString(byte[] byteArray, String charset) {
     Assert.notNull(byteArray, "ByteArray required");
     Assert.isTrue(byteArray.length > 0, "ByteArray cannot be empty");
     try {
-      return new String(byteArray, "UTF8");
+      return new String(byteArray, charset);
     } catch (final UnsupportedEncodingException e) {
-      return new String(byteArray);
+      throw new EncryptionException(e.getMessage(), e);
     }
   }
 
   private static byte[] cipher(String key, byte[] passedBytes, int cipherMode) {
     try {
-      final KeySpec keySpec = new DESedeKeySpec(stringToByteArray(key));
+      final KeySpec keySpec = new DESedeKeySpec(stringToByteArray(key,
+          UTF8_CHARSET));
       final SecretKeyFactory keyFactory = SecretKeyFactory
           .getInstance("DESede");
       final Cipher cipher = Cipher.getInstance("DESede/ECB/PKCS5Padding");

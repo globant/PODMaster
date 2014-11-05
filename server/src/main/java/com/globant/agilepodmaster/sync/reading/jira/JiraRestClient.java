@@ -1,5 +1,6 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.globant.agilepodmaster.sync.EncryptionException;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.IssuesSearchResult;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList;
@@ -31,6 +33,8 @@ public class JiraRestClient {
   private RestTemplate restTemplate;
 
   private static final int MAX_SEARCH_SIZE = 60;
+  
+  private static final String UTF8_CHARSET = "UTF8";
 
   private static final String DEFAUL_FIELD_LIST = "key,parent,priority,summary"
       + ",components,assignee,created,issuetype,status,resolution"
@@ -68,9 +72,15 @@ public class JiraRestClient {
       final String jiraRoot, 
       final RestTemplate jiraAPI) {
     final String plainCreds = username + ":" + password;
-    final byte[] plainCredsBytes = plainCreds.getBytes();
-    final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-    final String base64Creds = new String(base64CredsBytes);
+
+    String base64Creds;
+    try {
+      final byte[] plainCredsBytes = plainCreds.getBytes(UTF8_CHARSET);
+      final byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+      base64Creds = new String(base64CredsBytes, UTF8_CHARSET);
+    } catch (UnsupportedEncodingException e) {
+      throw new EncryptionException(e.getMessage(), e);
+    }
 
     final HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Collections.singletonList(new MediaType("application",

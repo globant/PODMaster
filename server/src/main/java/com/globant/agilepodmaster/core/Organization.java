@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entity Organization whose metrics we want to show.
@@ -22,6 +23,7 @@ public class Organization extends AbstractEntity {
   @NonNull
   private String name;
 
+  @Setter
   private String description;
 
 }

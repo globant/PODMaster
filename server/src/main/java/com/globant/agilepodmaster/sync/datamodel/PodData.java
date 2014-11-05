@@ -2,7 +2,6 @@ package com.globant.agilepodmaster.sync.datamodel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -33,6 +32,7 @@ public class PodData implements Serializable {
 
   /**
    * Constructor.
+   * 
    * @param podType type of POD.
    */
   public PodData(PodTypeData podType) {
@@ -40,31 +40,5 @@ public class PodData implements Serializable {
     podMembers = new ArrayList<PodMemberData>();
   }
 
-  /**
-   * DTO that represents a memeber of a pod taken from a data source.
-   * 
-   * @author jose.dominguez@globant.com
-   *
-   */
-  @Data
-  public class PodMemberData implements Serializable {
-    
-    private String firstName;
 
-    private String lastName;
-
-    private String email;
-
-    private String externalUsername;
-
-    private String roleCode;
-
-    private float dailyHours;
-
-    public float hourlyRate;
-
-    public Date startDate;
-
-    public Date endDate;
-  }
 }

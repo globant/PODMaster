@@ -1,5 +1,4 @@
 package com.globant.agilepodmaster.sync.datamodel;
-
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -12,21 +11,28 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * DTO that represents a snapshot taken from a data source.
- * This was taken for AgileTracker. It will be possibly remove.
+ * DTO that represents a member of a pod taken from a data source.
  * 
  * @author jose.dominguez@globant.com
  *
  */
 @EqualsAndHashCode(exclude = { "startDate", "endDate" })
 @Data
-public class SnapshotData implements Serializable {
+public class PodMemberData implements Serializable {
 
-  private String summary;
+  private String firstName;
 
-  private String mainClientContactName;
+  private String lastName;
 
-  private String mainClientContactEmail;
+  private String email;
+
+  private String externalUsername;
+
+  private String roleCode;
+
+  private float dailyHours;
+
+  public float hourlyRate;
   
   @Getter(AccessLevel.NONE)
   @Setter(AccessLevel.NONE) 
@@ -69,5 +75,6 @@ public class SnapshotData implements Serializable {
     Assert.notNull(endDate, "endDate is null");
     this.endDate = new Date(endDate.getTime());
   }
-     
+ 
+  
 }

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Product of an organization. It is composed of one or more projects.
@@ -30,6 +31,7 @@ public class Product extends AbstractEntity {
   @JsonIgnore
   private Organization organization;
   
+  @Setter
   private String description;
 
 }

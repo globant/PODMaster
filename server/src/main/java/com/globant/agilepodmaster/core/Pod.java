@@ -42,7 +42,7 @@ public class Pod extends AbstractEntity {
   @JsonIgnore
   private Sprint sprint;
     
-  
+  @NonNull
   private Type type;
 
 }

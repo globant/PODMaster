@@ -12,6 +12,7 @@ import lombok.Data;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@SuppressWarnings("PMD")
 public class SprintReport {
 
   private Contents contents;
@@ -23,7 +24,7 @@ public class SprintReport {
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
-  public class Contents {
+  public static class Contents {
 
     private List<CompletedIssue> completedIssues;
 
@@ -48,7 +49,7 @@ public class SprintReport {
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
-  public class Sprint {
+  public static class Sprint {
 
     private int id;
 
