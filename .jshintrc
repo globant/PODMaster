@@ -123,6 +123,7 @@
 
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [         // Extra globals.
+        "module",
         "define",
         "require",
         "App"

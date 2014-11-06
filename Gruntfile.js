@@ -5,7 +5,8 @@ module.exports = function(grunt) {
       PATH_ASSETS_JS = PATH_ASSETS + '/js',
       PATH_ASSETS_CSS = PATH_ASSETS + '/css',
       PATH_ASSETS_IMG = PATH_ASSETS + '/img',
-      PATH_DEPLOY_ASSETS = 'public';
+      PATH_DEPLOY_ASSETS = 'public',
+      PATH_DEPLOY_ASSETS_IMG = PATH_DEPLOY_ASSETS + '/img';
 
   //##Project configuration
   grunt.initConfig({
@@ -13,7 +14,7 @@ module.exports = function(grunt) {
 
     //##Annotated source generation with docco
     //run with `grunt docs`
-    "docco": {
+    docco: {
       docs:{
         src:[
             //Files to include
@@ -117,7 +118,10 @@ module.exports = function(grunt) {
     //##Contatenation task
     concat: {
       css: {
-        src: ['src/vendor/normalize-css/normalize.css', PATH_ASSETS_CSS + '/*.css'],
+        src: [
+          'src/vendor/normalize-css/normalize.css',
+          PATH_ASSETS_CSS + '/*.css'
+        ],
         dest: PATH_DEPLOY_ASSETS +
           '/css/<%= pkg.name %>-<%= pkg.version %>.concat.css'
       }
@@ -140,7 +144,12 @@ module.exports = function(grunt) {
           'box-sizing': false,
           'adjoining-classes': false
         },
-        src: [PATH_ASSETS_CSS + '/*.css', '!' + PATH_ASSETS_CSS + '/normalize.css']
+        src: [
+          PATH_ASSETS_CSS +
+          '/*.css', '!' +
+          PATH_ASSETS_CSS +
+          '/normalize.css'
+        ]
       }
     },
 
@@ -153,9 +162,9 @@ module.exports = function(grunt) {
         dynamic: [
           {
             expand: true,
-            cwd: PATH_ASSETS + '/img',
+            cwd: PATH_ASSETS_IMG,
             src: ['**/*.png'],
-            dest: PATH_DEPLOY_ASSETS + '/img'
+            dest: PATH_DEPLOY_ASSETS_IMG
           }
         ]
       },
@@ -166,9 +175,9 @@ module.exports = function(grunt) {
         dynamic: [
           {
             expand: true,
-            cwd: PATH_ASSETS + '/img',
+            cwd: PATH_ASSETS_IMG,
             src: ['**/*.jpg'],
-            dest: PATH_DEPLOY_ASSETS + '/img'
+            dest: PATH_DEPLOY_ASSETS_IMG
           }
         ]
       }
@@ -186,7 +195,7 @@ module.exports = function(grunt) {
               mount = function (dir) {
                 return connect.static(require('path').resolve(dir));
               },
-              log = function (req,resp,next){
+              log = function (req, resp, next) {
                 //grunt.log.writeln(JSON.stringify(req.headers));
                 next();
               };
@@ -218,15 +227,23 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', 'build:dev');
 
-  grunt.registerTask('build:prod', ['clean', 'bower', 'jshint:all', 'handlebars',
-    'csslint:lax', 'requirejs', 'concat', 'cssmin', 'imagemin'
+  grunt.registerTask('build:prod', [
+    'clean',
+    'bower',
+    'jshint:all',
+    'handlebars',
+    'csslint:lax',
+    'requirejs',
+    'concat',
+    'cssmin',
+    'imagemin'
   ]);
 
   grunt.registerTask('build:dev', ['clean', 'bower', 'jshint:all', 'handlebars',
     'csslint:lax', 'copy', 'concat'
   ]);
     // serve task
-  grunt.registerTask('serve', function(){
+  grunt.registerTask('serve', function() {
     grunt.task.run([
     'connect:server'
     ]);
