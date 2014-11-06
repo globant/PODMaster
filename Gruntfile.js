@@ -129,6 +129,33 @@ module.exports = function(grunt) {
               //changeOrigin not necessary
               changeOrigin: false,
               xforward: false
+          },
+          //####proxy to rawgit.com
+          //Redirect requests from `/github`
+          //to `http://rawgit.com`
+          //Note that to get this working throght
+          //globant proxy, the process must
+          //be wrapped/proxified with something like
+          //proxychains4
+          //####The /etc/proxychains.conf file:
+          //```
+          //strict_chain
+          //localnet 10.0.0.0/255.0.0.0
+          //localnet 127.0.0.0/255.0.0.0
+          //[ProxyList]
+          //http  10.28.2.251 3128
+          //```
+          {
+              context: '/github',
+              host: 'rawgit.com',
+              port: 80,
+              https: false,
+              //changeOrigin not necessary
+              changeOrigin: true,
+              xforward: false,
+              rewrite:{
+                '^/github':''
+              }
           }
         ]
       },
