@@ -1,5 +1,9 @@
 package com.globant.agilepodmaster;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -9,6 +13,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
@@ -53,16 +59,6 @@ public class AgilePodMaster extends SpringBootServletInitializer {
   @EnableAutoConfiguration
   @ComponentScan(includeFilters = @Filter(Service.class), useDefaultFilters = false)
   static class ApplicationConfiguration {
-    @Bean
-    public RestTemplate restTemplate() {
-      HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-      factory.setReadTimeout(50000);
-      factory.setConnectTimeout(15000);
-      
-      RestTemplate restTemplate = new RestTemplate(factory);
-
-      return restTemplate;
-    }
   }
 
   /**
@@ -74,6 +70,27 @@ public class AgilePodMaster extends SpringBootServletInitializer {
   @Import({ ApplicationConfiguration.class })
   @ComponentScan(excludeFilters = @Filter({ Service.class, Configuration.class }))
   static class WebConfiguration {
+    @Bean
+    public RestTemplate restTemplate() {
+      HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+      factory.setReadTimeout(50000);
+      factory.setConnectTimeout(15000);
+      
+      RestTemplate restTemplate = new RestTemplate(factory);
+
+      return restTemplate;
+    }
+
+    @Bean
+    public ConversionServiceFactoryBean conversionServiceFactory(List<Converter<?,?>> converters) {
+      ConversionServiceFactoryBean conversionServiceFactory = new ConversionServiceFactoryBean();
+      
+      Set<Object> set = new HashSet<Object>();
+      set.addAll(converters);
+      conversionServiceFactory.setConverters(set);
+
+      return conversionServiceFactory;
+    }
 
     @Bean
     public CurieProvider curieProvider() {

@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Entity that represents a POD.
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@ToString
 public class Pod extends AbstractEntity {
   
   /**

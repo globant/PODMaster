@@ -15,18 +15,16 @@
  */
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.springframework.hateoas.Identifiable;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 
 import lombok.Getter;
-import lombok.ToString;
+
+import org.springframework.hateoas.Identifiable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Base class for entity implementations. Uses a {@link Long} id.
@@ -35,16 +33,12 @@ import lombok.ToString;
  */
 @MappedSuperclass
 @Getter
-@ToString
 public class AbstractEntity implements Identifiable<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonIgnore
   private final Long id;
-
-  @Version
-  private Integer version;
 
   protected AbstractEntity() {
     this.id = null;

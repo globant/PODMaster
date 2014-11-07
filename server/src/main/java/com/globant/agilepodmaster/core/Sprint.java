@@ -1,7 +1,5 @@
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -9,8 +7,12 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Represents a set of tasks.
@@ -20,6 +22,7 @@ import lombok.NonNull;
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class Sprint extends AbstractEntity {
   
   public int number;
@@ -32,8 +35,10 @@ public class Sprint extends AbstractEntity {
   @JsonIgnore
   private Release release;
   
+  @Getter
   private Date startDate;
 
+  @Getter
   private Date endDate;
 
   /**
@@ -50,7 +55,4 @@ public class Sprint extends AbstractEntity {
     this.startDate = new Date(startDate.getTime());
     this.endDate = new Date(endDate.getTime());
   }
-  
-  
-
 }
