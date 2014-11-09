@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class Project extends AbstractEntity {
   @NonNull
   private String name;
   
+  @Getter
   @NonNull
   @ManyToOne
   @JsonIgnore

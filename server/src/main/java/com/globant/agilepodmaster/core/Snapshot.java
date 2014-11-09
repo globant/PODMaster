@@ -2,6 +2,8 @@ package com.globant.agilepodmaster.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.springframework.util.Assert;
+
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -9,8 +11,10 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
 
 /**
  * Snapshot represents a set of data read from different data sources through
@@ -20,7 +24,7 @@ import lombok.NonNull;
  *
  */
 @Entity
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, exclude = { "creationDate" })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot extends AbstractEntity {
 
@@ -30,24 +34,40 @@ public class Snapshot extends AbstractEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
+  @Setter
+  @Getter
   private Product product;
 
-  @NonNull
+  @Setter(AccessLevel.NONE)
   private Date creationDate;
 
   /**
    * Constructor.
+   * 
    * @param name the name of the snapshot.
-   * @param product the product of the snapshot.
-   * @param creationDate the creation date of the snapshot.
    */
-  public Snapshot(String name, Product product, Date creationDate) {
+  public Snapshot(String name) {
     super();
     this.name = name;
-    this.product = product;
+  }
+
+  /**
+   * creationDate getter.
+   * 
+   * @return the date.
+   */
+  public Date getCreationDate() {
+    return new Date(creationDate.getTime());
+  }
+
+  /**
+   * creationDate setter.
+   * 
+   * @param creationDate the date.
+   */
+  public void setCreationDate(Date creationDate) {
+    Assert.notNull(creationDate, "creationDate is null");
     this.creationDate = new Date(creationDate.getTime());
   }
 
-  
-  
 }

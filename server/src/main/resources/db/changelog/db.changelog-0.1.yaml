@@ -386,12 +386,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints: 
                     nullable: true
-              -            
-                column: 
-                  name: type
-                  type: INTEGER
-                  constraints: 
-                    nullable: false            
+           
               -              
                 column: 
                   name: sprint_id
@@ -463,7 +458,7 @@ databaseChangeLog:
               -            
                 column: 
                   name: name
-                  type: VARCHAR(255)
+                  type: VARCHAR(100)
                   constraints: 
                     nullable: true
               -            
@@ -475,7 +470,7 @@ databaseChangeLog:
               -            
                 column: 
                   name: actual
-                  type: FLOAT
+                  type: INTEGER
                   constraints: 
                     nullable: false     
               -            
@@ -487,13 +482,13 @@ databaseChangeLog:
               -            
                 column: 
                   name: estimated
-                  type: FLOAT
+                  type: INTEGER
                   constraints: 
                     nullable: false    
               -            
                 column: 
                   name: remaining
-                  type: FLOAT
+                  type: INTEGER
                   constraints: 
                     nullable: false                       
               -            
@@ -532,7 +527,7 @@ databaseChangeLog:
                   type: BIGINT
                   constraints: 
                     foreignKeyName: owner_pod_member_fk
-                    nullable: false
+                    nullable: true
                     references: pod_member                     
               -                    
                 column: 
@@ -540,7 +535,7 @@ databaseChangeLog:
                   type: BIGINT
                   constraints: 
                     foreignKeyName: parent_task_task_fk
-                    nullable: false
+                    nullable: true
                     references: task                    
               -                    
                 column: 

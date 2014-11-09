@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class JiraCustomSettings {
+  
+  public Long projectId;  
 
   public String jiraRoot;
 

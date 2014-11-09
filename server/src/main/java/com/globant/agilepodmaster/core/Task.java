@@ -1,6 +1,7 @@
 package com.globant.agilepodmaster.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.globant.agilepodmaster.sync.reading.TaskDTO;
 
 import java.util.Date;
 
@@ -10,9 +11,10 @@ import javax.persistence.OneToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * A task can be a User Story, Bug or Task. It can belong to a Sprint or
@@ -25,64 +27,70 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
 public class Task extends AbstractEntity {
 
   /**
    * Kind of statuses of Tasks.
    */
-  private static enum Status {
+  public static enum Status {
     Pending, InProgress, Closed
   }
 
   /**
    * Kind of types of Tasks.
    */
-  private static enum Type {
+  public static enum Type {
     UserStory, Bug, Task
   }
 
   /**
    * Kind of priorities of Tasks.
    */
-  private static enum Priority {
+  public static enum Priority {
     Low, Medium, High, Critical
   }
 
   /**
    * Kind of severities of Tasks.
    */  
-  private static enum Severity {
+  public static enum Severity {
     Low, Medium, High, Critical
   }
 
   @NonNull
+  @Getter
   private String name;
 
+  @Getter
   private double effort;
 
-  private double estimated;
+  @Getter  
+  private int estimated;
 
-  private double actual;
+  @Getter  
+  private int actual;
 
-  private double remaining;
+  @Getter  
+  private int remaining;
 
+  @Getter  
   private double accuracy;
 
+  @Getter  
   private Status status;
 
+  @Getter  
   private Severity severity;
 
+  @Getter  
   private Priority priority;
 
+  @Getter  
   private Type type;
-
+  
   private Date createdDate;
 
-  @OneToOne
-  @JsonIgnore
-  private Task parentTask;
-
+  @Getter
   @ManyToOne
   @JsonIgnore
   private Sprint sprint;
@@ -92,8 +100,41 @@ public class Task extends AbstractEntity {
   @JsonIgnore
   private Release release;
 
+  @OneToOne
+  @JsonIgnore
+  @Setter
+  @Getter
+  private Task parentTask;
+  
+  @Setter
+  @Getter
   @ManyToOne
   @JsonIgnore
   private PodMember owner;
+  
+  /**
+   * Constructor.
+   * 
+   * @param release release of the task.
+   * @param sprint sprint of the task.
+   * @param parentTask parent task.
+   * @param taskDTO task DTO.
+   */
+  public Task(Release release, Sprint sprint, Task parentTask, TaskDTO taskDTO) {
+    this.release = release;
+    this.sprint = sprint;
+    this.parentTask = parentTask;
+    this.name = taskDTO.getName();
+    this.createdDate = taskDTO.getCreateDate();
+    this.actual = taskDTO.getActual();
+    this.effort = taskDTO.getEffort();
+    this.estimated = taskDTO.getEstimated();
+    this.remaining = taskDTO.getRemaining();
+    this.priority = Task.Priority.valueOf(taskDTO.getPriority().name());
+    this.severity = Task.Severity.valueOf(taskDTO.getSeverity().name());
+    this.status = Task.Status.valueOf(taskDTO.getStatus().name());
+    this.type = Task.Type.valueOf(taskDTO.getType().name());
+  }
+
 
 }

@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -25,6 +26,7 @@ public class Sprint extends AbstractEntity {
   public int number;
   
   @NonNull
+  @Getter
   private String name;
   
   @NonNull

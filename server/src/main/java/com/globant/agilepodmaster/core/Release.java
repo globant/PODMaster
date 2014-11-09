@@ -40,27 +40,21 @@ public class Release extends AbstractEntity {
   @ManyToOne
   @JsonIgnore
   private Project project;
-  
-  private Date creationDate;
 
   /**
    * Constructor.
    * @param name the release name.
    * @param snapshot the snapshot of this release.
    * @param project the project of this release.
-   * @param creationDate the creation date of the release.
    */
-  public Release(String name, Snapshot snapshot, Project project,
-      Date creationDate) {
+  public Release(String name, Snapshot snapshot, Project project) {
     super();
     Assert.notNull(name, "name cannot be null");
     Assert.notNull(snapshot, "snapshot cannot be null");
     Assert.notNull(project, "project cannot be null");
-    Assert.notNull(creationDate, "creationDate cannot be null");
     this.name = name;
     this.snapshot = snapshot;
     this.project = project;
-    this.creationDate = new Date(creationDate.getTime());
   }
   
   
