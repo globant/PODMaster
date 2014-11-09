@@ -226,7 +226,7 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
     if (!StringUtils.isEmpty(owner)) {
       PodMemberDTO podMemberDTO = podMembersMap.get(owner);
       if (podMemberDTO != null) {
-        task.setOwner(getFromListOrCreateMember(podMemberDTO, sprint));
+        task.setOwner(getFromListOrCreateMember(podMemberDTO));
       } else {
         syncContext.warn("Task owner not found: " + owner);
       }
@@ -238,14 +238,13 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
   }
   
   // Assume a member cannot belong to 2 PODs
-  private PodMember getFromListOrCreateMember(PodMemberDTO podMemberDTO,
-      Sprint sprint) {
+  private PodMember getFromListOrCreateMember(PodMemberDTO podMemberDTO) {
     for (PodMember podMember : podMembers) {
       if (podMember.getEmail().equals(podMemberDTO.getUserName())) {
         return podMember;
       }
     }
-    Pod pod = getFromListOrCreatePod(podMemberDTO.getPodName(), sprint);
+    Pod pod = getFromListOrCreatePod(podMemberDTO.getPodName());
     
     PodMember newPodMember = new PodMember(podMemberDTO.getFirstName(),
         podMemberDTO.getLastName(), podMemberDTO.getUserName(), pod);
@@ -255,15 +254,14 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
   }
   
   
-  private Pod getFromListOrCreatePod(String podName, Sprint sprint) {
+  private Pod getFromListOrCreatePod(String podName) {
     for (Pod pod : pods) {
       if (pod.getName().equals(podName)) {
         return pod;
       }
     }
-    Pod newPod = new Pod(podName, sprint);
+    Pod newPod = new Pod(podName);
     pods.add(newPod);
     return newPod;
   }
-
 }

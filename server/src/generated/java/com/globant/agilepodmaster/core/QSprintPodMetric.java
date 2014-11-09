@@ -54,7 +54,7 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public QSprintPodMetric(Class<? extends SprintPodMetric> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
+        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod")) : null;
         this.sprint = inits.isInitialized("sprint") ? new QSprint(forProperty("sprint"), inits.get("sprint")) : null;
     }
 

@@ -56,7 +56,7 @@ public class QPodMember extends EntityPathBase<PodMember> {
 
     public QPodMember(Class<? extends PodMember> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
+        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod")) : null;
     }
 
 }

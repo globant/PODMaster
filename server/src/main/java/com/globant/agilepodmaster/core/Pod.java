@@ -1,9 +1,6 @@
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -29,11 +26,9 @@ public class Pod extends AbstractEntity {
   @NonNull
   private String name;
   
-  @NonNull
-  @ManyToOne
-  @JsonIgnore
-  @Getter
-  private Sprint sprint;
-
-
+//  @NonNull
+//  @ManyToOne
+//  @JsonIgnore
+//  @Getter
+//  private Sprint sprint;
 }
