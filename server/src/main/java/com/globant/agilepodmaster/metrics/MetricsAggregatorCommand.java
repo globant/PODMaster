@@ -10,8 +10,11 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.metrics.partitions.Partition;
-import com.globant.agilepodmaster.metrics.partitions.Partitioner;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.core.SprintPodMetricRepository;
+import com.globant.agilepodmaster.metrics.partition.Partition;
+import com.globant.agilepodmaster.metrics.partition.Partitioner;
+import com.mysema.query.types.Predicate;
 
 @Component
 public class MetricsAggregatorCommand {
@@ -24,38 +27,42 @@ public class MetricsAggregatorCommand {
     this.repo = repo;
   }
 
-  public List<MetricAggregation> execute(
-      List<Partitioner<SprintPodMetric, Partition<?>>> partitioners) {
+  public Set<MetricAggregation> execute(
+      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners, Predicate filters) {
 
-    Iterable<SprintPodMetric> spmList = repo.findAll();
+    Iterable<SprintPodMetric> spmList = repo.findAll(filters);
 
-    Map<Set<Partition<?>>, List<SprintPodMetric>> partitions = createPartitions(spmList,
-        partitioners);
-    List<MetricAggregation> aggregated = this.aggregate(partitions);
-
-    return aggregated;
-  }
-
-  private List<MetricAggregation> aggregate(Map<Set<Partition<?>>, List<SprintPodMetric>> partitions) {
-
-    List<MetricAggregation> aggregated = new LinkedList<MetricAggregation>();
-    partitions.forEach((p, l) -> aggregated.add(new MetricAggregation(p, aggregator.aggregate(l))));
+    Map<Set<Partition<?>>, List<SprintPodMetric>> partitions = createPartitions(
+        spmList, partitioners);
+    
+    Set<MetricAggregation> aggregated = this.aggregate(partitions);
 
     return aggregated;
   }
 
-  private SprintPodMetricPartitionsMap createPartitions(Iterable<SprintPodMetric> spmList,
-      List<Partitioner<SprintPodMetric, Partition<?>>> partitioners) {
+  private Set<MetricAggregation> aggregate(Map<Set<Partition<?>>, List<SprintPodMetric>> parts) {
+
+    Set<MetricAggregation> aggregated = new HashSet<MetricAggregation>();
+    parts.forEach(
+        (part, lst) -> aggregated.add(new MetricAggregation(part, aggregator.aggregate(lst)))
+    );
+
+    return aggregated;
+  }
+
+  private SprintPodMetricPartitionsMap createPartitions(
+      Iterable<SprintPodMetric> spmList,
+      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners) {
 
     SprintPodMetricPartitionsMap partitions = new SprintPodMetricPartitionsMap();
-
     spmList.forEach(spm -> partitions.get(createPartitions(spm, partitioners)).add(spm));
 
     return partitions;
   }
 
-  private Set<Partition<?>> createPartitions(SprintPodMetric spm,
-      List<Partitioner<SprintPodMetric, Partition<?>>> partitioners) {
+  private Set<Partition<?>> createPartitions(
+      SprintPodMetric spm,
+      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners) {
 
     Set<Partition<?>> partition = new HashSet<Partition<?>>();
     partitioners.forEach(p -> partition.add(p.extractPartition(spm)));

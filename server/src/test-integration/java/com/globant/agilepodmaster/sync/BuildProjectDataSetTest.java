@@ -73,10 +73,10 @@ public class BuildProjectDataSetTest extends AbstractIntegrationTest {
   @Test
   public void testProjectDataSetBuilder() {
     JiraRestClient jiraRestClient = new JiraAPIFactory()
-      .withCredentials(username, password)
-      .withTemplate(restTemplate)
-      .withUrlRoot(urlRoot)
-      .create();
+        .withCredentials(username, password)
+        .withTemplate(restTemplate)
+        .withUrlRoot(urlRoot)
+        .create();
 
     releasesReader.setRestJiraClient(jiraRestClient);
     releasesReader.setSettings(settings);

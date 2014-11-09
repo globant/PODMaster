@@ -33,7 +33,7 @@ public enum Quarter {
   
   public static Quarter toQuarter(Date date) {
     List<Quarter> quarters = Arrays.asList(Quarter.Q1, Quarter.Q2, Quarter.Q3, Quarter.Q4);
-    Quarter quarter = quarters.stream().filter((q) -> q.isInQuarter(date)).findAny().get();
+    Quarter quarter = quarters.stream().filter(q -> q.isInQuarter(date)).findAny().get();
     return quarter;
   }
   

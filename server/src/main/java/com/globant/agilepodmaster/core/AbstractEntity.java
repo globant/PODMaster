@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
 import lombok.Getter;
 
@@ -38,9 +39,8 @@ public class AbstractEntity implements Identifiable<Long> {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonIgnore
-  private final Long id;
+  private Long id;
 
-  protected AbstractEntity() {
-    this.id = null;
-  }
+  @Version
+  private Integer version;
 }

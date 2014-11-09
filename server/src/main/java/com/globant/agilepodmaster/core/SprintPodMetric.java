@@ -1,5 +1,6 @@
-package com.globant.agilepodmaster.metrics;
+package com.globant.agilepodmaster.core;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -10,11 +11,11 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
-import com.globant.agilepodmaster.core.AbstractEntity;
-import com.globant.agilepodmaster.core.Pod;
-import com.globant.agilepodmaster.core.Sprint;
+import org.hibernate.annotations.Immutable;
 
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@Entity
+@Immutable
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 public class SprintPodMetric extends AbstractEntity {
   @NonNull @Getter
@@ -27,9 +28,6 @@ public class SprintPodMetric extends AbstractEntity {
   
   @Getter @Setter
   private int acceptedStoryPoints;
-  
-  @Getter @Setter
-  private int hoursInAcceptedStories;
   
   public SprintPodMetric(Sprint sprint, Pod pod) {
     this.sprint = sprint;

@@ -24,15 +24,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class Sprint extends AbstractEntity {
-  
   public int number;
   
   @NonNull
+  @Getter
   private String name;
   
   @NonNull
   @ManyToOne
   @JsonIgnore
+  @Getter
   private Release release;
   
   @Getter

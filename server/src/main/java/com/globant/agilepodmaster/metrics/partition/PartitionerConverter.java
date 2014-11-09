@@ -1,4 +1,4 @@
-package com.globant.agilepodmaster.metrics.partitions;
+package com.globant.agilepodmaster.metrics.partition;
 
 import java.util.Collections;
 import java.util.List;

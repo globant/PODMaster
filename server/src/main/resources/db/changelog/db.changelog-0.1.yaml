@@ -1,564 +1,599 @@
---- 
-databaseChangeLog: 
-  - 
-    changeSet: 
+---
+databaseChangeLog:
+  -
+    changeSet:
       id: 1
       author: andres.postiglioni
-      changes: 
-        - 
-          createTable: 
+      changes:
+        -
+          createTable:
             tableName: dashboard
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              - 
-                column: 
+              -
+                column:
                   name: locked
                   type: BOOLEAN
                   constraints:
                     nullable: false
-              - 
-                column: 
+              -
+                column:
                   name: type
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-        - 
-          createTable: 
+        -
+          createTable:
             tableName: widget
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              - 
-                column: 
+              -
+                column:
                   name: title
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              - 
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              - 
-                column: 
+              -
+                column:
                   name: view_name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              - 
-                column: 
+              -
+                column:
                   name: height
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              - 
-                column: 
+              -
+                column:
                   name: width
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-        - 
-          createTable: 
+        -
+          createTable:
             tableName: dashboard_widget
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              - 
-                column: 
+              -
+                column:
                   name: collapsed
                   type: BOOLEAN
-                  constraints: 
+                  constraints:
                     nullable: false
-              - 
-                column: 
+              -
+                column:
                   name: dashboard_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: dashboard_widget_dashboard_fk
                     nullable: false
                     refrences: dashboard
-              - 
-                column: 
+              -
+                column:
                   name: widget_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: dashboard_widget_widget_fk
                     nullable: false
                     references: widget
-        -                              
-          createTable: 
+        -
+          createTable:
             tableName: organization
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -              
-                column: 
+              -
+                column:
                   name: description
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-        -           
-          createTable: 
+        -
+          createTable:
             tableName: product
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -              
-                column: 
+              -
+                column:
                   name: description
                   type: VARCHAR(255)
-                  constraints: 
-                    nullable: true    
-                    
-              - 
-                column: 
+                  constraints:
+                    nullable: true
+
+              -
+                column:
                   name: organization_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: product_organization_fk
                     nullable: false
-                    references: organization  
-        -            
-          createTable: 
+                    references: organization
+        -
+          createTable:
             tableName: project
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -              
-                column: 
+              -
+                column:
                   name: description
                   type: VARCHAR(255)
-                  constraints: 
-                    nullable: true    
-                    
-              - 
-                column: 
+                  constraints:
+                    nullable: true
+
+              -
+                column:
                   name: product_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: project_product_fk
                     nullable: false
-                    references: product 
-        -             
-          createTable: 
+                    references: product
+        -
+          createTable:
             tableName: snapshot
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -              
-                column: 
+              -
+                column:
                   name: creation_date
                   type: TIMESTAMP
-                  constraints: 
-                    nullable: true                    
-              - 
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: product_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: snapshot_product_fk
                     nullable: false
-                    references: product                        
-        -   
-           createTable: 
+                    references: product
+        -
+           createTable:
             tableName: release
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -            
-                column: 
+              -
+                column:
                   name: number
                   type: INTEGER
-                  constraints: 
-                    nullable: false            
-              -              
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: creation_date
                   type: TIMESTAMP
-                  constraints: 
-                    nullable: true    
-                    
-              - 
-                column: 
+                  constraints:
+                    nullable: true
+
+              -
+                column:
                   name: project_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: project_release_fk
                     nullable: false
-                    references: project 
-              - 
-                column: 
+                    references: project
+              -
+                column:
                   name: snapshot_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: project_snapshot_fk
                     nullable: false
-                    references: snapshot                     
-        -                       
-           createTable: 
+                    references: snapshot
+        -
+           createTable:
             tableName: sprint
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -            
-                column: 
+              -
+                column:
                   name: number
                   type: INTEGER
-                  constraints: 
-                    nullable: false            
-              -              
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: start_date
                   type: TIMESTAMP
-                  constraints: 
-                    nullable: true                   
-              - 
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: end_date
                   type: TIMESTAMP
-                  constraints: 
-                    nullable: true          
-              -                    
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: release_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: sprint_release_fk
                     nullable: false
-                    references: release 
-        -   
-           createTable: 
+                    references: release
+        -
+           createTable:
             tableName: pod
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -            
-                column: 
+              -
+                column:
                   name: type
                   type: INTEGER
-                  constraints: 
-                    nullable: false            
-              -              
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: sprint_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: pod_sprint_fk
                     nullable: true
-                    references: sprint                          
-        -    
-           createTable: 
+                    references: sprint
+        -
+           createTable:
             tableName: pod_member
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: first_name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -            
-                column: 
+              -
+                column:
                   name: last_name
                   type: VARCHAR(255)
-                  constraints: 
-                    nullable: true    
-              -            
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: email
                   type: VARCHAR(255)
-                  constraints: 
-                    nullable: true                                                
-              -              
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: pod_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: member_pod_pod_fk
                     nullable: true
-                    references: pod                             
-        -                 
-           createTable: 
+                    references: pod
+        -
+           createTable:
             tableName: task
-            columns: 
-              - 
-                column: 
+            columns:
+              -
+                column:
                   name: id
                   type: BIGINT
                   autoIncrement: true
-                  constraints: 
+                  constraints:
                     primaryKey: true
-              - 
-                column: 
+              -
+                column:
                   name: version
                   type: INTEGER
-                  constraints: 
+                  constraints:
                     nullable: false
-              -            
-                column: 
+              -
+                column:
                   name: name
                   type: VARCHAR(255)
-                  constraints: 
+                  constraints:
                     nullable: true
-              -            
-                column: 
+              -
+                column:
                   name: accuracy
                   type: FLOAT
-                  constraints: 
-                    nullable: false      
-              -            
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: actual
                   type: FLOAT
-                  constraints: 
-                    nullable: false     
-              -            
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: effort
                   type: FLOAT
-                  constraints: 
-                    nullable: false      
-              -            
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: estimated
                   type: FLOAT
-                  constraints: 
-                    nullable: false    
-              -            
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: remaining
                   type: FLOAT
-                  constraints: 
-                    nullable: false                       
-              -            
-                column: 
+                  constraints:
+                    nullable: false
+              -
+                column:
                   name: priority
                   type: INTEGER
-                  constraints: 
-                    nullable: true        
-              -            
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: severity
                   type: INTEGER
-                  constraints: 
-                    nullable: true                                                                                  
-              -              
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: created_date
                   type: timestamp
-                  constraints: 
-                    nullable: true                   
-              -            
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: status
                   type: INTEGER
-                  constraints: 
-                    nullable: true      
-              -      
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: type
                   type: INTEGER
-                  constraints: 
-                    nullable: true                                
-              -                    
-                column: 
+                  constraints:
+                    nullable: true
+              -
+                column:
                   name: owner_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: owner_pod_member_fk
                     nullable: false
-                    references: pod_member                     
-              -                    
-                column: 
+                    references: pod_member
+              -
+                column:
                   name: parent_task_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: parent_task_task_fk
                     nullable: false
-                    references: task                    
-              -                    
-                column: 
+                    references: task
+              -
+                column:
                   name: release_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: parent_task_release_fk
                     nullable: true
-                    references: release                                            
-              - 
-               column: 
+                    references: release
+              -
+               column:
                   name: sprint_id
                   type: BIGINT
-                  constraints: 
+                  constraints:
                     foreignKeyName: parent_task_sprint_fk
                     nullable: true
-                    references: sprint     
-                 
-                  
-                    
-                    
+                    references: sprint
+        -
+           createTable:
+            tableName: sprint_pod_metric
+            columns:
+              -
+                column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              -
+                column:
+                  name: version
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              -
+                column:
+                  name: accepted_story_points
+                  type: INTEGER
+                  constraints:
+                    primaryKey: true
+              -
+                column:
+                  name: pod_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: sprint_pod_metric_pod_fk
+                    nullable: false
+                    references: pod
+              -
+               column:
+                  name: sprint_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: sprint_pod_metric_sprint_fk
+                    nullable: false
+                    references: sprint

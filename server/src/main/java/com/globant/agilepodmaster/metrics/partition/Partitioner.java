@@ -1,4 +1,4 @@
-package com.globant.agilepodmaster.metrics.partitions;
+package com.globant.agilepodmaster.metrics.partition;
 
 import lombok.EqualsAndHashCode;
 
@@ -7,7 +7,9 @@ public abstract class Partitioner<T, P> {
   private final String acceptedDimension;
   
   public Partitioner(String acceptedDimension) {
-    if (acceptedDimension == null) throw new IllegalArgumentException("dimension must not be null");
+    if (acceptedDimension == null) {
+      throw new IllegalArgumentException("dimension must not be null");
+    }
 
     this.acceptedDimension = acceptedDimension;
   }

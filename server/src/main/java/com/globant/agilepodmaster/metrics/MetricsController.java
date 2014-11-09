@@ -1,43 +1,55 @@
 package com.globant.agilepodmaster.metrics;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityLinks;
-import org.springframework.hateoas.Link;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.globant.agilepodmaster.metrics.partitions.Partition;
-import com.globant.agilepodmaster.metrics.partitions.Partitioner;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.metrics.filter.BooleanExpressionPropertyEditor;
+import com.globant.agilepodmaster.metrics.partition.Partition;
+import com.globant.agilepodmaster.metrics.partition.Partitioner;
+import com.mysema.query.types.expr.BooleanExpression;
 
 @RestController
 public class MetricsController {
-  @Autowired
-  private EntityLinks entityLinks;
+  private MetricsAggregatorCommand command;
 
   @Autowired
-  private MetricsAggregatorCommand aggregatorCommand;
+  public MetricsController(MetricsAggregatorCommand command) {
+    this.command = command;
+  }
 
   @RequestMapping("/metrics")
   public MetricsAggregationCollectionResource metrics(
-      @RequestParam(value="aggregation")
-        List<Partitioner<SprintPodMetric, Partition<?>>> partitioners, 
-      @RequestParam(value="filter", required=false) List<FilterCriteria> filter) {
+      @RequestParam(value = "aggregation")
+        List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners, 
+      @RequestParam(value = "filter", required = false) List<BooleanExpression> filters) {
 
-    List<MetricAggregation> aggregated = aggregatorCommand.execute(partitioners);
+    BooleanExpression predicate = filters != null 
+        ? BooleanExpression.allOf(filters.toArray(new BooleanExpression[0])) 
+        : null;
+
+    Set<MetricAggregation> aggregated = command.execute(partitioners, predicate);
 
     MetricsAggregationCollectionResource response = 
         new MetricsAggregationCollectionResource(aggregated);
-    
-    Link selfLink = linkTo(methodOn(MetricsController.class).metrics(partitioners, filter))
-                      .withSelfRel();
-    response.add(selfLink);
+
+    //TODO: The filter parameters is rendered inaccurately
+//    Link selfLink = linkTo(methodOn(MetricsController.class).metrics(partitioners, filters))
+//                    .withSelfRel();
+//    response.add(selfLink);
     
     return response;
   }
+  
+  @InitBinder
+  public void initBinderAll(WebDataBinder binder) {
+    binder.registerCustomEditor(BooleanExpression.class, new BooleanExpressionPropertyEditor());
+  }  
 }

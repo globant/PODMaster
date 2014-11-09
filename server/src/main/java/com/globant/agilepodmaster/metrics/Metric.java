@@ -1,5 +1,6 @@
 package com.globant.agilepodmaster.metrics;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @ToString
 @Getter
+@EqualsAndHashCode
 public class Metric<T> {
   private final String name;
   private final T value;

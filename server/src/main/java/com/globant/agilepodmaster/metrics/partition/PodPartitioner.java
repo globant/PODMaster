@@ -1,19 +1,19 @@
-package com.globant.agilepodmaster.metrics.partitions;
+package com.globant.agilepodmaster.metrics.partition;
 
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.metrics.SprintPodMetric;
+import com.globant.agilepodmaster.core.SprintPodMetric;
 
 @Component
 public class PodPartitioner extends Partitioner<SprintPodMetric, Partition<String>> {
-  private static final String DIMENSION = "pod";
+  private static final String PARTITION = "pod";
 
   public PodPartitioner() {
-    super(DIMENSION);
+    super(PARTITION);
   }
   
   @Override
   public Partition<String> extractPartition(SprintPodMetric data) {
-    return new Partition<String>(DIMENSION, data.getPod().getName());
+    return new Partition<String>(PARTITION, data.getPod().getName());
   }
 }

@@ -31,28 +31,28 @@ public class Task extends AbstractEntity {
   /**
    * Kind of statuses of Tasks.
    */
-  private static enum Status {
+  public static enum Status {
     Pending, InProgress, Closed
   }
 
   /**
    * Kind of types of Tasks.
    */
-  private static enum Type {
+  public static enum Type {
     UserStory, Bug, Task
   }
 
   /**
    * Kind of priorities of Tasks.
    */
-  private static enum Priority {
+  public static enum Priority {
     Low, Medium, High, Critical
   }
 
   /**
    * Kind of severities of Tasks.
    */  
-  private static enum Severity {
+  public static enum Severity {
     Low, Medium, High, Critical
   }
 

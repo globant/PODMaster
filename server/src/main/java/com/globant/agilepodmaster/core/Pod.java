@@ -17,7 +17,6 @@ import lombok.ToString;
  * Entity that represents a POD.
  * 
  * @author jose.dominguez@globant.com
- *
  */
 @Entity
 @EqualsAndHashCode(callSuper = false)
