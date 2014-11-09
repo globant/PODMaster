@@ -25,25 +25,15 @@ import lombok.ToString;
 @ToString
 public class Pod extends AbstractEntity {
   
-  /**
-   * Type of POD.
-   * @author jose.dominguez@globant.com
-   *
-   */
-  public static enum Type {
-    Internal, External, Unassigned
-  }
-  
   @Getter
   @NonNull
   private String name;
   
-  //@NonNull
+  @NonNull
   @ManyToOne
   @JsonIgnore
+  @Getter
   private Sprint sprint;
-    
-  @NonNull
-  private Type type;
+
 
 }

@@ -24,8 +24,6 @@ public class QRelease extends EntityPathBase<Release> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final DateTimePath<java.util.Date> creationDate = createDateTime("creationDate", java.util.Date.class);
-
     //inherited
     public final NumberPath<Long> id = _super.id;
 

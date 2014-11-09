@@ -8,37 +8,14 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'spring-boot'
-apply from: 'buildSrc/jacoco-coverage.gradle'
-
-apply plugin: 'pmd'
-pmd {
-  ruleSetFiles = files("buildSrc/config/pmd/pmd.xml")
-}
-
-//http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
-apply plugin: 'checkstyle' 
-
-apply plugin: 'findbugs'
-findbugs {
-  toolVersion = '3.0.0'
-  //includeFilter = file("build-config/findbugs/includeFilter.xml")
-}
-findbugsMain {
-  reports {
-    xml.enabled = false
-    html.enabled = true
+sourceSets {
+  generated {
+    java {
+      srcDirs = ['src/generated/java']
+    }
   }
 }
-findbugsTest {
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
-}
-
-// Add provided dependency scope
+// Add provided dependency scope, and querydsl scope for querydls integration
 configurations {
   provided {
     dependencies.all { dep ->
@@ -49,11 +26,42 @@ configurations {
   
   querydslapt
 }
-
 jar {
   baseName = 'agile-podmaster'
   version =  '0.1'
 }
+
+apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
+
+apply from: 'buildSrc/jacoco-coverage.gradle'
+
+apply plugin: 'pmd'
+pmd {
+  ruleSetFiles = files("buildSrc/config/pmd/pmd.xml")
+  sourceSets = sourceSets.findAll{ !it.equals(sourceSets.generated) }
+}
+
+//http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
+apply plugin: 'checkstyle' 
+checkstyle {
+  toolVersion = '5.9'
+  configFile = file('buildSrc/config/checkstyle/checkstyle-5.7.xml')
+  sourceSets = sourceSets.findAll{ !it.equals(sourceSets.generated) }
+}
+
+apply plugin: 'findbugs'
+findbugs {
+  toolVersion = '3.0.0'
+  //includeFilter = file("build-config/findbugs/includeFilter.xml")
+  sourceSets = sourceSets.findAll{ !it.equals(sourceSets.generated) }
+}
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+ }
 
 repositories {
   mavenCentral()
@@ -110,20 +118,6 @@ check.dependsOn coverageCheck
 
 distZip.dependsOn check
 distTar.dependsOn check
-
-sourceSets {
-  generated {
-    java {
-      srcDirs = ['src/generated/java']
-    }
-  }
-}
-
-checkstyle {
-  toolVersion = '5.9'
-  configFile = file('buildSrc/config/checkstyle/checkstyle-5.7.xml')
-  sourceSets = sourceSets.findAll{ !it.equals(sourceSets.generated) }
-}
 
 task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
   source = sourceSets.main.java

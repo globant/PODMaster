@@ -1,5 +1,7 @@
 package com.globant.agilepodmaster.sync.reading;
 
+import com.globant.agilepodmaster.sync.SyncContext;
+
 /**
  * Interface that every Reader should implement.
  * 
@@ -12,8 +14,9 @@ public interface Reader<T> {
   /**
    * Reads data form the data source.
    * @param builder to store the data read.
+   * @param context context to log the reading process.
    */
-  public void readInto(T builder);
+  public void readInto(T builder, SyncContext context);
 
 }
 

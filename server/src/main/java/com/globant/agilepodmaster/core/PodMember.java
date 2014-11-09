@@ -35,6 +35,7 @@ public class PodMember extends AbstractEntity {
   @NonNull
   private String email;
 
+  @Getter
   @NonNull
   @ManyToOne
   @JsonIgnore

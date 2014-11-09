@@ -26,13 +26,13 @@ public class QTask extends EntityPathBase<Task> {
 
     public final NumberPath<Double> accuracy = createNumber("accuracy", Double.class);
 
-    public final NumberPath<Double> actual = createNumber("actual", Double.class);
+    public final NumberPath<Integer> actual = createNumber("actual", Integer.class);
 
     public final DateTimePath<java.util.Date> createdDate = createDateTime("createdDate", java.util.Date.class);
 
     public final NumberPath<Double> effort = createNumber("effort", Double.class);
 
-    public final NumberPath<Double> estimated = createNumber("estimated", Double.class);
+    public final NumberPath<Integer> estimated = createNumber("estimated", Integer.class);
 
     //inherited
     public final NumberPath<Long> id = _super.id;
@@ -47,7 +47,7 @@ public class QTask extends EntityPathBase<Task> {
 
     public final QRelease release;
 
-    public final NumberPath<Double> remaining = createNumber("remaining", Double.class);
+    public final NumberPath<Integer> remaining = createNumber("remaining", Integer.class);
 
     public final EnumPath<Task.Severity> severity = createEnum("severity", Task.Severity.class);
 

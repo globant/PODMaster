@@ -1,20 +1,24 @@
 package com.globant.agilepodmaster.sync.reading;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Defines the functionality of a Release builder.
  * 
  * @author jose.dominguez@globant.com
  *
  */
-public interface ReleasesBuilder extends BuilderLog {
+public interface ReleasesBuilder {
 
   /**
    * Add a release data.
    * 
    * @param name the name of the release.
+   * @param projectId the id of the project.
    * @return the same ReleasesBuilder with the release data.
    */
-  ReleasesBuilder addRelease(String name);
+  ReleasesBuilder addRelease(String name, Long projectId);
 
   /**
    * Add a sprint data.
@@ -22,9 +26,19 @@ public interface ReleasesBuilder extends BuilderLog {
    * @param name the name of the sprint.
    * @param startDate the start date.
    * @param endDate the end date.
+   * @param tasks tasks of the sprint.
    * @return the same ReleasesBuilder with the sprint data.
    */
-  ReleasesBuilder addSprint(String name, String startDate, String endDate);
+  ReleasesBuilder addSprint(String name, Date startDate, Date endDate,
+      List<TaskDTO> tasks);
+
+  /**
+   * Add a backlog.
+   * 
+   * @param tasks tasks of the backlog.
+   * @return the same ReleasesBuilder with the sprint data.
+   */
+  ReleasesBuilder addBacklog(List<TaskDTO> tasks);
 
   /**
    * Add a sprint task data.
@@ -38,9 +52,10 @@ public interface ReleasesBuilder extends BuilderLog {
    * @param priority the priority of the issue.
    * @return the same ReleasesBuilder with the task(issue) data.
    */
-  ReleasesBuilder addSprintTask(String issueKey, String summary, String type,
+  /*
+  ReleasesBuilder addSprintTasks(String issueKey, String summary, String type,
       String status, String owner, String severity, String priority);
-
+*/
   /**
    * Add a backlog task data.
    * 
@@ -53,8 +68,10 @@ public interface ReleasesBuilder extends BuilderLog {
    * @param priority the priority of the issue.
    * @return the same ReleasesBuilder with the task(issue) data.
    */
+  /*
   ReleasesBuilder addBacklogTask(String issueKey, String summary, String type,
       String status, String owner, String severity, String priority);
+*/
 
 
 

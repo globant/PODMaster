@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 
 import org.hibernate.annotations.Immutable;
 
@@ -17,6 +18,7 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class SprintPodMetric extends AbstractEntity {
   @NonNull @Getter
   @ManyToOne @NotNull

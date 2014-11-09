@@ -31,8 +31,6 @@ public class QPod extends EntityPathBase<Pod> {
 
     public final QSprint sprint;
 
-    public final EnumPath<Pod.Type> type = createEnum("type", Pod.Type.class);
-
     //inherited
     public final NumberPath<Integer> version = _super.version;
 

@@ -4,6 +4,7 @@ import static com.mysema.query.collections.CollQueryFactory.from;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
@@ -15,15 +16,12 @@ import org.springframework.data.domain.Pageable;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 
+@SuppressWarnings("PMD.TooManyMethods")
 public class DummyDataSprintPodMetricRepository implements SprintPodMetricRepository {
   private List<SprintPodMetric> list = new LinkedList<SprintPodMetric>();
 
   public DummyDataSprintPodMetricRepository() {
-    List<Pod> pods = Arrays.asList(
-        new Pod("pod1", Pod.Type.Internal),
-        new Pod("pod2", Pod.Type.Internal),
-        new Pod("pod3", Pod.Type.Internal)       
-    );
+    List<Pod> pods = new ArrayList<Pod>();
 
     List<Sprint> sprints = Arrays.asList(
         newSprint(2014, 01, 1, "sprint-q1-1", null),
@@ -36,11 +34,12 @@ public class DummyDataSprintPodMetricRepository implements SprintPodMetricReposi
         newSprint(2014, 10, 1, "sprint-q4-2", null)
     );
     
-    sprints.forEach(s -> pods.forEach(p -> list.add(newSprintPodMetric(s, p))));
-  }
+    sprints.forEach(s -> 
+        pods.addAll(Arrays.asList(new Pod("pod1", s), new Pod("pod2", s), new Pod("pod3", s)))
+    );
+    pods.forEach(p -> list.add(newSprintPodMetric(p.getSprint(), p)));
 
-  private Release newRelease(String name, Snapshot snapshot, Project project, Date creationDate) {
-    return new Release(name, snapshot, project, creationDate);
+    System.out.println(sprints);
   }
 
   private SprintPodMetric newSprintPodMetric(Sprint sprint, Pod pod) {

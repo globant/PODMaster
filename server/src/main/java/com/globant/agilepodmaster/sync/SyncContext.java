@@ -16,8 +16,6 @@ import lombok.Setter;
  */
 public class SyncContext {
 
-  @Getter
-  private int projectId;
 
   @Getter
   @Setter
@@ -28,11 +26,8 @@ public class SyncContext {
 
   /**
    * Constructor.
-   * 
-   * @param projectId the project id.
    */
-  public SyncContext(final int projectId) {
-    this.projectId = projectId;
+  public SyncContext() {
     logEntries = new ArrayList<SyncLogEntry>();
   }
 

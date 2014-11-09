@@ -36,10 +36,8 @@ public class Sprint extends AbstractEntity {
   @Getter
   private Release release;
   
-  @Getter
   private Date startDate;
 
-  @Getter
   private Date endDate;
 
   /**
@@ -55,5 +53,21 @@ public class Sprint extends AbstractEntity {
     this.release = release;
     this.startDate = new Date(startDate.getTime());
     this.endDate = new Date(endDate.getTime());
+  }
+
+  public Date getStartDate() {
+    //TODO: Use java8 localdate to avoid this uglyness
+    return cloneDate(startDate);
+  }
+  
+  public Date getEndDate() {
+    //TODO: Use java8 localdate to avoid this uglyness
+    return cloneDate(endDate);
+  }
+
+  private Date cloneDate(Date date) {
+    return date != null
+           ? (Date) date.clone()
+           : null;
   }
 }
