@@ -31,7 +31,19 @@ public class QSnapshot extends EntityPathBase<Snapshot> {
 
     public final StringPath name = createString("name");
 
+    public final ListPath<PodMember, QPodMember> podMembers = this.<PodMember, QPodMember>createList("podMembers", PodMember.class, QPodMember.class, PathInits.DIRECT2);
+
+    public final ListPath<Pod, QPod> pods = this.<Pod, QPod>createList("pods", Pod.class, QPod.class, PathInits.DIRECT2);
+
     public final QProduct product;
+
+    public final ListPath<Release, QRelease> releases = this.<Release, QRelease>createList("releases", Release.class, QRelease.class, PathInits.DIRECT2);
+
+    public final SetPath<SprintPodMetric, QSprintPodMetric> sprintMetrics = this.<SprintPodMetric, QSprintPodMetric>createSet("sprintMetrics", SprintPodMetric.class, QSprintPodMetric.class, PathInits.DIRECT2);
+
+    public final ListPath<Sprint, QSprint> sprints = this.<Sprint, QSprint>createList("sprints", Sprint.class, QSprint.class, PathInits.DIRECT2);
+
+    public final ListPath<Task, QTask> tasks = this.<Task, QTask>createList("tasks", Task.class, QTask.class, PathInits.DIRECT2);
 
     //inherited
     public final NumberPath<Integer> version = _super.version;

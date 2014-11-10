@@ -1,12 +1,15 @@
 package com.globant.agilepodmaster.core;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -27,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
-@EqualsAndHashCode(callSuper = false, exclude = { "creationDate", "sprintMetrics" })
+@EqualsAndHashCode(callSuper = false, of = { "name" })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot extends AbstractEntity {
 
@@ -44,9 +47,28 @@ public class Snapshot extends AbstractEntity {
   @Setter(AccessLevel.NONE)
   private Date creationDate;
 
-//  @OneToMany(cascade = {CascadeType.ALL})
   @Getter
-  @Transient
+  @OneToMany(cascade = { CascadeType.ALL })
+  private List<Pod> pods = new ArrayList<Pod>();
+  
+  @Getter
+  @OneToMany(cascade = { CascadeType.ALL })
+  private List<PodMember> podMembers  = new ArrayList<PodMember>();
+
+  @Getter
+  @OneToMany(cascade = { CascadeType.ALL })
+  private List<Release> releases = new ArrayList<Release>();
+  
+  @Getter
+  @OneToMany(cascade = { CascadeType.ALL })
+  private List<Sprint> sprints = new ArrayList<Sprint>();
+  
+  @Getter
+  @OneToMany(cascade = { CascadeType.ALL })
+  private List<Task> tasks = new ArrayList<Task>();
+
+  @Getter
+  @OneToMany(cascade = { CascadeType.ALL })
   private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
 
   /**

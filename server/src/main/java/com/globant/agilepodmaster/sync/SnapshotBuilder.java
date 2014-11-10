@@ -54,38 +54,10 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
   @Autowired
   private SnapshotRepository snapshotRepository;
 
-  @Autowired
-  private ReleaseRepository releaseRepository;
-
-  @Autowired
-  private SprintRepository sprintRepository;
-
-  @Autowired
-  private TaskRepository taskRepository;
-
-  @Autowired 
-  SprintPodMetricRepository sprintPodMetricRepository;
-
-  @Autowired
-  private PodRepository podRepository;
-
-  @Autowired
-  private PodMemberRepository podMemberRepository;
-    
   private Snapshot snapshot; 
   
   private Product product; 
 
-  private List<Release> releases;
-  
-  private List<Sprint> sprints;
-  
-  private List<Task> tasks;
-  
-  private List<Pod> pods;
-  
-  private List<PodMember> podMembers;
-  
   private Map<String, PodMemberDTO> podMembersMap;
   
   @Getter
@@ -97,11 +69,6 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
   public SnapshotBuilder() {
     this.syncContext = new SyncContext();
     this.snapshot = new Snapshot("Snapshot " + new Date());
-    this.pods = new ArrayList<Pod>();
-    this.podMembers = new ArrayList<PodMember>();
-    this.releases = new ArrayList<Release>(); 
-    this.sprints = new ArrayList<Sprint>();
-    this.tasks = new ArrayList<Task>();
     this.podMembersMap = new HashMap<String, PodMemberDTO>();
   }
 
@@ -150,7 +117,7 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
     Assert.notNull(project, "project cannot be null");
     Assert.isTrue((project.getProduct().equals(product)),
         "this project is not of the product being processed");
-    releases.add(new Release(name, snapshot, project));
+    snapshot.getReleases().add(new Release(name, snapshot, project));
     return this;
   }
 
@@ -167,12 +134,12 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
    */
   public SnapshotBuilder addSprint(String name, Date startDate, Date endDate,
       List<TaskDTO> rootTasks) {
-    Assert.notEmpty(releases, "releases cannot be  empty");
-    Release release = releases.get(releases.size() - 1);
+    Assert.notEmpty(snapshot.getReleases(), "releases cannot be  empty");
+    Release release = snapshot.getReleases().get(snapshot.getReleases().size() - 1);
 
     Sprint sprint = new Sprint(name, release, startDate, endDate);
-    sprints.add(sprint);  
-    tasks.addAll(buildTasksTree(rootTasks, release, sprint));  
+    snapshot.getSprints().add(sprint);  
+    snapshot.getTasks().addAll(buildTasksTree(rootTasks, release, sprint));  
     return this;
 
   }
@@ -185,10 +152,10 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
    * @return the same ReleasesBuilder with the backlog data.
    */
   public SnapshotBuilder addBacklog(List<TaskDTO> rootTasks) {
-    Assert.notEmpty(releases, "releases cannot be  empty");
-    Release release = releases.get(releases.size() - 1);
+    Assert.notEmpty(snapshot.getReleases(), "releases cannot be  empty");
+    Release release = snapshot.getReleases().get(snapshot.getReleases().size() - 1);
     
-    tasks.addAll(buildTasksTree(rootTasks, release, null));
+    snapshot.getTasks().addAll(buildTasksTree(rootTasks, release, null));
     
     List<Task> taskList = new ArrayList<Task>();
     for (TaskDTO taskDto : rootTasks) {
@@ -204,23 +171,17 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
    * @return the Snapshot.
    */
   public Snapshot build() {
-    Snapshot result = snapshotRepository.save(snapshot);
     this.createSprintPodMetrics();
-    releaseRepository.save(releases);
-    sprintRepository.save(sprints);
-    podRepository.save(pods);
-    podMemberRepository.save(podMembers);
-    taskRepository.save(tasks);
-    sprintPodMetricRepository.save(snapshot.getSprintMetrics());
+    Snapshot result = snapshotRepository.save(snapshot);
     return result;
   }  
 
   private void createSprintPodMetrics() {
-    for(Pod pod: pods) {
-      for (Sprint sprint: sprints) {
+    for(Pod pod: snapshot.getPods()) {
+      for (Sprint sprint: snapshot.getSprints()) {
         SprintPodMetric spm = new SprintPodMetric(sprint, pod);
         List<Task> allTasks = new LinkedList<Task>();
-        this.collectTasksFrom(pod, sprint, this.tasks, allTasks);
+        this.collectTasksFrom(pod, sprint, snapshot.getTasks(), allTasks);
         
         int vel = allTasks.stream().filter(t -> t.isAccepted()).mapToInt(Task::getActual).sum();
         spm.setAcceptedStoryPoints(vel);
@@ -281,7 +242,7 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
   
   // Assume a member cannot belong to 2 PODs
   private PodMember getFromListOrCreateMember(PodMemberDTO podMemberDTO) {
-    for (PodMember podMember : podMembers) {
+    for (PodMember podMember : snapshot.getPodMembers()) {
       if (podMember.getEmail().equals(podMemberDTO.getUserName())) {
         return podMember;
       }
@@ -290,20 +251,20 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
     
     PodMember newPodMember = new PodMember(podMemberDTO.getFirstName(),
         podMemberDTO.getLastName(), podMemberDTO.getUserName(), pod);
-    podMembers.add(newPodMember);
+    snapshot.getPodMembers().add(newPodMember);
     
     return newPodMember;
   }
   
   
   private Pod getFromListOrCreatePod(String podName) {
-    for (Pod pod : pods) {
+    for (Pod pod : snapshot.getPods()) {
       if (pod.getName().equals(podName)) {
         return pod;
       }
     }
     Pod newPod = new Pod(podName);
-    pods.add(newPod);
+    snapshot.getPods().add(newPod);
     return newPod;
   }
 }

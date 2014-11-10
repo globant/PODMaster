@@ -608,13 +608,172 @@ databaseChangeLog:
                 column:
                   name: sprint_pod_metrics_id
                   type: BIGINT
-                  #### TODO: I don't understand why enabling this constraint fails
-                  # constraints:
+                  constraints:
+                    nullable: false
+                  # TODO: I don't understand why enabling this constraint fails
                   #   foreignKeyName: snapshot_sprint_pod_metrics_sprint_pod_metric_fk
-                  #   nullable: false
                   #   references: sprint_pod_metric
         -
           addPrimaryKey:
             tableName: snapshot_sprint_pod_metrics
             columnNames: snapshot_id, sprint_pod_metrics_id
             constraintName: snapshot_sprint_pod_metrics_pk
+
+        -
+        # create table snapshot_pod_members (snapshot_id bigint not null, pod_members_id bigint not null)
+          createTable:
+            tableName: snapshot_pod_members
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_pod_members_fk_snapshot
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: pod_members_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_pod_members_fk_pod_member
+                    nullable: false
+                    references: pod_member
+        -
+          addPrimaryKey:
+            tableName: snapshot_pod_members
+            columnNames: snapshot_id, pod_members_id
+            constraintName: snapshot_pod_members_pk
+        -
+        #  create table snapshot_pods (snapshot_id bigint not null, pods_id bigint not null)
+          createTable:
+            tableName: snapshot_pods
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_pods_fk_snapshot
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: pods_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_pods_fk_pod
+                    nullable: false
+                    references: pod
+        -
+          addPrimaryKey:
+            tableName: snapshot_pods
+            columnNames: snapshot_id, pods_id
+            constraintName: snapshot_pods_pk
+        -
+        # create table snapshot_releases (snapshot_id bigint not null, releases_id bigint not null)
+          createTable:
+            tableName: snapshot_releases
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_releases_fk_snapshot
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: releases_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_releases_fk_release
+                    nullable: false
+                    references: release
+        -
+          addPrimaryKey:
+            tableName: snapshot_releases
+            columnNames: snapshot_id, releases_id
+            constraintName: snapshot_releases_pk
+        -
+        # create table snapshot_sprint_metrics (snapshot_id bigint not null, sprint_metrics_id bigint not null, primary key (snapshot_id, sprint_metrics_id))
+          createTable:
+            tableName: snapshot_sprint_metrics
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_sprint_metrics_fk_snapshot
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: sprint_metrics_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    # TODO: I don't understand why enabling the constraints fails
+                    # foreignKeyName: snapshot_sprint_metrics_fk_sprint_pod_metric
+                    # references: sprint_pod_metric
+        -
+          addPrimaryKey:
+            tableName: snapshot_sprint_metrics
+            columnNames: snapshot_id, sprint_metrics_id
+            constraintName: snapshot_sprint_metrics_pk
+        -
+        # create table snapshot_sprints (snapshot_id bigint not null, sprints_id bigint not null)
+          createTable:
+            tableName: snapshot_sprints
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_sprints_fk_snapshot
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: sprints_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_sprints_fk_sprint
+                    nullable: false
+                    references: sprint
+        -
+          addPrimaryKey:
+            tableName: snapshot_sprints
+            columnNames: snapshot_id, sprints_id
+            constraintName: snapshot_sprints_pk
+        -
+        # create table snapshot_tasks (snapshot_id bigint not null, tasks_id bigint not null)
+          createTable:
+            tableName: snapshot_tasks
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_tasks_fk_snapshot
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: tasks_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_tasks_fk_task
+                    nullable: false
+                    references: task
+        -
+          addPrimaryKey:
+            tableName: snapshot_tasks
+            columnNames: snapshot_id, tasks_id
+            constraintName: snapshot_tasks_pk
+

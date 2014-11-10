@@ -215,20 +215,20 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     SyncContext context = new SyncContext();
 
     TaskDTO task1 = new TaskDTO.Builder(context).name("task1")
-        .owner("jose@gmail.com").actual(10).build();
+        .owner("jose@gmail.com").actual(10).status("Closed").build();
 
     TaskDTO task2 = new TaskDTO.Builder(context).name("task2")
-        .owner("maria@gmail.com").actual(10).build();
+        .owner("maria@gmail.com").actual(10).status("Closed").build();
 
     TaskDTO task3 = new TaskDTO.Builder(context).name("task3")
-        .owner("ruben@gmail.com").actual(10).build();
+        .owner("ruben@gmail.com").actual(10).status("Closed").build();
 
-    TaskDTO task4 = new TaskDTO.Builder(context).name("task4")
-        .owner("juana@gmail.com").actual(10).build();
+    TaskDTO task4 = new TaskDTO.Builder(context)
+        .owner("juana@gmail.com").actual(10).status("Closed").build();
 
-    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").actual(10).build();
+    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").status("Closed").actual(10).build();
 
-    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").actual(10).build();
+    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").status("Closed").actual(10).build();
 
     TaskDTO task7 = new TaskDTO.Builder(context).name("task7")
         .owner("juana@gmail.com").actual(10).build();
@@ -283,11 +283,11 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     
     List<Task> taskssprint1 = taskRepository.findByReleaseAndSprint(
         releases.get(0), sprints.get(0));
-    assertThat(taskssprint1, hasSize(2));
+    assertThat(taskssprint1, hasSize(3));
 
     List<Task> taskssprint2 = taskRepository.findByReleaseAndSprint(
         releases.get(0), sprints.get(1));
-    assertThat(taskssprint2, hasSize(2));
+    assertThat(taskssprint2, hasSize(3));
 
     Pod pod1 = podRepository.findByName("POD1").iterator().next();
     assertThat(pod1, notNullValue());
@@ -302,16 +302,19 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     assertThat(podMembers, hasSize(1));
     
     BooleanExpression pod1SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
-    Iterable<SprintPodMetric> pod1Spm = sprintPodMetricRepository.findAll(pod1SpmQuery);    
+    assertThat(sprintPodMetricRepository.count(pod1SpmQuery), equalTo(2L));    
+    Iterable<SprintPodMetric> pod1Spm = sprintPodMetricRepository.findAll(pod1SpmQuery);
     for (SprintPodMetric spm: pod1Spm) {
       assertThat(spm.getPod(), equalTo(pod1));
       assertThat(spm.getAcceptedStoryPoints(), equalTo(20));
     }
+
     
     BooleanExpression pod2SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
+    assertThat(sprintPodMetricRepository.count(pod2SpmQuery), equalTo(2L));
     Iterable<SprintPodMetric> pod2Spm = sprintPodMetricRepository.findAll(pod2SpmQuery);
     for (SprintPodMetric spm: pod2Spm) {
-      assertThat(spm.getPod(), equalTo(pod1));
+      assertThat(spm.getPod(), equalTo(pod2));
       assertThat(spm.getAcceptedStoryPoints(), equalTo(20));
     }
   }
