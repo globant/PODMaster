@@ -18,21 +18,14 @@ import org.springframework.util.StringUtils;
 
 import com.globant.agilepodmaster.core.Pod;
 import com.globant.agilepodmaster.core.PodMember;
-import com.globant.agilepodmaster.core.PodMemberRepository;
-import com.globant.agilepodmaster.core.PodRepository;
 import com.globant.agilepodmaster.core.Product;
 import com.globant.agilepodmaster.core.Project;
 import com.globant.agilepodmaster.core.ProjectRepository;
 import com.globant.agilepodmaster.core.Release;
-import com.globant.agilepodmaster.core.ReleaseRepository;
 import com.globant.agilepodmaster.core.Snapshot;
-import com.globant.agilepodmaster.core.SnapshotRepository;
 import com.globant.agilepodmaster.core.Sprint;
 import com.globant.agilepodmaster.core.SprintPodMetric;
-import com.globant.agilepodmaster.core.SprintPodMetricRepository;
-import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
-import com.globant.agilepodmaster.core.TaskRepository;
 import com.globant.agilepodmaster.sync.reading.PodMemberDTO;
 import com.globant.agilepodmaster.sync.reading.PodsBuilder;
 import com.globant.agilepodmaster.sync.reading.Reader;
@@ -50,9 +43,6 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
   
   @Autowired
   private ProjectRepository projectRepository;
-
-  @Autowired
-  private SnapshotRepository snapshotRepository;
 
   private Snapshot snapshot; 
   
@@ -172,8 +162,7 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
    */
   public Snapshot build() {
     this.createSprintPodMetrics();
-    Snapshot result = snapshotRepository.save(snapshot);
-    return result;
+    return snapshot;
   }  
 
   private void createSprintPodMetrics() {

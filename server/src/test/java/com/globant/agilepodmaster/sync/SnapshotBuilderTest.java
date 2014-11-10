@@ -261,13 +261,15 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     podMembersMap.put("maria@gmail.com", memberDTO2);
     podMembersMap.put("ruben@gmail.com", memberDTO3);
 
-    snapshotBuilder.withProduct(product).addMembersMap(podMembersMap)
+    Snapshot snapshot = snapshotBuilder
+        .withProduct(product)
+        .addMembersMap(podMembersMap)
         .addRelease("release1", project.getId())
         .addSprint("sprint1", new Date(), new Date(), taskSprint1)
         .addSprint("sprint2", new Date(), new Date(), taskSprint2)
         .addBacklog(backlog).build();
-
-    Snapshot snapshot = snapshotRepository.findAll().iterator().next();
+    
+    snapshotRepository.save(snapshot);
 
     assertThat(snapshot.getProduct(), equalTo(product));
 
