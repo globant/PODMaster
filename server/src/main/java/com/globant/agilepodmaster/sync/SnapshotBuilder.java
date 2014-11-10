@@ -1,5 +1,21 @@
 package com.globant.agilepodmaster.sync;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import lombok.Getter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
 import com.globant.agilepodmaster.core.Pod;
 import com.globant.agilepodmaster.core.PodMember;
 import com.globant.agilepodmaster.core.PodMemberRepository;
@@ -12,6 +28,8 @@ import com.globant.agilepodmaster.core.ReleaseRepository;
 import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.SnapshotRepository;
 import com.globant.agilepodmaster.core.Sprint;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
@@ -20,21 +38,6 @@ import com.globant.agilepodmaster.sync.reading.PodsBuilder;
 import com.globant.agilepodmaster.sync.reading.Reader;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 import com.globant.agilepodmaster.sync.reading.TaskDTO;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.Getter;
 
 /**
  * Creates a Snapshot in the DB.
@@ -59,6 +62,9 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
 
   @Autowired
   private TaskRepository taskRepository;
+
+  @Autowired 
+  SprintPodMetricRepository sprintPodMetricRepository;
 
   @Autowired
   private PodRepository podRepository;
@@ -199,13 +205,49 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
    */
   public Snapshot build() {
     Snapshot result = snapshotRepository.save(snapshot);
+    this.createSprintPodMetrics();
     releaseRepository.save(releases);
     sprintRepository.save(sprints);
     podRepository.save(pods);
     podMemberRepository.save(podMembers);
     taskRepository.save(tasks);
+    sprintPodMetricRepository.save(snapshot.getSprintMetrics());
     return result;
   }  
+
+  private void createSprintPodMetrics() {
+    for(Pod pod: pods) {
+      for (Sprint sprint: sprints) {
+        SprintPodMetric spm = new SprintPodMetric(sprint, pod);
+        List<Task> allTasks = new LinkedList<Task>();
+        this.collectTasksFrom(pod, sprint, this.tasks, allTasks);
+        
+        int vel = allTasks.stream().filter(t -> t.isAccepted()).mapToInt(Task::getActual).sum();
+        spm.setAcceptedStoryPoints(vel);
+        
+        snapshot.addSprintMetric(spm);
+      }
+    }
+  }
+
+  private void collectTasksFrom(Pod pod, Sprint sprint, List<Task> rootTasks, List<Task> collect) {
+    for(Task task: rootTasks) {
+      if(sprint.equals(task.getSprint()) && pod.equals(pod)) {
+        collect.add(task);
+        Task parent = task.getParentTask();
+        //TODO: Refactor Tasks hierarchy 
+        //      Parents should have references to children, 
+        //      or the builder should keep references to leaf tasks.
+        //      it's complicated to naviate the hierarhcy otherwise.
+        while(parent != null) {
+          if (sprint.equals(task.getSprint()) && pod.equals(pod)) {
+            collect.add(task);
+            parent = parent.getParentTask();
+          }
+        }
+      }
+    }
+  }
 
   List<Task> buildTasksTree(List<TaskDTO> rootTasks, Release release,
       Sprint sprint) {

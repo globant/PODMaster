@@ -592,3 +592,29 @@ databaseChangeLog:
                     foreignKeyName: sprint_pod_metric_sprint_fk
                     nullable: false
                     references: sprint
+        -
+          createTable:
+            tableName: snapshot_sprint_pod_metrics
+            columns:
+              -
+                column:
+                  name: snapshot_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: snapshot_sprint_pod_metrics_snapshot_fk
+                    nullable: false
+                    references: snapshot
+              -
+                column:
+                  name: sprint_pod_metrics_id
+                  type: BIGINT
+                  #### TODO: I don't understand why enabling this constraint fails
+                  # constraints:
+                  #   foreignKeyName: snapshot_sprint_pod_metrics_sprint_pod_metric_fk
+                  #   nullable: false
+                  #   references: sprint_pod_metric
+        -
+          addPrimaryKey:
+            tableName: snapshot_sprint_pod_metrics
+            columnNames: snapshot_id, sprint_pod_metrics_id
+            constraintName: snapshot_sprint_pod_metrics_pk

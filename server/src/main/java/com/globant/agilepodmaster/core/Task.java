@@ -136,5 +136,7 @@ public class Task extends AbstractEntity {
     this.type = Task.Type.valueOf(taskDTO.getType().name());
   }
 
-
+  public boolean isAccepted() {
+    return Status.Closed.equals(status);
+  }
 }

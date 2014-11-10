@@ -7,7 +7,16 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import com.globant.agilepodmaster.AbstractUnitTest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.Organization;
 import com.globant.agilepodmaster.core.OrganizationRepository;
 import com.globant.agilepodmaster.core.Pod;
@@ -18,25 +27,20 @@ import com.globant.agilepodmaster.core.Product;
 import com.globant.agilepodmaster.core.ProductRepository;
 import com.globant.agilepodmaster.core.Project;
 import com.globant.agilepodmaster.core.ProjectRepository;
+import com.globant.agilepodmaster.core.QSprintPodMetric;
 import com.globant.agilepodmaster.core.Release;
 import com.globant.agilepodmaster.core.ReleaseRepository;
 import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.SnapshotRepository;
 import com.globant.agilepodmaster.core.Sprint;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
 import com.globant.agilepodmaster.sync.reading.PodMemberDTO;
 import com.globant.agilepodmaster.sync.reading.TaskDTO;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.mysema.query.types.expr.BooleanExpression;
 
 
 /**
@@ -45,7 +49,7 @@ import java.util.Map;
  * @author jose.dominguez@globant.com
  *
  */
-public class SnapshotBuilderTest extends AbstractUnitTest {
+public class SnapshotBuilderTest extends AbstractIntegrationTest {
 
   @Autowired
   SnapshotBuilder snapshotBuilder;
@@ -76,13 +80,15 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 
   @Autowired
   PodMemberRepository podMemberRepository;
+  
+  @Autowired
+  SprintPodMetricRepository sprintPodMetricRepository;
 
   /**
    * Testing AddWith method. Adding Task with Parent
    */
   @Test
   public void testAddWithParent() {
-
     Organization organization = new Organization("Org Prueba");
     Product product = new Product("Prod Prueba", organization);
     Project project = new Project("Proj Prueba", product);
@@ -108,7 +114,6 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
     assertThat(task2.getName(), is("task2"));
     assertThat(task2.getParentTask(), equalTo(task1));
     assertThat(task2.getSprint().getName(), equalTo("Sprint Prueba"));
-
   }
 
   /**
@@ -150,7 +155,6 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 
     assertThat(task2.getParentTask(), equalTo(task1));
     assertThat(task3.getParentTask(), equalTo(task1));
-
   }
 
   /**
@@ -211,28 +215,36 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
     SyncContext context = new SyncContext();
 
     TaskDTO task1 = new TaskDTO.Builder(context).name("task1")
-        .owner("jose@gmail.com").build();
+        .owner("jose@gmail.com").actual(10).build();
 
     TaskDTO task2 = new TaskDTO.Builder(context).name("task2")
-        .owner("maria@gmail.com").build();
+        .owner("maria@gmail.com").actual(10).build();
 
     TaskDTO task3 = new TaskDTO.Builder(context).name("task3")
-        .owner("ruben@gmail.com").build();
+        .owner("ruben@gmail.com").actual(10).build();
 
     TaskDTO task4 = new TaskDTO.Builder(context).name("task4")
-        .owner("juana@gmail.com").build();
+        .owner("juana@gmail.com").actual(10).build();
 
-    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").build();
+    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").actual(10).build();
 
-    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").build();
+    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").actual(10).build();
+
+    TaskDTO task7 = new TaskDTO.Builder(context).name("task7")
+        .owner("juana@gmail.com").actual(10).build();
+
+    TaskDTO task8 = new TaskDTO.Builder(context).name("task8")
+        .owner("maria@gmail.com").actual(10).build();
 
     List<TaskDTO> taskSprint1 = new ArrayList<TaskDTO>();
     taskSprint1.add(task1);
     taskSprint1.add(task2);
+    taskSprint1.add(task8);
 
     List<TaskDTO> taskSprint2 = new ArrayList<TaskDTO>();
     taskSprint2.add(task3);
     taskSprint2.add(task4);
+    taskSprint2.add(task7);
 
     List<TaskDTO> backlog = new ArrayList<TaskDTO>();
     backlog.add(task5);
@@ -277,18 +289,30 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
         releases.get(0), sprints.get(1));
     assertThat(taskssprint2, hasSize(2));
 
-    List<Pod> pods = podRepository.findByName("POD1");
-    assertThat(pods, notNullValue());
+    Pod pod1 = podRepository.findByName("POD1").iterator().next();
+    assertThat(pod1, notNullValue());
 
-    List<PodMember> podMembers = podMemberRepository.findByPod(pods.get(0));
+    List<PodMember> podMembers = podMemberRepository.findByPod(pod1);
     assertThat(podMembers, hasSize(2));
 
-    pods = podRepository.findByName("POD2");
-    assertThat(pods, hasSize(1));
+    Pod pod2 = podRepository.findByName("POD2").iterator().next();
+    assertThat(pod2, notNullValue());
 
-    podMembers = podMemberRepository.findByPod(pods.get(0));
+    podMembers = podMemberRepository.findByPod(pod2);
     assertThat(podMembers, hasSize(1));
-
+    
+    BooleanExpression pod1SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
+    Iterable<SprintPodMetric> pod1Spm = sprintPodMetricRepository.findAll(pod1SpmQuery);    
+    for (SprintPodMetric spm: pod1Spm) {
+      assertThat(spm.getPod(), equalTo(pod1));
+      assertThat(spm.getAcceptedStoryPoints(), equalTo(20));
+    }
+    
+    BooleanExpression pod2SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
+    Iterable<SprintPodMetric> pod2Spm = sprintPodMetricRepository.findAll(pod2SpmQuery);
+    for (SprintPodMetric spm: pod2Spm) {
+      assertThat(spm.getPod(), equalTo(pod1));
+      assertThat(spm.getAcceptedStoryPoints(), equalTo(20));
+    }
   }
-
 }

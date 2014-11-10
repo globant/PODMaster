@@ -1,13 +1,12 @@
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.springframework.util.Assert;
-
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -15,6 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+
+import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Snapshot represents a set of data read from different data sources through
@@ -24,7 +27,7 @@ import lombok.Setter;
  *
  */
 @Entity
-@EqualsAndHashCode(callSuper = false, exclude = { "creationDate" })
+@EqualsAndHashCode(callSuper = false, exclude = { "creationDate", "sprintMetrics" })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Snapshot extends AbstractEntity {
 
@@ -41,12 +44,18 @@ public class Snapshot extends AbstractEntity {
   @Setter(AccessLevel.NONE)
   private Date creationDate;
 
+//  @OneToMany(cascade = {CascadeType.ALL})
+  @Getter
+  @Transient
+  private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
+
   /**
    * Constructor.
    * 
    * @param name the name of the snapshot.
    */
   public Snapshot(String name) {
+    
     super();
     this.name = name;
   }
@@ -70,4 +79,7 @@ public class Snapshot extends AbstractEntity {
     this.creationDate = new Date(creationDate.getTime());
   }
 
+  public void addSprintMetric(SprintPodMetric spm) {
+    this.sprintMetrics.add(spm);
+  }
 }
