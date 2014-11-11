@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.util.Assert;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
