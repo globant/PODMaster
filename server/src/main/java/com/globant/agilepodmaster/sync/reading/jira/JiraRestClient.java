@@ -1,9 +1,13 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.globant.agilepodmaster.sync.EncryptionException;
+import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
+import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
+import com.globant.agilepodmaster.sync.reading.jira.responses.IssuesSearchResult;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
@@ -11,17 +15,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.globant.agilepodmaster.sync.EncryptionException;
-import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
-import com.globant.agilepodmaster.sync.reading.jira.responses.IssuesSearchResult;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class gets data through Jira API Rest.
@@ -30,7 +34,9 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprin
  *
  */
 public class JiraRestClient {
+  
   private RestTemplate restTemplate;
+
 
   private static final int MAX_SEARCH_SIZE = 60;
   
@@ -40,6 +46,8 @@ public class JiraRestClient {
       + ",components,assignee,created,issuetype,status,resolution"
       + ",resolutiondate,timetracking,labels";
 
+  private static final String FIELD_LIST_URL = "rest/api/latest/field";  
+  
   private static final String SPRINT_LIST_URL = "rest/greenhopper/1.0/"
       + "sprintquery/{id}?includeFutureSprints=true&"
       + "includeHistoricSprints=true";
@@ -51,11 +59,14 @@ public class JiraRestClient {
   private static final String SEARCH_URL = "rest/api/latest/search?jql={jql}"
       + "&fields={fields},{customFields}&startAt={startAt}&maxResults={pageSize}";
 
-  private List<String> customFields = new ArrayList<String>();
 
   protected HttpEntity<String> request;
 
   protected String rootUrl;
+  
+  protected CustomFieldDefinition[] customFieldDefinitions;
+  
+  protected Map<String, String> replacements;
 
   /**
    * Constructor.
@@ -89,10 +100,19 @@ public class JiraRestClient {
 
     request = new HttpEntity<String>(headers);
     rootUrl = jiraRoot;
+    
     restTemplate = jiraAPI;
-
+    
   }
+  
+  protected CustomFieldDefinition[] getCustomFieldDefinitions() {
+    ResponseEntity<CustomFieldDefinition[]> responseEntity = restTemplate
+        .exchange(rootUrl + FIELD_LIST_URL, HttpMethod.GET, request,
+            CustomFieldDefinition[].class);
 
+    return responseEntity.getBody();
+  }
+  
   protected List<SprintItem> getSprintList(final String rapidViewId) {
     ResponseEntity<SprintList> responseEntity = restTemplate.exchange(rootUrl
         + SPRINT_LIST_URL, HttpMethod.GET, request, SprintList.class,
@@ -111,23 +131,55 @@ public class JiraRestClient {
 
 
   protected List<Issue> getSprintIssues(final int sprintId) {
-    return searchIssues("sprint=" + sprintId, DEFAUL_FIELD_LIST);
+    if (ObjectUtils.isEmpty(customFieldDefinitions)) {
+      customFieldDefinitions = getCustomFieldDefinitions();    
+    }
+    
+    CustomFieldReplacements customFieldReplacements = new CustomFieldReplacements(
+        customFieldDefinitions);
+    
+    replacements = customFieldReplacements.getCustomFieldReplacements();
+    CustomFieldsNaming customFieldsNaming = new CustomFieldsNaming(replacements);
+    
+    List<HttpMessageConverter<?>> converters = new ArrayList<>();
+    converters.add(new JacksonConverter(customFieldsNaming));
+    restTemplate.setMessageConverters(converters);
+    
+    String customFields = StringUtils.collectionToCommaDelimitedString(replacements.values());
+    
+    //TODO remove message converter at the end.
+    
+    return searchIssues("sprint=" + sprintId, DEFAUL_FIELD_LIST, customFields);
   }
 
   protected List<Issue> getBacklogIssues(final String projectName) {
+    CustomFieldReplacements customFieldReplacements = new CustomFieldReplacements(
+        customFieldDefinitions);
+    
+    replacements = customFieldReplacements.getCustomFieldReplacements();
+    CustomFieldsNaming customFieldsNaming = new CustomFieldsNaming(replacements);
+    
+    List<HttpMessageConverter<?>> converters = new ArrayList<>();
+    converters.add(new JacksonConverter(customFieldsNaming));
+    restTemplate.setMessageConverters(converters);
+ 
+    String customFields = StringUtils.collectionToCommaDelimitedString(replacements.values());
+   
+    
+    
+    
     return searchIssues("sprint=null AND project=\"" + projectName + "\"",
-        DEFAUL_FIELD_LIST);
+        DEFAUL_FIELD_LIST, customFields);
   }
 
-  private List<Issue> searchIssues(String jql, String fields) {
+  private List<Issue> searchIssues(String jql, String fields, String customfields) {
     List<Issue> issues = new ArrayList<Issue>();
     boolean moreContent = true;
     int startAt = 0;
     while (moreContent) {
       ResponseEntity<IssuesSearchResult> responseEntity = restTemplate
           .exchange(rootUrl + SEARCH_URL, HttpMethod.GET, request,
-              IssuesSearchResult.class, jql, fields,
-              StringUtils.collectionToCommaDelimitedString(this.customFields),
+              IssuesSearchResult.class, jql, fields, customfields,
               startAt, MAX_SEARCH_SIZE);
 
       IssuesSearchResult issuesSearchResult = responseEntity.getBody();
@@ -145,6 +197,7 @@ public class JiraRestClient {
     }
     return issues;
   }
+  
 
-
+  
 }
