@@ -123,7 +123,7 @@ public class JiraRestClientTest extends AbstractUnitTest {
             requestTo("https://jira.corp.globant.com/rest/api/latest/search?"
                 + "jql=sprint%3D728&fields=key,parent,priority,summary"
                 + ",components,assignee,created,issuetype,status,resolution"
-                + ",resolutiondate,timetracking,labels,customfield_10002,customfield_10106"
+                + ",resolutiondate,timetracking,labels,customfield_10106,customfield_10002"
                 + "&startAt=0&maxResults=60"))
         .andExpect(method(HttpMethod.GET))
         .andRespond(

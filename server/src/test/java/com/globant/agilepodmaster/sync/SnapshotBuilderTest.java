@@ -7,15 +7,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.Organization;
 import com.globant.agilepodmaster.core.OrganizationRepository;
@@ -41,6 +32,15 @@ import com.globant.agilepodmaster.core.TaskRepository;
 import com.globant.agilepodmaster.sync.reading.PodMemberDTO;
 import com.globant.agilepodmaster.sync.reading.TaskDTO;
 import com.mysema.query.types.expr.BooleanExpression;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
