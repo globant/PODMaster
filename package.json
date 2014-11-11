@@ -19,6 +19,8 @@
     "grunt-contrib-connect": "~0.5.0",
     "grunt-css": "~0.5.4",
     "grunt-jscs": "^0.6.1",
-    "grunt-docco": "~0.3.3"
+    "grunt-docco": "~0.3.3",
+    "lodash-cli": "~2.4.2",
+    "grunt-lodash": "~0.3.0"
   }
 }

@@ -79,7 +79,7 @@ module.exports = function(grunt) {
     jshint: {
       all: [
         'Gruntfile.js', PATH_ASSETS_JS + '/**/*.js',
-        '!' + PATH_ASSETS_JS + '/vendor/**/*.js',
+        '!' + PATH_ASSETS + '/vendor/**/*.js',
         '!' + PATH_ASSETS_JS + '/app/templates.js'
       ]
     },
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
       files: {
         src: [
           'Gruntfile.js', PATH_ASSETS_JS + '/**/*.js',
-          '!' + PATH_ASSETS_JS + '/vendor/**/*.js',
+          '!' + PATH_ASSETS + '/vendor/**/*.js',
           '!' + PATH_ASSETS_JS + '/app/templates.js'
         ]
       },
@@ -207,6 +207,40 @@ module.exports = function(grunt) {
           }
         }
       },
+    },
+
+    //##lodash custom build task
+    lodash:{
+      build:{
+        dest: PATH_ASSETS + '/vendor/lodash/custom.js',
+        options:{
+          modifier:'modern',
+          //modularize:true,
+          //category: ['collections', 'functions'],
+          exports: ['amd'],
+          iife: '!function(window,undefined){%output%}(this)',
+          //plus: [],
+          moduleId: 'underscore',
+          flags: [
+            '--minify',
+            'source-map'
+          ],
+
+        }
+      },
+      modularized:{
+        dest: PATH_ASSETS + '/vendor/lodash/modules',
+        options:{
+          modifier:'modern',
+          modularize:true,
+          //category: ['collections', 'functions'],
+          exports: ['amd'],
+          iife: '!function(window,undefined){%output%}(this)'
+          //plus: [],
+          //moduleId: 'underscore',
+
+        }
+      }
     }
   });
 
@@ -224,6 +258,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-prompt');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-lodash');
 
   grunt.registerTask('default', 'build:dev');
 
@@ -239,10 +274,21 @@ module.exports = function(grunt) {
     'imagemin'
   ]);
 
-  grunt.registerTask('build:dev', ['clean', 'bower', 'jshint:all', 'handlebars',
-    'csslint:lax', 'copy', 'concat'
+  grunt.registerTask('build:dev', [
+    'clean',
+    'bower',
+    'jshint:all',
+    'handlebars',
+    'csslint:lax',
+    'copy',
+    'concat'
   ]);
-    // serve task
+
+  grunt.registerTask('build:lodash', [
+    'lodash:modularized'
+  ]);
+
+  // serve task
   grunt.registerTask('serve', function() {
     grunt.task.run([
     'connect:server'
