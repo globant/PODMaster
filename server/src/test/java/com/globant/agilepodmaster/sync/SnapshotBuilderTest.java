@@ -217,39 +217,6 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
     TaskDTO task8 = new TaskDTO.Builder(context).name("task8").status("Closed").actual(10).build(); //no pod
     TaskDTO task6 = new TaskDTO.Builder(context).name("task5").owner("juana@gmail.com").actual(10).build(); //pod 2
 
-
-    List<TaskDTO> taskSprint1 = new ArrayList<TaskDTO>();
-    taskSprint1.add(task1);
-    taskSprint1.add(task2);
-    taskSprint1.add(task3);
-
-    List<TaskDTO> taskSprint2 = new ArrayList<TaskDTO>();
-    taskSprint2.add(task4);
-    taskSprint2.add(task5);
-    taskSprint2.add(task6);
-
-    List<TaskDTO> backlog = new ArrayList<TaskDTO>();
-    backlog.add(task7);
-    backlog.add(task8);
-
-    PodMemberDTO memberDTO1 = new PodMemberDTO("jose@gmail.com", "Jose",
-        "Dominguez", "POD1");
-    PodMemberDTO memberDTO2 = new PodMemberDTO("maria@gmail.com", "Maria",
-        "Gomez", "POD1");
-    PodMemberDTO memberDTO3 = new PodMemberDTO("ruben@gmail.com", "Ruben",
-        "Dartes", "POD2");
-    Map<String, PodMemberDTO> podMembersMap = new HashMap<String, PodMemberDTO>();
-    podMembersMap.put("jose@gmail.com", memberDTO1);
-    podMembersMap.put("maria@gmail.com", memberDTO2);
-    podMembersMap.put("ruben@gmail.com", memberDTO3);
-//    Organization organization = new Organization("Org Prueba");
-//    Product product = new Product("Prod Prueba", organization);
-//    Project project = new Project("Proj Prueba", product);
-
-//    organizationRepository.save(organization);
-//    product = productRepository.save(product);
-//    project = projectRepository.save(project);
-
     snapshotBuilder
     .withPod("POD1")
       .withPodMember("Jose", "Dominguez", "jose@gmail.com").addToPod()
@@ -382,8 +349,6 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
     snapshotRepository.save(snapshot);
 
     
-//    List<Release> releases = releaseRepository.findBySnapshot(snapshot);
-
     Set<Release> releases = snapshotRepository.findOne(snapshot.getId()).getReleases();
     assertThat(releases, hasSize(1));
 
