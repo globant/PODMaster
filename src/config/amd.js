@@ -6,6 +6,7 @@ require.config({
     'marionette': '../vendor/marionette/lib/core/backbone.marionette',
     'backbone.wreqr' : '../vendor/backbone.wreqr/lib/backbone.wreqr',
     'backbone.babysitter' : '../vendor/backbone.babysitter/lib/backbone.babysitter',
+    'cocktail' : '../vendor/cocktail/Cocktail',
     //##JQuery
     'jquery' : '../vendor/jquery/dist/jquery',
     'modernizr' : '../vendor/modernizr/modernizr',

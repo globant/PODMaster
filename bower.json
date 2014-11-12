@@ -17,6 +17,7 @@
     "lodash": "2.4.1",
     "normalize-css": "3.0.2",
     "handlebars": "~2.0.0",
-    "requirejs-hbs": "~0.1.1"
+    "requirejs-hbs": "~0.1.1",
+    "cocktail": "~0.5.9"
   }
 }
