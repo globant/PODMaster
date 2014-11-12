@@ -23,9 +23,8 @@ import lombok.Setter;
 
 /**
  * Reads releases, sprints, task, backlog.
- * 
- * @author jose.dominguez@globant.com
  *
+ * @author jose.dominguez@globant.com
  */
 @Service
 public class ReleasesReader implements Reader<ReleasesBuilder> {
@@ -206,7 +205,4 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     }
     return null;
   }
-
-
-
 }

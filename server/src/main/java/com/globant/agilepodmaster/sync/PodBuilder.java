@@ -10,7 +10,7 @@ public class PodBuilder extends AbstractBuilder<SnapshotBuilder, PodMemberBuilde
 
     pod = new Pod(name);
   }
-  
+
   public PodMemberBuilder withPodMember(String fistname, String lastname, String email) {
     PodMemberBuilder nestedBuilder = new PodMemberBuilder(fistname, lastname, email, pod, this);
     this.addNestedBuilder(nestedBuilder);
