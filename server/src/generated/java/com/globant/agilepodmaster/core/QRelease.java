@@ -33,8 +33,6 @@ public class QRelease extends EntityPathBase<Release> {
 
     public final QProject project;
 
-    public final QSnapshot snapshot;
-
     //inherited
     public final NumberPath<Integer> version = _super.version;
 
@@ -57,7 +55,6 @@ public class QRelease extends EntityPathBase<Release> {
     public QRelease(Class<? extends Release> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
-        this.snapshot = inits.isInitialized("snapshot") ? new QSnapshot(forProperty("snapshot"), inits.get("snapshot")) : null;
     }
 
 }

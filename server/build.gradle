@@ -89,7 +89,7 @@ dependencies {
   compile("org.springframework.boot:spring-boot-starter-actuator")
   // end::actuator[]
 
-  runtime("org.liquibase:liquibase-core")
+  //runtime("org.liquibase:liquibase-core")
 
   testCompile("junit:junit")
   testCompile("org.springframework.boot:spring-boot-starter-test")

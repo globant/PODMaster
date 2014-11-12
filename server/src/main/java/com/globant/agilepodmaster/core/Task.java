@@ -1,10 +1,8 @@
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.globant.agilepodmaster.sync.reading.TaskDTO;
-
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -15,6 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A task can be a User Story, Bug or Task. It can belong to a Sprint or
@@ -27,67 +28,79 @@ import lombok.Setter;
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class Task extends AbstractEntity {
 
   /**
    * Kind of statuses of Tasks.
    */
   public static enum Status {
-    Pending, InProgress, Closed
+    PENDING, INPROGRESS, CLOSED
   }
 
   /**
    * Kind of types of Tasks.
    */
   public static enum Type {
-    UserStory, Bug, Task
+    USERSTORY, BUG, TASK
   }
 
   /**
    * Kind of priorities of Tasks.
    */
   public static enum Priority {
-    Low, Medium, High, Critical
+    LOW, MEDIUM, HIGH, CRITICAL
   }
 
   /**
    * Kind of severities of Tasks.
    */  
   public static enum Severity {
-    Low, Medium, High, Critical
+    LOW, MEDIUM, HIGH, CRITICAL
   }
 
-  @NonNull
   @Getter
+  @Setter(AccessLevel.PACKAGE)
   private String name;
 
   @Getter
+  @Setter(AccessLevel.PACKAGE)
   private double effort;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private int estimated;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private int actual;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private int remaining;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private double accuracy;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private Status status;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private Severity severity;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private Priority priority;
 
   @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private Type type;
   
+  @Getter  
+  @Setter(AccessLevel.PACKAGE)
   private Date createdDate;
 
   @Getter
@@ -98,11 +111,12 @@ public class Task extends AbstractEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
+  @Getter
   private Release release;
 
   @OneToOne
   @JsonIgnore
-  @Setter
+  @Setter(AccessLevel.PACKAGE)
   @Getter
   private Task parentTask;
   
@@ -120,23 +134,13 @@ public class Task extends AbstractEntity {
    * @param parentTask parent task.
    * @param taskDTO task DTO.
    */
-  public Task(Release release, Sprint sprint, Task parentTask, TaskDTO taskDTO) {
+  public Task(Release release, Sprint sprint, Task parentTask) {
     this.release = release;
     this.sprint = sprint;
     this.parentTask = parentTask;
-    this.name = taskDTO.getName();
-    this.createdDate = taskDTO.getCreateDate();
-    this.actual = taskDTO.getActual();
-    this.effort = taskDTO.getEffort();
-    this.estimated = taskDTO.getEstimated();
-    this.remaining = taskDTO.getRemaining();
-    this.priority = Task.Priority.valueOf(taskDTO.getPriority().name());
-    this.severity = Task.Severity.valueOf(taskDTO.getSeverity().name());
-    this.status = Task.Status.valueOf(taskDTO.getStatus().name());
-    this.type = Task.Type.valueOf(taskDTO.getType().name());
   }
 
   public boolean isAccepted() {
-    return Status.Closed.equals(status);
+    return Status.CLOSED.equals(status);
   }
 }

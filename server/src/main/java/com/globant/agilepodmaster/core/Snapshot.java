@@ -1,15 +1,12 @@
 package com.globant.agilepodmaster.core;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -19,8 +16,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Snapshot represents a set of data read from different data sources through
@@ -37,38 +32,46 @@ public class Snapshot extends AbstractEntity {
   @NonNull
   private String name;
 
-  @NonNull
-  @ManyToOne
-  @JsonIgnore
-  @Setter
-  @Getter
-  private Product product;
-
   @Setter(AccessLevel.NONE)
+  @NotNull
   private Date creationDate;
-
-  @Getter
-  @OneToMany(cascade = { CascadeType.ALL })
-  private List<Pod> pods = new ArrayList<Pod>();
   
   @Getter
-  @OneToMany(cascade = { CascadeType.ALL })
-  private List<PodMember> podMembers  = new ArrayList<PodMember>();
-
-  @Getter
-  @OneToMany(cascade = { CascadeType.ALL })
-  private List<Release> releases = new ArrayList<Release>();
+  @OneToMany
+//  @Cascade({CascadeType.ALL})
+  private Set<Pod> pods = new HashSet<Pod>();
   
   @Getter
-  @OneToMany(cascade = { CascadeType.ALL })
-  private List<Sprint> sprints = new ArrayList<Sprint>();
+  @OneToMany
+//  @Cascade({CascadeType.ALL})
+  private Set<PodMember> podMembers  = new HashSet<PodMember>();
   
   @Getter
-  @OneToMany(cascade = { CascadeType.ALL })
-  private List<Task> tasks = new ArrayList<Task>();
+  @OneToMany
+  private Set<Organization> organizations = new HashSet<Organization>();
+  
+  @Getter
+  @OneToMany
+  private Set<Product> products = new HashSet<Product>();
 
   @Getter
-  @OneToMany(cascade = { CascadeType.ALL })
+  @OneToMany
+  private Set<Project> projects = new HashSet<Project>();
+
+  @Getter
+  @OneToMany
+  private Set<Release> releases = new HashSet<Release>();
+  
+  @Getter
+  @OneToMany
+  private Set<Sprint> sprints = new HashSet<Sprint>();
+  
+  @Getter
+  @OneToMany
+  private Set<Task> tasks = new HashSet<Task>();
+
+  @Getter
+  @OneToMany
   private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
 
   /**
@@ -79,7 +82,6 @@ public class Snapshot extends AbstractEntity {
   public Snapshot(String name) {
     
     super();
-    this.name = name;
   }
 
   /**
@@ -102,6 +104,39 @@ public class Snapshot extends AbstractEntity {
   }
 
   public void addSprintMetric(SprintPodMetric spm) {
-    this.sprintMetrics.add(spm);
+    sprintMetrics.add(spm);
+  }
+
+  public void addOrganization(Organization organization) {
+    organizations.add(organization);
+  }
+
+  public void addProject(Project project) {
+    projects.add(project);
+  }
+
+  public void addProduct(Product product) {
+    products.add(product);
+  }
+  
+  public void addRelease(Release release) {
+//    release.setSnapshot(this);
+    releases.add(release);
+  }
+
+  public void addSprint(Sprint sprint) {
+    sprints.add(sprint);
+  }
+
+  public void addTask(Task task) {
+    tasks.add(task);
+  }
+
+  public void addPod(Pod pod) {
+    pods.add(pod);
+  }
+
+  public void addPodMember(PodMember podMember) {
+    podMembers.add(podMember);
   }
 }
