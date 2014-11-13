@@ -11,6 +11,40 @@
         <meta name="description" content="Project description">
         <meta name="viewport" content="width=device-width">
 
+        <style>
+            body {
+                font: 14px sans-serif;
+                margin: 15px 20px;
+            }
+            h2 {
+                margin: 0 0 5px;
+            }
+            section#content>div {
+                height: 200px;
+                width: 100%;
+                margin: 0 0 20px;
+            }
+
+            /* Common chart styles */
+            svg .axis path,
+            svg .axis line {
+                fill: none;
+                stroke: #ddd;
+                shape-rendering: crispEdges;
+            }
+
+
+            /* Bar chart styles */
+            svg .x.axis .domain {
+                display: none;
+            }
+
+            svg .bar {
+                fill: steelblue;
+            }
+
+        </style>
+
         <!--
         <link rel="stylesheet" href="css/normalize.css">
         -->

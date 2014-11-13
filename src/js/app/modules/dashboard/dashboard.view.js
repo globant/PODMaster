@@ -1,9 +1,10 @@
 define(
   [
     'marionette',
+    'backbone',
     'hbs!app/modules/dashboard/dashboard'
   ],
-  function(Marionette, template) {
+  function(Marionette, Backbone, template) {
     'use strict';
 
     var DashboardView = Marionette.LayoutView.extend({
@@ -11,10 +12,11 @@ define(
       el: 'section.main',
 
       template: template,
+
       regions:{
         menu:'#menu',
         content: '#content'
-      },
+      }
 
     });
 
