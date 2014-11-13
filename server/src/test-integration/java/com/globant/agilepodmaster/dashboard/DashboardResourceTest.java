@@ -26,9 +26,6 @@ import java.net.URI;
  *
  */
 public class DashboardResourceTest extends AbstractIntegrationTest {
-  private static final String BASE_URL = "http://localhost:" + SERVER_PORT
-      + "/dashboards";
-
   /**
    * Inserts through the service a dashboard to the db and then remove it using
    * also the service. Finally check through the service that the dashboard does
@@ -37,6 +34,8 @@ public class DashboardResourceTest extends AbstractIntegrationTest {
    */
   @Test
   public void shouldCreateFollowAndDelete() {
+    final String BASE_URL = "http://localhost:" + this.getServerPort() + "/dashboards";
+
     String requestJson = DashboardJsonFixtures.createDashboard(Dashboard.DashboardType.Account)
         .withWidget("Widget Title", "Widget Name").buildJson();
 
