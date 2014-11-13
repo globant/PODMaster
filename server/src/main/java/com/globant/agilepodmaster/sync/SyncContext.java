@@ -1,5 +1,6 @@
 package com.globant.agilepodmaster.sync;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class manages basically logging during synchronization process.
@@ -14,9 +16,9 @@ import lombok.Setter;
  * @author jose.dominguez@globant.com
  *
  */
+@Slf4j
 public class SyncContext {
-
-
+  
   @Getter
   @Setter
   private int elementCount;
@@ -36,6 +38,7 @@ public class SyncContext {
    * @param message the message.
    */
   public void info(String message) {
+    log.info(message);
     logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Info", message));
   }
 
@@ -44,6 +47,7 @@ public class SyncContext {
    * @param message the message.
    */
   public void warn(String message) {
+    log.warn(message);
     logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Warn", message));
   }
 
@@ -52,6 +56,7 @@ public class SyncContext {
    * @param message the message.
    */
   public void error(String message) {
+    log.error(message);
     logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Error", message));
   }
 

@@ -775,5 +775,48 @@ databaseChangeLog:
           addPrimaryKey:
             tableName: snapshot_tasks
             columnNames: snapshot_id, tasks_id
-            constraintName: snapshot_tasks_pk
-
+            constraintName: snapshot_tasks_pk                                      
+  -
+    changeSet:
+      id: insert test data
+      author: jose.dominguez
+      changes:
+      - insert:
+          tableName: organization
+          columns:
+          - column:
+              name: id
+              value: 3001             
+          - column:
+              name: version
+              value: 1        
+          - column:
+              name: name
+              value: EA                                         
+      - insert:
+          tableName: product
+          columns:
+          - column:
+              name: id
+              value: 3002            
+          - column:
+              name: version
+              value: 1        
+          - column:
+              name: name
+              value: FIFA14 
+          - column:
+              name: organization_id
+              value: 3001  
+      - insert:
+          tableName: project
+          columns:
+          - column:
+              name: version
+              value: 1        
+          - column:
+              name: name
+              value: TeammateIntelligence
+          - column:
+              name: product_id
+              value: 3002   

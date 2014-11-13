@@ -1,9 +1,5 @@
 package com.globant.agilepodmaster;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -22,6 +18,10 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Spring Boot application.
@@ -73,8 +73,8 @@ public class AgilePodMaster extends SpringBootServletInitializer {
     @Bean
     public RestTemplate restTemplate() {
       HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-      factory.setReadTimeout(50000);
-      factory.setConnectTimeout(15000);
+      factory.setReadTimeout(100000);
+      factory.setConnectTimeout(50000);
       
       RestTemplate restTemplate = new RestTemplate(factory);
 
@@ -97,5 +97,7 @@ public class AgilePodMaster extends SpringBootServletInitializer {
       return new DefaultCurieProvider(CURIE_NAMESPACE, new UriTemplate(
           "http://localhost:8080/alps/{rel}"));
     }
+    
+
   }
 }
