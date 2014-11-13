@@ -25,6 +25,7 @@ import lombok.Setter;
 public class Project extends AbstractEntity {
   
   @NonNull
+  @Getter
   private String name;
   
   @Getter

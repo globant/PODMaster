@@ -1,5 +1,6 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import com.globant.agilepodmaster.sync.DataSourceConexionException;
 import com.globant.agilepodmaster.sync.EncryptionException;
 import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
@@ -10,6 +11,8 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,6 +22,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
@@ -37,6 +41,8 @@ public class JiraRestClient {
   
   private RestTemplate restTemplate;
 
+  private static final Logger logger = LoggerFactory
+      .getLogger("com.globant.agilepodmaster.sync.reading.jira.JiraRestClient");
 
   private static final int MAX_SEARCH_SIZE = 60;
   
@@ -106,25 +112,40 @@ public class JiraRestClient {
   }
   
   protected CustomFieldDefinition[] getCustomFieldDefinitions() {
-    ResponseEntity<CustomFieldDefinition[]> responseEntity = restTemplate
-        .exchange(rootUrl + FIELD_LIST_URL, HttpMethod.GET, request,
-            CustomFieldDefinition[].class);
-
+    ResponseEntity<CustomFieldDefinition[]> responseEntity = null;
+    try {
+      responseEntity = restTemplate.exchange(rootUrl + FIELD_LIST_URL,
+          HttpMethod.GET, request, CustomFieldDefinition[].class);
+    } catch (RestClientException e) {
+      logger.error("Cannot get custom field definitions", e);
+      throw new DataSourceConexionException(
+          "Cannot get custom field definitions", e);
+    }
     return responseEntity.getBody();
   }
   
   protected List<SprintItem> getSprintList(final String rapidViewId) {
-    ResponseEntity<SprintList> responseEntity = restTemplate.exchange(rootUrl
-        + SPRINT_LIST_URL, HttpMethod.GET, request, SprintList.class,
-        rapidViewId);
+    ResponseEntity<SprintList> responseEntity = null;
+    try {
+      responseEntity = restTemplate.exchange(rootUrl + SPRINT_LIST_URL,
+          HttpMethod.GET, request, SprintList.class, rapidViewId);
+    } catch (RestClientException e) {
+      logger.error("Cannot get sprint list", e);
+      throw new DataSourceConexionException("Cannot get sprint list", e);
+    } 
     SprintList sprintList = responseEntity.getBody();
     return sprintList.getSprints();
   }
 
   protected Sprint getSprint(final int sprintId, final String rapidViewId) {
-    ResponseEntity<SprintReport> responseReportEntity = restTemplate.exchange(
-        rootUrl + SPRINT_REPORT_URL, HttpMethod.GET, request,
-        SprintReport.class, rapidViewId, sprintId);
+    ResponseEntity<SprintReport> responseReportEntity = null;
+    try {
+      responseReportEntity = restTemplate.exchange(rootUrl + SPRINT_REPORT_URL,
+          HttpMethod.GET, request, SprintReport.class, rapidViewId, sprintId);
+    } catch (RestClientException e) {
+      logger.error("Cannot get a sprint", e);
+      throw new DataSourceConexionException("Cannot get a sprint ", e);
+    }
     SprintReport sprintReport = responseReportEntity.getBody();
     return sprintReport.getSprint();
   }
@@ -164,9 +185,6 @@ public class JiraRestClient {
     restTemplate.setMessageConverters(converters);
  
     String customFields = StringUtils.collectionToCommaDelimitedString(replacements.values());
-   
-    
-    
     
     return searchIssues("sprint=null AND project=\"" + projectName + "\"",
         DEFAUL_FIELD_LIST, customFields);
@@ -177,10 +195,15 @@ public class JiraRestClient {
     boolean moreContent = true;
     int startAt = 0;
     while (moreContent) {
-      ResponseEntity<IssuesSearchResult> responseEntity = restTemplate
-          .exchange(rootUrl + SEARCH_URL, HttpMethod.GET, request,
-              IssuesSearchResult.class, jql, fields, customfields,
-              startAt, MAX_SEARCH_SIZE);
+      ResponseEntity<IssuesSearchResult> responseEntity = null;
+      try {
+        responseEntity = restTemplate.exchange(rootUrl + SEARCH_URL,
+            HttpMethod.GET, request, IssuesSearchResult.class, jql, fields,
+            customfields, startAt, MAX_SEARCH_SIZE);
+      } catch (RestClientException e) {
+        logger.error("Cannot get issues", e);
+        throw new DataSourceConexionException("Cannot get issues", e);
+      }
 
       IssuesSearchResult issuesSearchResult = responseEntity.getBody();
 

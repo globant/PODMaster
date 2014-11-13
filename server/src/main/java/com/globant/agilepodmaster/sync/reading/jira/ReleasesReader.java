@@ -8,6 +8,8 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +30,7 @@ import lombok.Setter;
  *
  */
 @Service
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReleasesReader implements Reader<ReleasesBuilder> {
 
   @Setter

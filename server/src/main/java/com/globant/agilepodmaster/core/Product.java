@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.Setter;
 public class Product extends AbstractEntity {
   
   @NonNull
+  @Getter
   private String name;
   
   @NonNull

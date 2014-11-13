@@ -1,5 +1,8 @@
 package com.globant.agilepodmaster.sync;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +18,9 @@ import lombok.Setter;
  *
  */
 public class SyncContext {
+  
+  private static final Logger logger = LoggerFactory
+      .getLogger("com.globant.agilepodmaster.sync.SyncContext");
 
 
   @Getter
@@ -36,6 +42,7 @@ public class SyncContext {
    * @param message the message.
    */
   public void info(String message) {
+    logger.info(message);
     logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Info", message));
   }
 
@@ -44,6 +51,7 @@ public class SyncContext {
    * @param message the message.
    */
   public void warn(String message) {
+    logger.warn(message);
     logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Warn", message));
   }
 
@@ -52,6 +60,7 @@ public class SyncContext {
    * @param message the message.
    */
   public void error(String message) {
+    logger.error(message);
     logEntries.add(new SyncLogEntry(logEntries.size() + 1, "Error", message));
   }
 
