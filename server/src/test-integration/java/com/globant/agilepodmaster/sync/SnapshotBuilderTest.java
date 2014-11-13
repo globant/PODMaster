@@ -217,26 +217,26 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     SyncContext context = new SyncContext();
 
     TaskDTO task1 = new TaskDTO.Builder(context).name("task1")
-        .owner("jose@gmail.com").actual(10).status("Closed").build();
+        .owner("jose@gmail.com").effort(10).status("Closed").build();
 
     TaskDTO task2 = new TaskDTO.Builder(context).name("task2")
-        .owner("maria@gmail.com").actual(10).status("Closed").build();
+        .owner("maria@gmail.com").effort(10).status("Closed").build();
 
     TaskDTO task3 = new TaskDTO.Builder(context).name("task3")
-        .owner("ruben@gmail.com").actual(10).status("Closed").build();
+        .owner("ruben@gmail.com").effort(10).status("Closed").build();
 
     TaskDTO task4 = new TaskDTO.Builder(context)
-        .owner("ruben@gmail.com").actual(10).status("Closed").build();
+        .owner("ruben@gmail.com").effort(10).status("Closed").build();
 
-    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").status("Closed").actual(10).build();
+    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").status("Closed").effort(10).build();
 
-    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").status("Closed").actual(10).build();
+    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").status("Closed").effort(10).build();
 
     TaskDTO task7 = new TaskDTO.Builder(context).name("task7")
-        .owner("juana@gmail.com").actual(10).build();
+        .owner("juana@gmail.com").effort(10).build();
 
     TaskDTO task8 = new TaskDTO.Builder(context).name("task8")
-        .owner("maria@gmail.com").actual(10).build();
+        .owner("maria@gmail.com").effort(10).build();
 
     List<TaskDTO> taskSprint1 = new ArrayList<TaskDTO>();
     taskSprint1.add(task1);

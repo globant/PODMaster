@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import lombok.Getter;
 
@@ -172,8 +173,9 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
         List<Task> allTasks = new LinkedList<Task>();
         this.collectTasksFrom(pod, sprint, snapshot.getTasks(), allTasks);
         
-        int vel = allTasks.stream().filter(t -> t.isAccepted()).mapToInt(Task::getActual).sum();
-        spm.setAcceptedStoryPoints(vel);
+        Stream<Task> tasks = allTasks.stream();
+        double vel = tasks.filter(t -> t.isAccepted()).mapToDouble(Task::getEffort).sum();
+        spm.setAcceptedStoryPoints((int) vel);
         
         snapshot.addSprintMetric(spm);
       }
