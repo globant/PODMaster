@@ -22,7 +22,7 @@ public class QTask extends EntityPathBase<Task> {
 
     public static final QTask task = new QTask("task");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     public final NumberPath<Double> accuracy = createNumber("accuracy", Double.class);
 
@@ -35,7 +35,7 @@ public class QTask extends EntityPathBase<Task> {
     public final NumberPath<Integer> estimated = createNumber("estimated", Integer.class);
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
@@ -51,6 +51,9 @@ public class QTask extends EntityPathBase<Task> {
 
     public final EnumPath<Task.Severity> severity = createEnum("severity", Task.Severity.class);
 
+    // inherited
+    public final QSnapshot snapshot;
+
     public final QSprint sprint;
 
     public final EnumPath<Task.Status> status = createEnum("status", Task.Status.class);
@@ -58,7 +61,7 @@ public class QTask extends EntityPathBase<Task> {
     public final EnumPath<Task.Type> type = createEnum("type", Task.Type.class);
 
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QTask(String variable) {
         this(Task.class, forVariable(variable), INITS);
@@ -78,10 +81,14 @@ public class QTask extends EntityPathBase<Task> {
 
     public QTask(Class<? extends Task> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
         this.owner = inits.isInitialized("owner") ? new QPodMember(forProperty("owner"), inits.get("owner")) : null;
         this.parentTask = inits.isInitialized("parentTask") ? new QTask(forProperty("parentTask"), inits.get("parentTask")) : null;
         this.release = inits.isInitialized("release") ? new QRelease(forProperty("release"), inits.get("release")) : null;
+        this.snapshot = _super.snapshot;
         this.sprint = inits.isInitialized("sprint") ? new QSprint(forProperty("sprint"), inits.get("sprint")) : null;
+        this.version = _super.version;
     }
 
 }

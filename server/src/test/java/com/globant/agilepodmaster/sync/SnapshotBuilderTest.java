@@ -5,11 +5,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -36,7 +33,6 @@ import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
-import com.globant.agilepodmaster.sync.reading.PodMemberDTO;
 import com.globant.agilepodmaster.sync.reading.TaskDTO;
 import com.mysema.query.types.expr.BooleanExpression;
 
@@ -337,15 +333,6 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
     
     Snapshot snapshot = snapshotBuilder.build();
 
-    podRepository.save(snapshot.getPods());
-    podMemberRepository.save(snapshot.getPodMembers());
-    organizationRepository.save(snapshot.getOrganizations());
-    productRepository.save(snapshot.getProducts());
-    projectRepository.save(snapshot.getProjects());
-    releaseRepository.save(snapshot.getReleases());
-    sprintRepository.save(snapshot.getSprints());
-    taskRepository.save(snapshot.getTasks());
-    sprintPodMetricRepository.save(snapshot.getSprintMetrics());
     snapshotRepository.save(snapshot);
 
     

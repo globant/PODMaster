@@ -22,21 +22,24 @@ public class QPodMember extends EntityPathBase<PodMember> {
 
     public static final QPodMember podMember = new QPodMember("podMember");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     public final StringPath email = createString("email");
 
     public final StringPath firstName = createString("firstName");
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath lastName = createString("lastName");
 
     public final QPod pod;
 
+    // inherited
+    public final QSnapshot snapshot;
+
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QPodMember(String variable) {
         this(PodMember.class, forVariable(variable), INITS);
@@ -56,7 +59,11 @@ public class QPodMember extends EntityPathBase<PodMember> {
 
     public QPodMember(Class<? extends PodMember> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod")) : null;
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
+        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
+        this.snapshot = _super.snapshot;
+        this.version = _super.version;
     }
 
 }

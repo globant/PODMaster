@@ -1,7 +1,5 @@
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -12,6 +10,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Product of an organization. It is composed of one or more projects.
  * @author jose.dominguez@globant.com
@@ -21,7 +21,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class Product extends AbstractEntity {
+public class Product extends SnapshotEntity {
   
   @NonNull
   private String name;

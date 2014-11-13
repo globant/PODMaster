@@ -23,7 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @ToString
-public class PodMember extends AbstractEntity {
+public class PodMember extends SnapshotEntity {
 
   @Getter
   @NonNull

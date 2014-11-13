@@ -2,7 +2,6 @@ package com.globant.agilepodmaster.core;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -29,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class Task extends AbstractEntity {
+public class Task extends SnapshotEntity {
 
   /**
    * Kind of statuses of Tasks.

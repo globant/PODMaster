@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -37,41 +38,39 @@ public class Snapshot extends AbstractEntity {
   private Date creationDate;
   
   @Getter
-  @OneToMany
-//  @Cascade({CascadeType.ALL})
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Pod> pods = new HashSet<Pod>();
   
   @Getter
-  @OneToMany
-//  @Cascade({CascadeType.ALL})
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<PodMember> podMembers  = new HashSet<PodMember>();
-  
+
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Organization> organizations = new HashSet<Organization>();
-  
+
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Product> products = new HashSet<Product>();
 
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Project> projects = new HashSet<Project>();
 
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Release> releases = new HashSet<Release>();
   
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Sprint> sprints = new HashSet<Sprint>();
   
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<Task> tasks = new HashSet<Task>();
 
   @Getter
-  @OneToMany
+  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
   private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
 
   /**
@@ -80,7 +79,6 @@ public class Snapshot extends AbstractEntity {
    * @param name the name of the snapshot.
    */
   public Snapshot(String name) {
-    
     super();
   }
 
@@ -104,39 +102,47 @@ public class Snapshot extends AbstractEntity {
   }
 
   public void addSprintMetric(SprintPodMetric spm) {
+    spm.setSnapshot(this);
     sprintMetrics.add(spm);
   }
 
   public void addOrganization(Organization organization) {
+    organization.setSnapshot(this);
     organizations.add(organization);
   }
 
   public void addProject(Project project) {
+    project.setSnapshot(this);
     projects.add(project);
   }
 
   public void addProduct(Product product) {
+    product.setSnapshot(this);
     products.add(product);
   }
   
   public void addRelease(Release release) {
-//    release.setSnapshot(this);
+    release.setSnapshot(this);
     releases.add(release);
   }
 
   public void addSprint(Sprint sprint) {
+    sprint.setSnapshot(this);
     sprints.add(sprint);
   }
 
   public void addTask(Task task) {
+    task.setSnapshot(this);
     tasks.add(task);
   }
 
   public void addPod(Pod pod) {
+    pod.setSnapshot(this);
     pods.add(pod);
   }
 
   public void addPodMember(PodMember podMember) {
+    podMember.setSnapshot(this);
     podMembers.add(podMember);
   }
 }

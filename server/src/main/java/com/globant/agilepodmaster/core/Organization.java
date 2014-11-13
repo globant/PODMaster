@@ -18,7 +18,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class Organization extends AbstractEntity {
+public class Organization extends SnapshotEntity {
   
   @NonNull
   private String name;

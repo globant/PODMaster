@@ -19,7 +19,7 @@ import org.hibernate.annotations.Immutable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class SprintPodMetric extends AbstractEntity {
+public class SprintPodMetric extends SnapshotEntity {
   @NonNull @Getter
   @ManyToOne @NotNull
   private Sprint sprint;

@@ -7,6 +7,7 @@ import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
 import javax.annotation.Generated;
 import com.mysema.query.types.Path;
+import com.mysema.query.types.path.PathInits;
 
 
 /**
@@ -17,30 +18,47 @@ public class QOrganization extends EntityPathBase<Organization> {
 
     private static final long serialVersionUID = -1267230421L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QOrganization organization = new QOrganization("organization");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     public final StringPath description = createString("description");
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
+    // inherited
+    public final QSnapshot snapshot;
+
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QOrganization(String variable) {
-        super(Organization.class, forVariable(variable));
+        this(Organization.class, forVariable(variable), INITS);
     }
 
     public QOrganization(Path<? extends Organization> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
     public QOrganization(PathMetadata<?> metadata) {
-        super(Organization.class, metadata);
+        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    }
+
+    public QOrganization(PathMetadata<?> metadata, PathInits inits) {
+        this(Organization.class, metadata, inits);
+    }
+
+    public QOrganization(Class<? extends Organization> type, PathMetadata<?> metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
+        this.snapshot = _super.snapshot;
+        this.version = _super.version;
     }
 
 }

@@ -22,10 +22,10 @@ public class QRelease extends EntityPathBase<Release> {
 
     public static final QRelease release = new QRelease("release");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
@@ -33,8 +33,11 @@ public class QRelease extends EntityPathBase<Release> {
 
     public final QProject project;
 
+    // inherited
+    public final QSnapshot snapshot;
+
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QRelease(String variable) {
         this(Release.class, forVariable(variable), INITS);
@@ -54,7 +57,11 @@ public class QRelease extends EntityPathBase<Release> {
 
     public QRelease(Class<? extends Release> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
         this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
+        this.snapshot = _super.snapshot;
+        this.version = _super.version;
     }
 
 }

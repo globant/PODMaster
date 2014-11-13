@@ -7,6 +7,7 @@ import com.mysema.query.types.path.*;
 import com.mysema.query.types.PathMetadata;
 import javax.annotation.Generated;
 import com.mysema.query.types.Path;
+import com.mysema.query.types.path.PathInits;
 
 
 /**
@@ -17,28 +18,45 @@ public class QPod extends EntityPathBase<Pod> {
 
     private static final long serialVersionUID = -1275646131L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QPod pod = new QPod("pod");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
+    // inherited
+    public final QSnapshot snapshot;
+
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QPod(String variable) {
-        super(Pod.class, forVariable(variable));
+        this(Pod.class, forVariable(variable), INITS);
     }
 
     public QPod(Path<? extends Pod> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
     public QPod(PathMetadata<?> metadata) {
-        super(Pod.class, metadata);
+        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    }
+
+    public QPod(PathMetadata<?> metadata, PathInits inits) {
+        this(Pod.class, metadata, inits);
+    }
+
+    public QPod(Class<? extends Pod> type, PathMetadata<?> metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
+        this.snapshot = _super.snapshot;
+        this.version = _super.version;
     }
 
 }

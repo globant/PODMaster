@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class Release extends AbstractEntity {
+public class Release extends SnapshotEntity {
   
   private int number;
   
