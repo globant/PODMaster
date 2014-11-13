@@ -7,7 +7,7 @@ define(
 
     var AppRouter = Marionette.AppRouter.extend({
       appRoutes: {
-        '': 'handleDefaultRoute'
+        'index/*url': 'handleDefaultRoute'
       }
     });
 

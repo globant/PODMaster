@@ -1,38 +1,46 @@
-define(
-  [
-    'backbone',
-    'marionette',
-    '../../entities/dashboard.model',
-    './dashboard.view',
-    '../widgets/barChart'
-  ],
-  function(Backbone, Marionette, DashboardModel, DashboardView, BarChart) {
+
+//jshint unused:false
+define(function(require) {
     'use strict';
+    var
+      $              = require('jquery'),
+      //ejemplo        = require('json!modules/dashboard/ejemplo.json'),
+      _              = require('underscore'),
+      Backbone       = require('backbone'),
+      Marionette     = require('marionette'),
+      DashboardModel = require('entities/dashboard.model'),
+      DashboardView  = require('modules/dashboard/dashboard.view'),
+      AreaChart      = require('widgets/areaChart'),
+      chartModel     = require('lib/chartModel'),
 
-    var DashboardController = Marionette.Controller.extend({
+      moment         = require('moment'),
 
-      handleDefaultRoute: function() {
+    DashboardController = Marionette.Controller.extend({
+
+      handleDefaultRoute: function(path, params) {
         //jshint unused:false
-        var dashboardView = new DashboardView(),
+        var
+          theCollection = new chartModel.ChartSeries(),
+          dashboardView = new DashboardView(),
           // Create chart object
-          chart = new BarChart({
-
+          chart = new AreaChart({
           // View options
           el: this.el,
-          collection: new Backbone.Collection([
-            {A:10, B:20},
-            {A:40, B:10},
-            {A:50, B:30}
-          ]),
-
-          // Override default options to match data
-          // (use default margins)
-          xAttr: 'A',
-          yAttr: 'B'
+          collection: theCollection,
+          xFormat: function(date) {
+            return moment(date).format('YYYY/[Q]Q');
+          }
+        });
+        $.ajax({
+          url: path + '?' + params,
+          headers: {
+            Accept: 'application/hal+json, application/json, */*; q=0.01'
+          }
+        }).then(function(data) {
+          theCollection.reset(data, {parse: true});
         });
         // Render the outer element
         dashboardView.render();
-        // Render the chart (Sets margins, gets scales, renders data)
         dashboardView.content.show(chart);
       }
 

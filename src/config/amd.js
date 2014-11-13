@@ -9,6 +9,7 @@ require.config({
     'cocktail' : '../vendor/cocktail/Cocktail',
     //##JQuery
     'jquery' : '../vendor/jquery/dist/jquery',
+    'moment' : '../vendor/moment/moment',
     'modernizr' : '../vendor/modernizr/modernizr',
     //##Handlebars
     'handlebars': '../vendor/handlebars/handlebars',
@@ -18,7 +19,9 @@ require.config({
     'text' : 'https://rawgit.com/requirejs/text/master/text',
     'json' : 'https://rawgit.com/millermedeiros/requirejs-plugins/master/src/json',
     //##Paths
-    'widgets' : 'app/widgets'
+    'modules' : 'app/modules',
+    'widgets' : 'app/modules/widgets',
+    'entities' : 'app/entities'
   },
 
   //##Shims

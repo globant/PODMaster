@@ -16,17 +16,20 @@ define(
       template: false,
 
       initialize: function() {
-
         _.defaults(
           this.options,
           _.result(this, 'defaults')
         );
 
-        Marionette.ItemView.prototype.initialize(this, arguments);
+        // jscs:disable disallowDanglingUnderscores
+        this.__super__ = Marionette.ItemView.prototype;
+        this.__super__.initialize(this, arguments);
+        // jscs:enable disallowDanglingUnderscores
+        this.collection.bind('change reset add remove', this.render, this);
       },
 
-      onShow: function() {
-
+      render: function() {
+        this.ensureSVGElement();
         this.renderMargins();
 
         this.scales = this.getScales();
@@ -34,17 +37,42 @@ define(
         this.renderAxes();
         this.renderData();
       },
+
+      ensureSVGElement: function() {
+        if ( this.svg ) {
+          return;
+        }
+        this.svg = d3.select(this.el).append('svg').append('g');
+      },
+
       // Get the minimum or maximum value over the whole data for linear scales
       getLinearExtent: function(attr, minmax) {
-        // Return either one extreme or whole extent
-        if (minmax) {
-          return _[minmax](this.collection.pluck(attr));
-        } else {
+        // Return extent over all series
+        var
+          opts = this.options,
+          collection = this.collection,
+          getLinearExtents = function(minmax) {
+            var
+              boundary = _[minmax],
+              rank = _.property(attr),
+              valuesAttr = opts.valuesAttr,
+              seriesExtents = collection.map(
+                function(series) {
+                  var
+                    values = series.get(valuesAttr),
+                    bounds = boundary(values, rank);
+                  return bounds[attr];
+                },
+              this);
+            return _[minmax](seriesExtents);
+          };
+        if (!minmax) {
           return [
-            this.getLinearExtent(attr, 'min'),
-            this.getLinearExtent(attr, 'max')
+            getLinearExtents('min'),
+            getLinearExtents('max')
           ];
         }
+        return getLinearExtents(minmax);
       },
 
       // Get the x value for a datum

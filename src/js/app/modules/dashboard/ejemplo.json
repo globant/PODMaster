@@ -1,0 +1,80 @@
+{
+  "aggregated": [
+    {
+      "partitions": [
+        {
+          "key": "POD2",
+          "partition": "pod"
+        },
+        {
+          "key": "2014/Q2",
+          "partition": "year/quarter"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "velocity",
+          "value": 300,
+          "unit": "story points"
+        }
+      ]
+    },
+    {
+      "partitions": [
+        {
+          "key": "2014/Q1",
+          "partition": "year/quarter"
+        },
+        {
+          "key": "POD1",
+          "partition": "pod"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "velocity",
+          "value": 240,
+          "unit": "story points"
+        }
+      ]
+    },
+    {
+      "partitions": [
+        {
+          "key": "POD1",
+          "partition": "pod"
+        },
+        {
+          "key": "2014/Q2",
+          "partition": "year/quarter"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "velocity",
+          "value": 300,
+          "unit": "story points"
+        }
+      ]
+    },
+    {
+      "partitions": [
+        {
+          "key": "POD2",
+          "partition": "pod"
+        },
+        {
+          "key": "2014/Q1",
+          "partition": "year/quarter"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "velocity",
+          "value": 360,
+          "unit": "story points"
+        }
+      ]
+    }
+  ]
+}
