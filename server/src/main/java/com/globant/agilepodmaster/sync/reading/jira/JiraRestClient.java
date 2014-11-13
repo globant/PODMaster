@@ -11,8 +11,6 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,29 +29,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class gets data through Jira API Rest.
  * 
  * @author jose.dominguez@globant.com
  *
  */
+@Slf4j
 public class JiraRestClient {
-  
+
   private RestTemplate restTemplate;
 
-  private static final Logger logger = LoggerFactory
-      .getLogger("com.globant.agilepodmaster.sync.reading.jira.JiraRestClient");
-
   private static final int MAX_SEARCH_SIZE = 60;
-  
+
   private static final String UTF8_CHARSET = "UTF8";
 
   private static final String DEFAUL_FIELD_LIST = "key,parent,priority,summary"
       + ",components,assignee,created,issuetype,status,resolution"
       + ",resolutiondate,timetracking,labels";
 
-  private static final String FIELD_LIST_URL = "rest/api/latest/field";  
-  
+  private static final String FIELD_LIST_URL = "rest/api/latest/field";
+
   private static final String SPRINT_LIST_URL = "rest/greenhopper/1.0/"
       + "sprintquery/{id}?includeFutureSprints=true&"
       + "includeHistoricSprints=true";
@@ -69,9 +67,9 @@ public class JiraRestClient {
   protected HttpEntity<String> request;
 
   protected String rootUrl;
-  
+
   protected CustomFieldDefinition[] customFieldDefinitions;
-  
+
   protected Map<String, String> replacements;
 
   /**
@@ -82,12 +80,8 @@ public class JiraRestClient {
    * @param jiraRoot root path where Jira is running.
    * @param jiraAPI the rest template used to access the jira api
    */
-
-  protected JiraRestClient(
-      final String username, 
-      final String password,
-      final String jiraRoot, 
-      final RestTemplate jiraAPI) {
+  protected JiraRestClient(final String username, final String password,
+      final String jiraRoot, final RestTemplate jiraAPI) {
     final String plainCreds = username + ":" + password;
 
     String base64Creds;
@@ -106,33 +100,33 @@ public class JiraRestClient {
 
     request = new HttpEntity<String>(headers);
     rootUrl = jiraRoot;
-    
+
     restTemplate = jiraAPI;
-    
+
   }
-  
+
   protected CustomFieldDefinition[] getCustomFieldDefinitions() {
     ResponseEntity<CustomFieldDefinition[]> responseEntity = null;
     try {
       responseEntity = restTemplate.exchange(rootUrl + FIELD_LIST_URL,
           HttpMethod.GET, request, CustomFieldDefinition[].class);
     } catch (RestClientException e) {
-      logger.error("Cannot get custom field definitions", e);
+      log.error("Cannot get custom field definitions", e);
       throw new DataSourceConexionException(
           "Cannot get custom field definitions", e);
     }
     return responseEntity.getBody();
   }
-  
+
   protected List<SprintItem> getSprintList(final String rapidViewId) {
     ResponseEntity<SprintList> responseEntity = null;
     try {
       responseEntity = restTemplate.exchange(rootUrl + SPRINT_LIST_URL,
           HttpMethod.GET, request, SprintList.class, rapidViewId);
     } catch (RestClientException e) {
-      logger.error("Cannot get sprint list", e);
+      log.error("Cannot get sprint list", e);
       throw new DataSourceConexionException("Cannot get sprint list", e);
-    } 
+    }
     SprintList sprintList = responseEntity.getBody();
     return sprintList.getSprints();
   }
@@ -143,7 +137,7 @@ public class JiraRestClient {
       responseReportEntity = restTemplate.exchange(rootUrl + SPRINT_REPORT_URL,
           HttpMethod.GET, request, SprintReport.class, rapidViewId, sprintId);
     } catch (RestClientException e) {
-      logger.error("Cannot get a sprint", e);
+      log.error("Cannot get a sprint", e);
       throw new DataSourceConexionException("Cannot get a sprint ", e);
     }
     SprintReport sprintReport = responseReportEntity.getBody();
@@ -153,44 +147,47 @@ public class JiraRestClient {
 
   protected List<Issue> getSprintIssues(final int sprintId) {
     if (ObjectUtils.isEmpty(customFieldDefinitions)) {
-      customFieldDefinitions = getCustomFieldDefinitions();    
+      customFieldDefinitions = getCustomFieldDefinitions();
     }
-    
+
     CustomFieldReplacements customFieldReplacements = new CustomFieldReplacements(
         customFieldDefinitions);
-    
+
     replacements = customFieldReplacements.getCustomFieldReplacements();
     CustomFieldsNaming customFieldsNaming = new CustomFieldsNaming(replacements);
-    
+
     List<HttpMessageConverter<?>> converters = new ArrayList<>();
     converters.add(new JacksonConverter(customFieldsNaming));
     restTemplate.setMessageConverters(converters);
-    
-    String customFields = StringUtils.collectionToCommaDelimitedString(replacements.values());
-    
-    //TODO remove message converter at the end.
-    
+
+    String customFields = StringUtils
+        .collectionToCommaDelimitedString(replacements.values());
+
+    // TODO remove message converter at the end.
+
     return searchIssues("sprint=" + sprintId, DEFAUL_FIELD_LIST, customFields);
   }
 
   protected List<Issue> getBacklogIssues(final String projectName) {
     CustomFieldReplacements customFieldReplacements = new CustomFieldReplacements(
         customFieldDefinitions);
-    
+
     replacements = customFieldReplacements.getCustomFieldReplacements();
     CustomFieldsNaming customFieldsNaming = new CustomFieldsNaming(replacements);
-    
+
     List<HttpMessageConverter<?>> converters = new ArrayList<>();
     converters.add(new JacksonConverter(customFieldsNaming));
     restTemplate.setMessageConverters(converters);
- 
-    String customFields = StringUtils.collectionToCommaDelimitedString(replacements.values());
-    
+
+    String customFields = StringUtils
+        .collectionToCommaDelimitedString(replacements.values());
+
     return searchIssues("sprint=null AND project=\"" + projectName + "\"",
         DEFAUL_FIELD_LIST, customFields);
   }
 
-  private List<Issue> searchIssues(String jql, String fields, String customfields) {
+  private List<Issue> searchIssues(String jql, String fields,
+      String customfields) {
     List<Issue> issues = new ArrayList<Issue>();
     boolean moreContent = true;
     int startAt = 0;
@@ -201,7 +198,7 @@ public class JiraRestClient {
             HttpMethod.GET, request, IssuesSearchResult.class, jql, fields,
             customfields, startAt, MAX_SEARCH_SIZE);
       } catch (RestClientException e) {
-        logger.error("Cannot get issues", e);
+        log.error("Cannot get issues", e);
         throw new DataSourceConexionException("Cannot get issues", e);
       }
 
@@ -220,7 +217,7 @@ public class JiraRestClient {
     }
     return issues;
   }
-  
 
-  
+
+
 }

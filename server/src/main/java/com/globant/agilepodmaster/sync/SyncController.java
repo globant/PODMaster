@@ -13,11 +13,12 @@ import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
 import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.data.rest.webmvc.RepositoryLinksResource;
+import org.springframework.hateoas.ResourceProcessor;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -32,11 +33,12 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-public class SyncController {
+import lombok.extern.slf4j.Slf4j;
 
-  private static final Logger logger = LoggerFactory
-      .getLogger("com.globant.agilepodmaster.sync.SyncController");
+@RestController
+@Slf4j
+public class SyncController implements
+    ResourceProcessor<RepositoryLinksResource> {
 
   @Autowired
   SnapshotBuilder snapshotBuilder;
@@ -70,6 +72,13 @@ public class SyncController {
 
   @Value("${gopods.jira.urlroot:https://jira.corp.globant.com/}")
   private String urlRoot;
+  
+  @Override
+  public RepositoryLinksResource process(RepositoryLinksResource resource) {
+      resource.add(ControllerLinkBuilder.linkTo( SyncController.class).withRel("sync"));
+
+      return resource;
+  }
 
   @RequestMapping(value = "/sync", method = RequestMethod.POST)
   public SyncContext sync(
@@ -138,7 +147,7 @@ public class SyncController {
   public class EntiryNotFoundException extends RuntimeException {
     public EntiryNotFoundException(String msg) {
       super(msg);
-      logger.error(msg);
+      log.error(msg);
     }
   }
 
@@ -146,7 +155,7 @@ public class SyncController {
   public class PropertyNotFoundException extends RuntimeException {
     public PropertyNotFoundException(String msg) {
       super(msg);
-      logger.error(msg);
+      log.error(msg);
     }
   }
 
