@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,8 +51,8 @@ import com.mysema.query.types.expr.BooleanExpression;
  * @author jose.dominguez@globant.com
  *
  */
+@Slf4j
 public class SnapshotBuilderTest extends AbstractIntegrationTest {
-
   @Autowired
   SnapshotBuilder snapshotBuilder;
 
@@ -224,7 +226,7 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
         .owner("ruben@gmail.com").actual(10).status("Closed").build();
 
     TaskDTO task4 = new TaskDTO.Builder(context)
-        .owner("juana@gmail.com").actual(10).status("Closed").build();
+        .owner("ruben@gmail.com").actual(10).status("Closed").build();
 
     TaskDTO task5 = new TaskDTO.Builder(context).name("task5").status("Closed").actual(10).build();
 
@@ -303,12 +305,15 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     podMembers = podMemberRepository.findByPod(pod2);
     assertThat(podMembers, hasSize(1));
     
+    Sprint sprint1 = sprints.stream().filter(s->"sprint1".equals(s.getName())).findAny().get();
+    Sprint sprint2 = sprints.stream().filter(s->"sprint2".equals(s.getName())).findAny().get();
+
     BooleanExpression pod1SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
     assertThat(sprintPodMetricRepository.count(pod1SpmQuery), equalTo(2L));    
     Iterable<SprintPodMetric> pod1Spm = sprintPodMetricRepository.findAll(pod1SpmQuery);
     for (SprintPodMetric spm: pod1Spm) {
       assertThat(spm.getPod(), equalTo(pod1));
-      assertThat(spm.getAcceptedStoryPoints(), equalTo(20));
+      assertThat(spm.getAcceptedStoryPoints(), equalTo(sprint1.equals(spm.getSprint())? 20 : 0));
     }
 
     
@@ -317,7 +322,12 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     Iterable<SprintPodMetric> pod2Spm = sprintPodMetricRepository.findAll(pod2SpmQuery);
     for (SprintPodMetric spm: pod2Spm) {
       assertThat(spm.getPod(), equalTo(pod2));
-      assertThat(spm.getAcceptedStoryPoints(), equalTo(20));
+      int expected = sprint2.equals(spm.getSprint())? 20 : 0;
+      log.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+      log.error(spm.getSprint() + ":" + spm.getAcceptedStoryPoints());
+      log.error("expected: " + expected);
+      log.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+      assertThat(spm.getAcceptedStoryPoints(), equalTo(expected));
     }
   }
 }

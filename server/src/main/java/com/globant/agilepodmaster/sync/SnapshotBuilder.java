@@ -182,7 +182,7 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
 
   private void collectTasksFrom(Pod pod, Sprint sprint, List<Task> rootTasks, List<Task> collect) {
     for(Task task: rootTasks) {
-      if(sprint.equals(task.getSprint()) && pod.equals(pod)) {
+      if(sprint.equals(task.getSprint()) && task.getOwner() != null && task.getOwner().getPod().equals(pod)) {
         collect.add(task);
         Task parent = task.getParentTask();
         //TODO: Refactor Tasks hierarchy 
@@ -190,8 +190,8 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
         //      or the builder should keep references to leaf tasks.
         //      it's complicated to naviate the hierarhcy otherwise.
         while(parent != null) {
-          if (sprint.equals(task.getSprint()) && pod.equals(pod)) {
-            collect.add(task);
+          if (sprint.equals(parent.getSprint()) && parent.getOwner() != null && parent.getOwner().getPod().equals(pod)) {
+            collect.add(parent);
             parent = parent.getParentTask();
           }
         }
