@@ -33,7 +33,6 @@ import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
-import com.globant.agilepodmaster.sync.reading.TaskDTO;
 import com.mysema.query.types.expr.BooleanExpression;
 
 
@@ -95,7 +94,7 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 //    snapshotBuilder.addTask(taskDTO1, null, release, sprint, taskList);
 //
 //    Task task1 = taskList.get(0);
-//    assertThat(task1.getName(), is("task1"));
+//    assertThat("task1", is("task1"));
 //    assertThat(task1.getParentTask(), nullValue());
 //
 //    TaskDTO taskDTO2 = new TaskDTO.Builder(context).name("task2").build();
@@ -103,7 +102,7 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 //    snapshotBuilder.addTask(taskDTO2, task1, release, sprint, taskList);
 //
 //    Task task2 = taskList.get(1);
-//    assertThat(task2.getName(), is("task2"));
+//    assertThat("task2", is("task2"));
 //    assertThat(task2.getParentTask(), equalTo(task1));
 //    assertThat(task2.getSprint().getName(), equalTo("Sprint Prueba"));
 //  }
@@ -137,13 +136,13 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 //    snapshotBuilder.addTask(taskDTO1, null, release, sprint, taskList);
 //
 //    Task task1 = taskList.get(0);
-//    assertThat(task1.getName(), is("task1"));
+//    assertThat("task1", is("task1"));
 //
 //    Task task2 = taskList.get(1);
-//    assertThat(task2.getName(), is("task2"));
+//    assertThat("task2", is("task2"));
 //
 //    Task task3 = taskList.get(2);
-//    assertThat(task3.getName(), is("task3"));
+//    assertThat("task3", is("task3"));
 //
 //    assertThat(task2.getParentTask(), equalTo(task1));
 //    assertThat(task3.getParentTask(), equalTo(task1));
@@ -175,10 +174,10 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 //    snapshotBuilder.addTask(taskDTO1, null, release, sprint, taskList);
 //
 //    Task task1 = taskList.get(0);
-//    assertThat(task1.getName(), is("task1"));
-//    assertThat(task1.getOwner(), notNullValue());
+//    assertThat("task1", is("task1"));
+//    assertThat("jose@gmail.com", notNullValue());
 //
-//    PodMember podMember = task1.getOwner();
+//    PodMember podMember = "jose@gmail.com";
 //    assertThat(podMember.getEmail(), is("jose@gmail.com"));
 //    assertThat(podMember.getFirstName(), is("Jose"));
 //    assertThat(podMember.getLastName(), is("Dominguez"));
@@ -193,25 +192,9 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
    */
   @Test
   public void testBuild() {
-//    List<Project> list = (List<Project>) projectRepository.findAll();
-
     SyncContext context = new SyncContext();
 
     SnapshotBuilder snapshotBuilder = new SnapshotBuilder(context);
-
-    //Sprint 1
-    TaskDTO task1 = new TaskDTO.Builder(context).name("task1").owner("jose@gmail.com").actual(10).status("Closed").build(); //pod1
-    TaskDTO task2 = new TaskDTO.Builder(context).name("task2").owner("maria@gmail.com").actual(10).status("Closed").build(); //pod1
-    TaskDTO task3 = new TaskDTO.Builder(context).name("task3").owner("maria@gmail.com").actual(10).build(); //pod1
-
-    //Sprint 2
-    TaskDTO task4 = new TaskDTO.Builder(context).name("task4").owner("ruben@gmail.com").actual(10).status("Closed").build(); //pod2
-    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").owner("juana@gmail.com").actual(10).status("Closed").build(); //pod2
-    TaskDTO task7 = new TaskDTO.Builder(context).name("task7").status("Closed").actual(10).build(); //no pod
-
-    //Backlog
-    TaskDTO task8 = new TaskDTO.Builder(context).name("task8").status("Closed").actual(10).build(); //no pod
-    TaskDTO task6 = new TaskDTO.Builder(context).name("task5").owner("juana@gmail.com").actual(10).build(); //pod 2
 
     snapshotBuilder
     .withPod("POD1")
@@ -228,104 +211,54 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
         .withRelease("release1")
         .withSprint("sprint1", new Date(), new Date())
         .withTask()
-          .actual(task1.getActual())
-          .createDate(task1.getCreateDate())
-          .effort(task1.getEffort())
-          .estimated(task1.getEstimated())
-          .name(task1.getName())
-          .owner(task1.getOwner())
-          .priority(task1.getPriority().toString())
-          .remaining(task1.getRemaining())
-          .severity(task1.getSeverity().toString())
-          .status(task1.getStatus().toString())
+          .actual(10)
+          .name("task1")
+          .owner("jose@gmail.com")
+          .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(task2.getActual())
-          .createDate(task2.getCreateDate())
-          .effort(task2.getEffort())
-          .estimated(task2.getEstimated())
-          .name(task2.getName())
-          .owner(task2.getOwner())
-          .priority(task2.getPriority().toString())
-          .remaining(task2.getRemaining())
-          .severity(task2.getSeverity().toString())
-          .status(task2.getStatus().toString())
+          .actual(10)
+          .name("task2")
+          .owner("maria@gmail.com")
+          .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(task3.getActual())
-          .createDate(task3.getCreateDate())
-          .effort(task3.getEffort())
-          .estimated(task3.getEstimated())
-          .name(task3.getName())
-          .owner(task3.getOwner())
-          .priority(task3.getPriority().toString())
-          .remaining(task3.getRemaining())
-          .severity(task3.getSeverity().toString())
-          .status(task3.getStatus().toString())
+          .actual(10)
+          .name("task3")
+          .owner("maria@gmail.com")
         .addToSprint()
       .addToRelease()
       .withSprint("sprint2", new Date(), new Date())
         .withTask()
-          .actual(task4.getActual())
-          .createDate(task4.getCreateDate())
-          .effort(task4.getEffort())
-          .estimated(task4.getEstimated())
-          .name(task4.getName())
-          .owner(task4.getOwner())
-          .priority(task4.getPriority().toString())
-          .remaining(task4.getRemaining())
-          .severity(task4.getSeverity().toString())
-          .status(task4.getStatus().toString())
+          .actual(10)
+          .name("task4")
+          .owner("ruben@gmail.com")
+          .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(task5.getActual())
-          .createDate(task5.getCreateDate())
-          .effort(task5.getEffort())
-          .estimated(task5.getEstimated())
-          .name(task5.getName())
-          .owner(task5.getOwner())
-          .priority(task5.getPriority().toString())
-          .remaining(task5.getRemaining())
-          .severity(task5.getSeverity().toString())
-          .status(task5.getStatus().toString())
+          .actual(10)
+          .name("task5")
+          .owner("juana@gmail.com")
+          .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(task6.getActual())
-          .createDate(task6.getCreateDate())
-          .effort(task6.getEffort())
-          .estimated(task6.getEstimated())
-          .name(task6.getName())
-          .owner(task6.getOwner())
-          .priority(task6.getPriority().toString())
-          .remaining(task6.getRemaining())
-          .severity(task6.getSeverity().toString())
-          .status(task6.getStatus().toString())
+          .actual(10)
+          .name("task6")
+          .owner("juana@gmail.com")
         .addToSprint()
       .addToRelease()
       .withBacklog()
         .withTask()
-          .actual(task7.getActual())
-          .createDate(task7.getCreateDate())
-          .effort(task7.getEffort())
-          .estimated(task7.getEstimated())
-          .name(task7.getName())
-          .owner(task7.getOwner())
-          .priority(task7.getPriority().toString())
-          .remaining(task7.getRemaining())
-          .severity(task7.getSeverity().toString())
-          .status(task7.getStatus().toString())
+          .actual(10)
+          .name("task7")
+          .owner(null)
+          .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(task8.getActual())
-          .createDate(task8.getCreateDate())
-          .effort(task8.getEffort())
-          .estimated(task8.getEstimated())
-          .name(task8.getName())
-          .owner(task8.getOwner())
-          .priority(task8.getPriority().toString())
-          .remaining(task8.getRemaining())
-          .severity(task8.getSeverity().toString())
-          .status(task8.getStatus().toString())
+          .actual(10)
+          .name("task8")
+          .owner(null)
+          .status("Closed")
         .addToSprint()
       .addToRelease()
     .addToProject()

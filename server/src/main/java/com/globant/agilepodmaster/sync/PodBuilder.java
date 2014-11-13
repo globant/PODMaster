@@ -2,7 +2,7 @@ package com.globant.agilepodmaster.sync;
 
 import com.globant.agilepodmaster.core.Pod;
 
-public class PodBuilder extends AbstractBuilder<SnapshotBuilder, PodMemberBuilder>{
+public class PodBuilder extends AbstractBuilder<SnapshotBuilder, PodMemberBuilder> {
   private final Pod pod;
 
   public PodBuilder(String name, SnapshotBuilder snapshotBuilder) {

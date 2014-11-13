@@ -176,7 +176,10 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public  TaskBuilder<TaskBuilder, TaskBuilder> addSubTask() {
     Task subTask = new Task(release, sprint, task);
-    TaskBuilder<TaskBuilder, TaskBuilder> nestedBuilder = subTaskBuilder(subTask, release, sprint, this);
+    
+    TaskBuilder<TaskBuilder, TaskBuilder> nestedBuilder = 
+        subTaskBuilder(subTask, release, sprint, this);
+    
     this.addNestedBuilder((T) nestedBuilder);
     return nestedBuilder;
   }

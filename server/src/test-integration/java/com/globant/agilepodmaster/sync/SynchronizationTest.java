@@ -94,7 +94,7 @@ public class SynchronizationTest extends AbstractIntegrationTest {
     Project project = new Project("Proj Prueba", product);
 
     organizationRepository.save(organization);
-    product = productRepository.save(product);
+    productRepository.save(product);
     project = projectRepository.save(project);
 
     JiraRestClient jiraRestClient = new JiraAPIFactory()

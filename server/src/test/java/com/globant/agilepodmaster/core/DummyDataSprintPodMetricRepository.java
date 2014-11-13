@@ -21,9 +21,9 @@ public class DummyDataSprintPodMetricRepository implements SprintPodMetricReposi
 
   public DummyDataSprintPodMetricRepository() {
     List<Pod> pods = Arrays.asList(
-      new Pod("pod1"),
-      new Pod("pod2"),
-      new Pod("pod3")
+        new Pod("pod1"),
+        new Pod("pod2"),
+        new Pod("pod3")
     );
 
     List<Sprint> sprints = Arrays.asList(
@@ -37,7 +37,7 @@ public class DummyDataSprintPodMetricRepository implements SprintPodMetricReposi
         newSprint(2014, 10, 1, "sprint-q4-2", null)
     );
     
-    sprints.forEach((s) -> pods.forEach((p) -> list.add(newSprintPodMetric(s, p))));
+    sprints.forEach(s -> pods.forEach(p -> list.add(newSprintPodMetric(s, p))));
   }
 
   private SprintPodMetric newSprintPodMetric(Sprint sprint, Pod pod) {

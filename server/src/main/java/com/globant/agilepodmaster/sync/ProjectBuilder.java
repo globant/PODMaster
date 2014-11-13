@@ -3,7 +3,7 @@ package com.globant.agilepodmaster.sync;
 import com.globant.agilepodmaster.core.Product;
 import com.globant.agilepodmaster.core.Project;
 
-public class ProjectBuilder extends AbstractBuilder<ProductBuilder, ReleaseBuilder>{
+public class ProjectBuilder extends AbstractBuilder<ProductBuilder, ReleaseBuilder> {
   private final Project project;
 
   public ProjectBuilder(String name, Product product, ProductBuilder productBuilder) {

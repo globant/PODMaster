@@ -24,12 +24,13 @@ import com.globant.agilepodmaster.core.Task;
 
 /**
  * Creates a Snapshot in the DB.
+ * 
  * @author jose.dominguez@globant.com
  *
  */
 public class SnapshotBuilder {
-  private Snapshot snapshot; 
-  
+  private Snapshot snapshot;
+
   @Getter
   private SyncContext syncContext;
 
@@ -51,35 +52,37 @@ public class SnapshotBuilder {
     this.assignOwnersToTasks();
     this.createSprintPodMetrics();
     return snapshot;
-  }  
+  }
 
   private void assignOwnersToTasks() {
-    for(Entry<Task, String> entry: tasks.entrySet()) {
+    for (Entry<Task, String> entry : tasks.entrySet()) {
       String ownerEmail = entry.getValue();
       Task task = entry.getKey();
       try {
         PodMember podMember = snapshot.getPodMembers().stream()
-            .filter(m -> m.getEmail().equals(ownerEmail))
-            .findAny().get();
+            .filter(m -> m.getEmail().equals(ownerEmail)).findAny().get();
         task.setOwner(podMember);
-      }
-      catch(NoSuchElementException ne) {
+      } catch (NoSuchElementException ne) {
         syncContext.warn("Task owner not found: " + ownerEmail);
       }
     }
   }
 
   private void createSprintPodMetrics() {
-    for(Pod pod: snapshot.getPods()) {
-      for (Sprint sprint: snapshot.getSprints()) {
+    for (Pod pod : snapshot.getPods()) {
+      for (Sprint sprint : snapshot.getSprints()) {
         SprintPodMetric spm = new SprintPodMetric(sprint, pod);
-        int velocity = snapshot.getTasks().stream()
-            .filter(t -> sprint.equals(t.getSprint()) && t.getOwner() != null && pod.equals(t.getOwner().getPod()))
+        int velocity = snapshot
+            .getTasks()
+            .stream()
+            .filter(t -> 
+                sprint.equals(t.getSprint()) && t.getOwner() != null
+                && pod.equals(t.getOwner().getPod()))
             .collect(Collectors.toList()).stream()
             .filter(t -> t.isAccepted()).mapToInt(Task::getActual).sum();
 
         spm.setAcceptedStoryPoints(velocity);
-        
+
         snapshot.addSprintMetric(spm);
       }
     }

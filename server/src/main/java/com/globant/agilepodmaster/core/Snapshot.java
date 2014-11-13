@@ -38,39 +38,39 @@ public class Snapshot extends AbstractEntity {
   private Date creationDate;
   
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Pod> pods = new HashSet<Pod>();
   
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<PodMember> podMembers  = new HashSet<PodMember>();
 
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Organization> organizations = new HashSet<Organization>();
 
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Product> products = new HashSet<Product>();
 
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Project> projects = new HashSet<Project>();
 
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Release> releases = new HashSet<Release>();
   
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Sprint> sprints = new HashSet<Sprint>();
   
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<Task> tasks = new HashSet<Task>();
 
   @Getter
-  @OneToMany(orphanRemoval=true, cascade=CascadeType.ALL, mappedBy="snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
 
   /**
