@@ -72,16 +72,16 @@ public class SnapshotBuilder {
     for (Pod pod : snapshot.getPods()) {
       for (Sprint sprint : snapshot.getSprints()) {
         SprintPodMetric spm = new SprintPodMetric(sprint, pod);
-        int velocity = snapshot
+        double velocity = snapshot
             .getTasks()
             .stream()
             .filter(t -> 
                 sprint.equals(t.getSprint()) && t.getOwner() != null
                 && pod.equals(t.getOwner().getPod()))
             .collect(Collectors.toList()).stream()
-            .filter(t -> t.isAccepted()).mapToInt(Task::getActual).sum();
+            .filter(t -> t.isAccepted()).mapToDouble(Task::getEffort).sum();
 
-        spm.setAcceptedStoryPoints(velocity);
+        spm.setAcceptedStoryPoints((int) velocity);
 
         snapshot.addSprintMetric(spm);
       }
