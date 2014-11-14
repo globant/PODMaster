@@ -98,6 +98,8 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     List<Issue> backlogIssues = restJiraClient.getBacklogIssues(settings
         .getJiraProjectName());
 
+    context.info("Processing backlog");
+    
     releaseBuilder.addBacklog(buildTaskTree(backlogIssues,
         context));
 
@@ -122,12 +124,12 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
     Map<Issue, TaskDTO> mappedPairs = new HashMap<Issue, TaskDTO>();
 
+    context.info("Collected " + issues.size() + " sprint issues");
+    
     for (Issue issue : issues) {
       TaskDTO taskDTO = buildTaskDTO(issue, context);
       mappedPairs.put(issue, taskDTO);
     }
-
-    context.info("Collected " + issues.size() + " sprint issues");
     
     addSubTasksToMap(mappedPairs, context);
     return  getRootsDTOs(mappedPairs);

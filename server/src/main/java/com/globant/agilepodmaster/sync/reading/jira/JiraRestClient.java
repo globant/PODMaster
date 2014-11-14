@@ -1,5 +1,7 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+
+
 import com.globant.agilepodmaster.sync.DataSourceConexionException;
 import com.globant.agilepodmaster.sync.EncryptionException;
 import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
@@ -124,8 +126,9 @@ public class JiraRestClient {
       responseEntity = restTemplate.exchange(rootUrl + SPRINT_LIST_URL,
           HttpMethod.GET, request, SprintList.class, rapidViewId);
     } catch (RestClientException e) {
+      log.info("Connecting to ...  " + rootUrl + SPRINT_LIST_URL + " with rapidViewId:" + rapidViewId);
       log.error("Cannot get sprint list", e);
-      throw new DataSourceConexionException("Cannot get sprint list", e);
+      throw new DataSourceConexionException("Cannot get sprint list. " + e.getMessage(), e);
     }
     SprintList sprintList = responseEntity.getBody();
     return sprintList.getSprints();

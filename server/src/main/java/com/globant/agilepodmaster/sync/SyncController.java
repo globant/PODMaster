@@ -7,6 +7,7 @@ import com.globant.agilepodmaster.core.ProductRepository;
 import com.globant.agilepodmaster.core.Project;
 import com.globant.agilepodmaster.core.ProjectRepository;
 import com.globant.agilepodmaster.core.Snapshot;
+import com.globant.agilepodmaster.core.SnapshotRepository;
 import com.globant.agilepodmaster.sync.reading.db.PodsReader;
 import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
@@ -35,6 +36,8 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+
+
 @RestController
 @Slf4j
 public class SyncController implements
@@ -60,6 +63,9 @@ public class SyncController implements
 
   @Autowired
   ProjectRepository projectRepository;
+  
+  @Autowired
+  SnapshotRepository snapshotRepository;
 
   @Autowired
   private Environment env;
@@ -139,6 +145,8 @@ public class SyncController implements
 
     Snapshot snapshot = snapshotBuilder.withProduct(product)
         .addReader(podsReader).addReader(releasesReader).build();
+    
+    snapshotRepository.save(snapshot);
     return snapshotBuilder.getSyncContext();
 
   }

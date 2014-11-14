@@ -40,7 +40,7 @@ public class Task extends AbstractEntity {
    * Kind of types of Tasks.
    */
   public static enum Type {
-    UserStory, Bug, Task
+    Story, Bug, Task
   }
 
   /**
