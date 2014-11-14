@@ -36,7 +36,7 @@ public class TaskDTO implements Serializable {
    * Kind of types of Tasks.
    */
   public static enum Type {
-    UserStory, Bug, Task
+    Story, Bug, Task
   }
 
   /**
