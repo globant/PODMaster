@@ -162,6 +162,7 @@ public class SnapshotBuilder implements PodsBuilder,  ReleasesBuilder {
    * @return the Snapshot.
    */
   public Snapshot build() {
+    snapshot.setCreationDate(new Date());
     this.createSprintPodMetrics();
     return snapshot;
   }  
