@@ -32,7 +32,7 @@ public class QOrganization extends EntityPathBase<Organization> {
     public final StringPath name = createString("name");
 
     // inherited
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
     //inherited
     public final NumberPath<Integer> version;
@@ -57,8 +57,14 @@ public class QOrganization extends EntityPathBase<Organization> {
         super(type, metadata, inits);
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;
-        this.snapshot = _super.snapshot;
         this.version = _super.version;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

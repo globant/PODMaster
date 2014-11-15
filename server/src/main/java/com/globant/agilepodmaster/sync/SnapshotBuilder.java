@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.Getter;
 
@@ -72,17 +73,18 @@ public class SnapshotBuilder {
     for (Pod pod : snapshot.getPods()) {
       for (Sprint sprint : snapshot.getSprints()) {
         SprintPodMetric spm = new SprintPodMetric(sprint, pod);
-        double velocity = snapshot
-            .getTasks()
-            .stream()
-            .filter(t -> 
-                sprint.equals(t.getSprint()) && t.getOwner() != null
-                && pod.equals(t.getOwner().getPod()))
-            .collect(Collectors.toList()).stream()
-            .filter(t -> t.isAccepted()).mapToDouble(Task::getEffort).sum();
-
+        Stream<Task> stream = 
+            snapshot.getTasks().stream()
+            .filter(t -> sprint.equals(t.getSprint()) && t.getOwner() != null 
+                         && pod.equals(t.getOwner().getPod()))
+            .collect(Collectors.toList()).stream();
+        
+        double velocity = stream.filter(t -> t.isAccepted()).mapToDouble(Task::getEffort).sum();
         spm.setAcceptedStoryPoints((int) velocity);
 
+        double plannedEffort = stream.mapToDouble(Task::getEffort).sum();
+        spm.setPlannedStoryPoints((int) plannedEffort);
+        
         snapshot.addSprintMetric(spm);
       }
     }

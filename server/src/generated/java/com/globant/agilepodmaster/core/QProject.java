@@ -31,10 +31,10 @@ public class QProject extends EntityPathBase<Project> {
 
     public final StringPath name = createString("name");
 
-    public final QProduct product;
+    protected QProduct product;
 
     // inherited
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
     //inherited
     public final NumberPath<Integer> version;
@@ -60,8 +60,21 @@ public class QProject extends EntityPathBase<Project> {
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;
         this.product = inits.isInitialized("product") ? new QProduct(forProperty("product"), inits.get("product")) : null;
-        this.snapshot = _super.snapshot;
         this.version = _super.version;
+    }
+
+    public QProduct product() {
+        if (product == null) {
+            product = new QProduct(forProperty("product"));
+        }
+        return product;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

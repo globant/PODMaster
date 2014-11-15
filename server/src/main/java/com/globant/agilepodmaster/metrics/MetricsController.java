@@ -35,7 +35,7 @@ public class MetricsController {
         List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners, 
       @RequestParam(value = "filter", required = false) List<BooleanExpression> filters) {
 
-    filters.add(QSprintPodMetric.sprintPodMetric.snapshot.id.eq(snapshotId));
+    filters.add(QSprintPodMetric.sprintPodMetric.snapshot().id.eq(snapshotId));
     BooleanExpression predicate = filters != null 
         ? BooleanExpression.allOf(filters.toArray(new BooleanExpression[0])) 
         : null;

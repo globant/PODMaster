@@ -29,12 +29,12 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
     //inherited
     public final NumberPath<Long> id;
 
-    public final QPod pod;
+    protected QPod pod;
 
     // inherited
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
-    public final QSprint sprint;
+    protected QSprint sprint;
 
     //inherited
     public final NumberPath<Integer> version;
@@ -60,9 +60,29 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;
         this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
-        this.snapshot = _super.snapshot;
         this.sprint = inits.isInitialized("sprint") ? new QSprint(forProperty("sprint"), inits.get("sprint")) : null;
         this.version = _super.version;
+    }
+
+    public QPod pod() {
+        if (pod == null) {
+            pod = new QPod(forProperty("pod"));
+        }
+        return pod;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
+    }
+
+    public QSprint sprint() {
+        if (sprint == null) {
+            sprint = new QSprint(forProperty("sprint"));
+        }
+        return sprint;
     }
 
 }

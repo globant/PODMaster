@@ -211,51 +211,51 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
         .withRelease("release1")
         .withSprint("sprint1", new Date(), new Date())
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task1")
           .owner("jose@gmail.com")
           .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task2")
           .owner("maria@gmail.com")
           .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task3")
           .owner("maria@gmail.com")
         .addToSprint()
       .addToRelease()
       .withSprint("sprint2", new Date(), new Date())
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task4")
           .owner("ruben@gmail.com")
           .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task5")
           .owner("juana@gmail.com")
           .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task6")
           .owner("juana@gmail.com")
         .addToSprint()
       .addToRelease()
       .withBacklog()
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task7")
           .owner(null)
           .status("Closed")
         .addToSprint()
         .withTask()
-          .actual(10)
+          .effort(10)
           .name("task8")
           .owner(null)
           .status("Closed")
@@ -303,22 +303,22 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
     
     QSprintPodMetric qspm = QSprintPodMetric.sprintPodMetric;
 
-    BooleanExpression pod1Sp1Query = qspm.pod.eq(pod1).and(qspm.sprint.eq(sprint1));
+    BooleanExpression pod1Sp1Query = qspm.pod().eq(pod1).and(qspm.sprint().eq(sprint1));
     SprintPodMetric pod1Sp1m = sprintPodMetricRepository.findOne(pod1Sp1Query);
     assertThat(pod1Sp1m.getPod(), equalTo(pod1));
     assertThat(pod1Sp1m.getAcceptedStoryPoints(), equalTo(20));
     
-    BooleanExpression pod1Sp2Query = qspm.pod.eq(pod1).and(qspm.sprint.eq(sprint2));
+    BooleanExpression pod1Sp2Query = qspm.pod().eq(pod1).and(qspm.sprint().eq(sprint2));
     SprintPodMetric pod1Sp2m = sprintPodMetricRepository.findOne(pod1Sp2Query);
     assertThat(pod1Sp2m.getPod(), equalTo(pod1));
     assertThat(pod1Sp2m.getAcceptedStoryPoints(), equalTo(0));
     
-    BooleanExpression pod2Sp1Query = qspm.pod.eq(pod2).and(qspm.sprint.eq(sprint1));
+    BooleanExpression pod2Sp1Query = qspm.pod().eq(pod2).and(qspm.sprint().eq(sprint1));
     SprintPodMetric pod2Sp1m = sprintPodMetricRepository.findOne(pod2Sp1Query);
     assertThat(pod2Sp1m.getPod(), equalTo(pod2));
     assertThat(pod2Sp1m.getAcceptedStoryPoints(), equalTo(0));
     
-    BooleanExpression pod2Sp2Query = qspm.pod.eq(pod2).and(qspm.sprint.eq(sprint2));
+    BooleanExpression pod2Sp2Query = qspm.pod().eq(pod2).and(qspm.sprint().eq(sprint2));
     SprintPodMetric pod2Sp2m = sprintPodMetricRepository.findOne(pod2Sp2Query);
     assertThat(pod2Sp2m.getPod(), equalTo(pod2));
     assertThat(pod2Sp2m.getAcceptedStoryPoints(), equalTo(20));

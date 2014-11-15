@@ -27,7 +27,7 @@ public class QSnapshotEntity extends EntityPathBase<SnapshotEntity> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
     //inherited
     public final NumberPath<Integer> version = _super.version;
@@ -51,6 +51,13 @@ public class QSnapshotEntity extends EntityPathBase<SnapshotEntity> {
     public QSnapshotEntity(Class<? extends SnapshotEntity> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.snapshot = inits.isInitialized("snapshot") ? new QSnapshot(forProperty("snapshot")) : null;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

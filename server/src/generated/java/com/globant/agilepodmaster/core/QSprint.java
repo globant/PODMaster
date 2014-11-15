@@ -33,10 +33,10 @@ public class QSprint extends EntityPathBase<Sprint> {
 
     public final NumberPath<Integer> number = createNumber("number", Integer.class);
 
-    public final QRelease release;
+    protected QRelease release;
 
     // inherited
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
     public final DateTimePath<java.util.Date> startDate = createDateTime("startDate", java.util.Date.class);
 
@@ -64,8 +64,21 @@ public class QSprint extends EntityPathBase<Sprint> {
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;
         this.release = inits.isInitialized("release") ? new QRelease(forProperty("release"), inits.get("release")) : null;
-        this.snapshot = _super.snapshot;
         this.version = _super.version;
+    }
+
+    public QRelease release() {
+        if (release == null) {
+            release = new QRelease(forProperty("release"));
+        }
+        return release;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

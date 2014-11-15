@@ -33,10 +33,10 @@ public class QPodMember extends EntityPathBase<PodMember> {
 
     public final StringPath lastName = createString("lastName");
 
-    public final QPod pod;
+    protected QPod pod;
 
     // inherited
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
     //inherited
     public final NumberPath<Integer> version;
@@ -62,8 +62,21 @@ public class QPodMember extends EntityPathBase<PodMember> {
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;
         this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
-        this.snapshot = _super.snapshot;
         this.version = _super.version;
+    }
+
+    public QPod pod() {
+        if (pod == null) {
+            pod = new QPod(forProperty("pod"));
+        }
+        return pod;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

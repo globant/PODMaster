@@ -31,10 +31,10 @@ public class QRelease extends EntityPathBase<Release> {
 
     public final NumberPath<Integer> number = createNumber("number", Integer.class);
 
-    public final QProject project;
+    protected QProject project;
 
     // inherited
-    public final QSnapshot snapshot;
+    protected QSnapshot snapshot;
 
     //inherited
     public final NumberPath<Integer> version;
@@ -60,8 +60,21 @@ public class QRelease extends EntityPathBase<Release> {
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;
         this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
-        this.snapshot = _super.snapshot;
         this.version = _super.version;
+    }
+
+    public QProject project() {
+        if (project == null) {
+            project = new QProject(forProperty("project"));
+        }
+        return project;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }
