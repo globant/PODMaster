@@ -38,4 +38,8 @@ public class SprintPodMetric extends SnapshotEntity {
     this.sprint = sprint;
     this.pod = pod;
   }
+  
+  public double getEstimationAccuracy() {
+    return acceptedStoryPoints / (double) plannedStoryPoints;
+  }
 }

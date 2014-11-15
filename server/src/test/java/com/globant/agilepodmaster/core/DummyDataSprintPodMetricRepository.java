@@ -20,30 +20,48 @@ public class DummyDataSprintPodMetricRepository implements SprintPodMetricReposi
   private List<SprintPodMetric> list = new LinkedList<SprintPodMetric>();
 
   public DummyDataSprintPodMetricRepository() {
-    List<Pod> pods = Arrays.asList(
-        new Pod("pod1"),
-        new Pod("pod2"),
-        new Pod("pod3")
-    );
+    Pod pod1 = new Pod("pod1");
+    Pod pod2 = new Pod("pod2");
+    Pod pod3 = new Pod("pod3");
 
-    List<Sprint> sprints = Arrays.asList(
-        newSprint(2014, 01, 1, "sprint-q1-1", null),
-        newSprint(2014, 01, 1, "sprint-q1-2", null),
-        newSprint(2014, 04, 1, "sprint-q2-1", null),
-        newSprint(2014, 04, 1, "sprint-q2-2", null),
-        newSprint(2014, 07, 1, "sprint-q3-1", null),
-        newSprint(2014, 07, 1, "sprint-q3-2", null),
-        newSprint(2014, 10, 1, "sprint-q4-1", null),
-        newSprint(2014, 10, 1, "sprint-q4-2", null)
-    );
-    
-    sprints.forEach(s -> pods.forEach(p -> list.add(newSprintPodMetric(s, p))));
+    Sprint spQ1n1 = newSprint(2014, 01, 1, "sprint-q1-1", null);
+    Sprint spQ1n2 = newSprint(2014, 01, 1, "sprint-q1-2", null);
+    Sprint spQ2n1 = newSprint(2014, 04, 1, "sprint-q2-1", null);
+    Sprint spQ2n2 = newSprint(2014, 04, 1, "sprint-q2-2", null);
+    Sprint spQ3n1 = newSprint(2014, 07, 1, "sprint-q3-1", null);
+    Sprint spQ3n2 = newSprint(2014, 07, 1, "sprint-q3-2", null);
+    Sprint spQ4n1 = newSprint(2014, 10, 1, "sprint-q4-1", null);
+    Sprint spQ4n2 = newSprint(2014, 10, 1, "sprint-q4-2", null);
+    Object[][] scenario = { 
+        { spQ1n1, pod1, 10, 10 }, { spQ1n2, pod1, 10, 10 },
+        { spQ2n1, pod1, 10, 20 }, { spQ2n2, pod1, 10, 20 }, 
+        { spQ3n1, pod1, 10, 50 }, { spQ3n2, pod1, 10, 50 }, 
+        { spQ4n1, pod1, 10, 100 }, { spQ4n2, pod1, 10, 100 }, 
+        { spQ1n1, pod2, 10, 10 }, { spQ1n2, pod2, 10, 10 }, 
+        { spQ2n1, pod2, 10, 20 }, { spQ2n2, pod2, 10, 20 }, 
+        { spQ3n1, pod2, 10, 50 }, { spQ3n2, pod2, 10, 50 },
+        { spQ4n1, pod2, 10, 100 }, { spQ4n2, pod2, 10, 100 }, 
+        { spQ1n1, pod3, 10, 10 }, { spQ1n2, pod3, 10, 10 }, 
+        { spQ2n1, pod3, 10, 20 }, { spQ2n2, pod3, 10, 20 },
+        { spQ3n1, pod3, 10, 50 }, { spQ3n2, pod3, 10, 50 }, 
+        { spQ4n1, pod3, 10, 100 }, { spQ4n2, pod3, 10, 100 } };
+
+    for (Object[] data : scenario) {
+      int index = 0;
+      Sprint sprint = (Sprint) data[index++];
+      Pod pod = (Pod) data[index++];
+      int acceptedPoints = (int) data[index++];
+      int plannedPoints = (int) data[index++];
+
+      list.add(newSprintPodMetric(sprint, pod, acceptedPoints, plannedPoints));
+    }
   }
 
-  private SprintPodMetric newSprintPodMetric(Sprint sprint, Pod pod) {
+  private SprintPodMetric newSprintPodMetric(Sprint sprint, Pod pod, int vel, int planned) {
     SprintPodMetric spm = new SprintPodMetric(sprint, pod);
-    spm.setAcceptedStoryPoints(10);
-    
+    spm.setAcceptedStoryPoints(vel);
+    spm.setPlannedStoryPoints(planned);
+
     return spm;
   }
 
@@ -66,7 +84,7 @@ public class DummyDataSprintPodMetricRepository implements SprintPodMetricReposi
     QSprintPodMetric spm = QSprintPodMetric.sprintPodMetric;
     return from(spm, list).where(predicate).list(spm);
   }
-  
+
   @Override
   public Iterable<SprintPodMetric> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
     throw new UnsupportedOperationException();
@@ -135,5 +153,5 @@ public class DummyDataSprintPodMetricRepository implements SprintPodMetricReposi
   @Override
   public void deleteAll() {
     throw new UnsupportedOperationException();
-  }  
+  }
 }
