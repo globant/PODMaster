@@ -10,6 +10,8 @@ require.config({
     //##JQuery
     'jquery' : '../vendor/jquery/dist/jquery',
     'moment' : '../vendor/moment/moment',
+    'traverson' : '../vendor/traverson/browser/dist/traverson',
+    'hal-model' : 'https://rawgit.com/mikekelly/backbone.hal/master/backbone.hal',
     'modernizr' : '../vendor/modernizr/modernizr',
     //##Handlebars
     'handlebars': '../vendor/handlebars/handlebars',
