@@ -77,9 +77,12 @@ public class SnapshotBuilder {
         
         double plannedEffort = streamFor(pod, sprint).mapToDouble(Task::getEffort).sum();
 
+        long numberOfBugs = streamFor(pod, sprint).filter(t -> t.isBug()).count();
+        
         SprintPodMetric spm = new SprintPodMetric(sprint, pod);
         spm.setAcceptedStoryPoints((int) velocity);
         spm.setPlannedStoryPoints((int) plannedEffort);
+        spm.setNumberOfBugs((int) numberOfBugs);
         
         snapshot.addSprintMetric(spm);
       }

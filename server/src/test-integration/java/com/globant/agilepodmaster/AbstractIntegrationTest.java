@@ -6,7 +6,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.globant.agilepodmaster.AgilePodMaster.ApplicationConfiguration;
+import com.globant.agilepodmaster.AgilePodMaster.WebConfiguration;
 
 /**
  * Base class for all integration tests.
@@ -14,7 +14,7 @@ import com.globant.agilepodmaster.AgilePodMaster.ApplicationConfiguration;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ApplicationConfiguration.class)
+@SpringApplicationConfiguration(classes = WebConfiguration.class)
 @WebAppConfiguration
 @IntegrationTest({ "server.port=" + AbstractIntegrationTest.SERVER_PORT, "management.port=0" })
 public abstract class AbstractIntegrationTest {

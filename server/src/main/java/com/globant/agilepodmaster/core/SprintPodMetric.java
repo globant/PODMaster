@@ -33,6 +33,9 @@ public class SprintPodMetric extends SnapshotEntity {
   
   @Getter @Setter
   private int plannedStoryPoints;
+
+  @Getter @Setter
+  private int numberOfBugs;
   
   public SprintPodMetric(Sprint sprint, Pod pod) {
     this.sprint = sprint;

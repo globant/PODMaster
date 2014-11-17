@@ -142,4 +142,8 @@ public class Task extends SnapshotEntity {
   public boolean isAccepted() {
     return Status.CLOSED.equals(status);
   }
+  
+  public boolean isBug() {
+    return Type.BUG.equals(type);
+  }
 }
