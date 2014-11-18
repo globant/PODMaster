@@ -1,23 +1,27 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.arrayWithSize;
 import static org.junit.Assert.assertThat;
-
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
+import com.globant.agilepodmaster.sync.ConexionResponseErrorException;
 import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -177,6 +181,24 @@ public class JiraRestClientTest extends AbstractUnitTest {
     mockServer.verify();
 
   }
+  
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+  
+  @Test
+  public void testGetMessage_404() {
+ 
+    
+      mockServer.expect(requestTo("https://jira.corp.globant.com/rest/api/latest/field"))
+              .andExpect(method(HttpMethod.GET))
+              .andRespond(withStatus(HttpStatus.NOT_FOUND));
 
+      exception.expect(ConexionResponseErrorException.class);
+      CustomFieldDefinition[] customFieldDefinitions = jiraRestClient
+          .getCustomFieldDefinitions();
+
+      mockServer.verify();
+
+  }
 
 }

@@ -3,20 +3,28 @@ package com.globant.agilepodmaster.sync;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.Organization;
 import com.globant.agilepodmaster.core.OrganizationRepository;
+import com.globant.agilepodmaster.core.Pod;
+import com.globant.agilepodmaster.core.PodMember;
+import com.globant.agilepodmaster.core.PodMemberRepository;
+import com.globant.agilepodmaster.core.PodRepository;
 import com.globant.agilepodmaster.core.Product;
 import com.globant.agilepodmaster.core.ProductRepository;
 import com.globant.agilepodmaster.core.Project;
 import com.globant.agilepodmaster.core.ProjectRepository;
+import com.globant.agilepodmaster.core.QSprintPodMetric;
 import com.globant.agilepodmaster.core.Release;
 import com.globant.agilepodmaster.core.ReleaseRepository;
 import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.SnapshotRepository;
 import com.globant.agilepodmaster.core.Sprint;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
@@ -25,6 +33,7 @@ import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
 import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
 import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
+import com.mysema.query.types.expr.BooleanExpression;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -73,9 +82,18 @@ public class SynchronizationTest extends AbstractIntegrationTest {
   TaskRepository taskRepository;
 
   @Autowired
+  PodRepository podRepository;
+
+  @Autowired
+  PodMemberRepository podMemberRepository;
+
+  @Autowired
+  SprintPodMetricRepository sprintPodMetricRepository;
+
+  @Autowired
   SnapshotRepository snapshotRepository;
 
-  
+
   /**
    * Test for ProjectDataSetBuilder.
    */
@@ -167,7 +185,7 @@ public class SynchronizationTest extends AbstractIntegrationTest {
         .addReader(podsReader).addReader(releasesReader).build();
 
     snapshot = snapshotRepository.save(snapshot);
-    
+
     assertThat(snapshot.getProduct(), equalTo(product));
 
     List<Release> releases = releaseRepository.findBySnapshot(snapshot);
@@ -179,6 +197,78 @@ public class SynchronizationTest extends AbstractIntegrationTest {
     List<Task> taskssprint1 = taskRepository.findByReleaseAndSprint(
         releases.get(0), sprints.get(0));
     assertThat(taskssprint1, hasSize(greaterThan(5)));
+
+    Pod pod1 = podRepository.findByName("POD1").iterator().next();
+    assertThat(pod1, notNullValue());
+
+    List<PodMember> podMembers = podMemberRepository.findByPod(pod1);
+    assertThat(podMembers, hasSize(3));
+
+    Pod pod2 = podRepository.findByName("POD2").iterator().next();
+    assertThat(pod2, notNullValue());
+
+    podMembers = podMemberRepository.findByPod(pod2);
+    assertThat(podMembers, hasSize(3));
+
+    Sprint sprint1 = sprints.stream()
+        .filter(s -> "Sprint 1".equals(s.getName())).findAny().get();
+    Sprint sprint2 = sprints.stream()
+        .filter(s -> "Sprint 2".equals(s.getName())).findAny().get();
+    Sprint sprint3 = sprints.stream()
+        .filter(s -> "Sprint 3".equals(s.getName())).findAny().get();
+    Sprint sprint4 = sprints.stream()
+        .filter(s -> "Sprint 4".equals(s.getName())).findAny().get();
+
+    BooleanExpression sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint
+        .eq(sprint1);
+    BooleanExpression podSpmQuery = QSprintPodMetric.sprintPodMetric.pod
+        .eq(pod1);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(60));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint1);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(90));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint2);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(60));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint2);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(90));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint3);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(70));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint3);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(80));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint4);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(80));
+
+    sprintSpmQuery = QSprintPodMetric.sprintPodMetric.sprint.eq(sprint4);
+    podSpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
+    assertThat(
+        sprintPodMetricRepository.findOne(podSpmQuery.and(sprintSpmQuery))
+            .getAcceptedStoryPoints(), equalTo(70));
+
 
   }
 

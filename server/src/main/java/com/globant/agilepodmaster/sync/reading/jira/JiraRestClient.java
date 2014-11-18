@@ -2,7 +2,8 @@ package com.globant.agilepodmaster.sync.reading.jira;
 
 
 
-import com.globant.agilepodmaster.sync.DataSourceConexionException;
+import com.globant.agilepodmaster.sync.ConexionResponseErrorException;
+import com.globant.agilepodmaster.sync.ConexionRestException;
 import com.globant.agilepodmaster.sync.EncryptionException;
 import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
@@ -22,6 +23,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -108,42 +110,22 @@ public class JiraRestClient {
   }
 
   protected CustomFieldDefinition[] getCustomFieldDefinitions() {
-    ResponseEntity<CustomFieldDefinition[]> responseEntity = null;
-    try {
-      responseEntity = restTemplate.exchange(rootUrl + FIELD_LIST_URL,
-          HttpMethod.GET, request, CustomFieldDefinition[].class);
-    } catch (RestClientException e) {
-      log.error("Cannot get custom field definitions", e);
-      throw new DataSourceConexionException(
-          "Cannot get custom field definitions", e);
-    }
-    return responseEntity.getBody();
+    log.info("Getting custom fields ...");
+    return connect(rootUrl + FIELD_LIST_URL, CustomFieldDefinition[].class);
   }
 
   protected List<SprintItem> getSprintList(final String rapidViewId) {
-    ResponseEntity<SprintList> responseEntity = null;
-    try {
-      responseEntity = restTemplate.exchange(rootUrl + SPRINT_LIST_URL,
-          HttpMethod.GET, request, SprintList.class, rapidViewId);
-    } catch (RestClientException e) {
-      log.info("Connecting to ...  " + rootUrl + SPRINT_LIST_URL + " with rapidViewId:" + rapidViewId);
-      log.error("Cannot get sprint list", e);
-      throw new DataSourceConexionException("Cannot get sprint list. " + e.getMessage(), e);
-    }
-    SprintList sprintList = responseEntity.getBody();
+    
+    log.info("Getting Sprint list ...");
+    SprintList sprintList  = connect(rootUrl + SPRINT_LIST_URL, SprintList.class, rapidViewId);
     return sprintList.getSprints();
   }
 
   protected Sprint getSprint(final int sprintId, final String rapidViewId) {
-    ResponseEntity<SprintReport> responseReportEntity = null;
-    try {
-      responseReportEntity = restTemplate.exchange(rootUrl + SPRINT_REPORT_URL,
-          HttpMethod.GET, request, SprintReport.class, rapidViewId, sprintId);
-    } catch (RestClientException e) {
-      log.error("Cannot get a sprint", e);
-      throw new DataSourceConexionException("Cannot get a sprint ", e);
-    }
-    SprintReport sprintReport = responseReportEntity.getBody();
+    
+    log.info("Getting Sprint details ...");
+    SprintReport sprintReport =connect(rootUrl + SPRINT_REPORT_URL, SprintReport.class, rapidViewId, sprintId);
+    
     return sprintReport.getSprint();
   }
 
@@ -188,6 +170,26 @@ public class JiraRestClient {
     return searchIssues("sprint=null AND project=\"" + projectName + "\"",
         DEFAUL_FIELD_LIST, customFields);
   }
+  
+  
+  private <T> T connect(String url, Class<T> responseType,
+      Object... uriVariables) {
+
+    ResponseEntity<T> responseEntity = null;
+    try {
+      responseEntity = restTemplate.exchange(url, HttpMethod.GET, request,
+          responseType, uriVariables);
+    } catch (HttpStatusCodeException e) {
+      log.error("Cannot Connect - Response Error: ",
+          e.getResponseBodyAsString());
+      throw new ConexionResponseErrorException(
+          "Cannot Connect - Response Error: " + e.getResponseBodyAsString());
+    } catch (RestClientException e) {
+      log.error("Cannot connect to data source ", e);
+      throw new ConexionRestException("Cannot connect to data source ", e);
+    }
+    return responseEntity.getBody();
+  }
 
   private List<Issue> searchIssues(String jql, String fields,
       String customfields) {
@@ -195,18 +197,11 @@ public class JiraRestClient {
     boolean moreContent = true;
     int startAt = 0;
     while (moreContent) {
-      ResponseEntity<IssuesSearchResult> responseEntity = null;
-      try {
-        responseEntity = restTemplate.exchange(rootUrl + SEARCH_URL,
-            HttpMethod.GET, request, IssuesSearchResult.class, jql, fields,
-            customfields, startAt, MAX_SEARCH_SIZE);
-      } catch (RestClientException e) {
-        log.error("Cannot get issues", e);
-        throw new DataSourceConexionException("Cannot get issues", e);
-      }
-
-      IssuesSearchResult issuesSearchResult = responseEntity.getBody();
-
+      
+      log.info("Getting issues ...");
+      IssuesSearchResult issuesSearchResult = connect(rootUrl + SEARCH_URL, IssuesSearchResult.class, jql, fields,
+          customfields, startAt, MAX_SEARCH_SIZE);
+    
       if (CollectionUtils.isEmpty(issuesSearchResult.getIssues())) {
         break;
       }

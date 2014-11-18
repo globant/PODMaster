@@ -5,14 +5,14 @@ package com.globant.agilepodmaster.sync;
  * @author jose.dominguez@globant.com
  *
  */
-public class DataSourceConexionException extends RuntimeException {
+public class ConexionRestException extends RuntimeException {
   
   /**
    * Constructor.
    * @param message exception message.
    * @param exception the exception.
    */
-  public DataSourceConexionException(String message, Exception exception) {
+  public ConexionRestException(String message, Exception exception) {
     super(message, exception);
   }
 }

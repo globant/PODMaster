@@ -313,7 +313,7 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     Iterable<SprintPodMetric> pod1Spm = sprintPodMetricRepository.findAll(pod1SpmQuery);
     for (SprintPodMetric spm: pod1Spm) {
       assertThat(spm.getPod(), equalTo(pod1));
-      assertThat(spm.getAcceptedStoryPoints(), equalTo(sprint1.equals(spm.getSprint())? 20 : 0));
+      assertThat(spm.getAcceptedStoryPoints(), equalTo(sprint1.equals(spm.getSprint()) ? 20 : 0));
     }
 
     
@@ -322,7 +322,7 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     Iterable<SprintPodMetric> pod2Spm = sprintPodMetricRepository.findAll(pod2SpmQuery);
     for (SprintPodMetric spm: pod2Spm) {
       assertThat(spm.getPod(), equalTo(pod2));
-      int expected = sprint2.equals(spm.getSprint())? 20 : 0;
+      int expected = sprint2.equals(spm.getSprint()) ? 20 : 0;
       log.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
       log.error(spm.getSprint() + ":" + spm.getAcceptedStoryPoints());
       log.error("expected: " + expected);

@@ -168,7 +168,7 @@ public class SyncController implements
   }
 
   @ResponseStatus(value = HttpStatus.METHOD_FAILURE, reason = "Data Source conexion issue")
-  @ExceptionHandler(DataSourceConexionException.class)
+  @ExceptionHandler(ConexionRestException.class)
   public void conflict() {
   }
 
