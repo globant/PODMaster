@@ -27,21 +27,21 @@ public class SprintPodMetric extends SnapshotEntity {
   @NonNull @Getter
   @ManyToOne @NotNull
   private Pod pod;
-  
+
   @Getter @Setter
   private int acceptedStoryPoints;
-  
+
   @Getter @Setter
   private int plannedStoryPoints;
 
   @Getter @Setter
   private int numberOfBugs;
-  
+
   public SprintPodMetric(Sprint sprint, Pod pod) {
     this.sprint = sprint;
     this.pod = pod;
   }
-  
+
   public double getEstimationAccuracy() {
     return acceptedStoryPoints / (double) plannedStoryPoints;
   }
