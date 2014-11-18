@@ -6,18 +6,21 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+/**
+ * Jira issues search result.
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class IssuesSearchResult {
   
-  public String expand;
+  private String expand;
 
-  public int startAt;
+  private int startAt;
 
-  public int maxResults;
+  private int maxResults;
 
-  public int total;
+  private int total;
 
-  public List<Issue> issues;
+  private List<Issue> issues;
 
 }

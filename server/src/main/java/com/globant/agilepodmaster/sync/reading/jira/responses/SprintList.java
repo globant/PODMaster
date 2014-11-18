@@ -6,28 +6,33 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+/**
+ * Jira spring list.
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class SprintList {
 
-  public List<SprintItem> sprints;
+  private List<SprintItem> sprints;
 
-  public int rapidViewId;
+  private int rapidViewId;
 
 
-  
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  /**
+   * Jira spring list item.
+   */
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
   public static class SprintItem {
-    public int id;
+    private int id;
   
-    public String name;
+    private String name;
   
-    public boolean closed;
+    private boolean closed;
   
-    public int linkedPagesCount;
+    private int linkedPagesCount;
     
-    public String state;
+    private String state;
   
   }
 

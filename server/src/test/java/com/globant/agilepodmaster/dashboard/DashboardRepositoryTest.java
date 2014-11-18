@@ -10,11 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
 
+/**
+ * Test for DashboardRepository.
+ * @author Andres Postiglioni.
+ *
+ */
 @Transactional
 public class DashboardRepositoryTest extends AbstractUnitTest {
   @Autowired
   DashboardRepository repo;
 
+  /**
+   * Testing creating of a dashboard with widget.
+   */
   @Test
   public void shouldCreateDashboard() {
     Dashboard dashboard = DashboardFixtures.createDashboard(Dashboard.DashboardType.Account)
