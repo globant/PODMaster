@@ -6,169 +6,207 @@ import java.util.List;
 
 import lombok.Data;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+/**
+ * Jira issue.
+ * @author jose.dominguez@globant.com
+ *
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@SuppressWarnings("PMD")
 public class Issue {
+  
+  private String expand;
 
-  public String expand;
+  private String id;
 
-  public String id;
+  private String self;
 
-  public String self;
+  private String key;
 
-  public String key;
+  private Fields fields;
 
-  public Fields fields;
-
-  @JsonIgnoreProperties(ignoreUnknown=true)
+  /**
+   * Jira issue fields.
+   */
+  @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
-  public class Fields {
-    public String summary;
+  @SuppressWarnings("PMD")
+  public static class Fields {
+    private String summary;
 
-    public Timetracking timetracking;
+    private Timetracking timetracking;
 
-    public Issuetype issuetype;
+    private Issuetype issuetype;
 
-    public Priority priority;
+    private Priority priority;
 
-    public Status status;
+    private Status status;
 
-    public String created;
+    private String created;
 
-    public Assignee assignee;
+    private Assignee assignee;
 
-    public Resolution resolution;
+    private Resolution resolution;
 
-    public List<ReferenceField> components;
+    private List<ReferenceField> components;
 
-    public String resolutiondate;
+    private String resolutiondate;
 
-    public Issue parent;
+    private Issue parent;
 
-    public List<String> labels;
+    private List<String> labels;
 
     // region custom fields
 
-    public CustomField severity;
+    private CustomField severity;
 
-    public float storypoints;
+    private float storypoints;
 
-    public CustomField bugpriority;
+    private CustomField bugpriority;
 
-    public CustomField bugenvironment;
+    private CustomField bugenvironment;
 
     // endregion
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields Timetracking.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Timetracking {
-      public String originalEstimate;
+    public static class Timetracking {
+      private String originalEstimate;
 
-      public String remainingEstimate;
+      private String remainingEstimate;
 
-      public int originalEstimateSeconds;
+      private int originalEstimateSeconds;
 
-      public int remainingEstimateSeconds;
+      private int remainingEstimateSeconds;
 
-      public String timeSpent;
+      private String timeSpent;
 
-      public Integer timeSpentSeconds;
+      private Integer timeSpentSeconds;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields Issuetype.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Issuetype {
-      public String self;
+    public static class Issuetype {
+      private String self;
 
-      public String id;
+      private String id;
 
-      public String description;
+      private String description;
 
-      public String iconUrl;
+      private String iconUrl;
 
-      public String name;
+      private String name;
 
-      public Boolean subtask;
+      private Boolean subtask;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields priority.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Priority {
-      public String self;
+    public static class Priority {
+      private String self;
 
-      public String id;
+      private String id;
 
-      public String iconUrl;
+      private String iconUrl;
 
-      public String name;
+      private String name;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields custom field..
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class CustomField {
-      public String id;
+    public static class CustomField {
+      private String id;
 
-      public String value;
+      private String value;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields referenced field.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class ReferenceField {
-      public String id;
+    public static class ReferenceField {
+      private String id;
 
-      public String name;
+      private String name;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields assigned.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Assignee {
-      public String self;
+    public static class Assignee {
+      private String self;
 
-      public String name;
+      private String name;
 
-      public String emailAddress;
+      private String emailAddress;
 
-      public AvatarUrls avatarUrls;
+      private AvatarUrls avatarUrls;
 
-      public String displayName;
+      private String displayName;
 
-      public Boolean active;
+      private Boolean active;
 
-      @JsonIgnoreProperties(ignoreUnknown=true)
+      /**
+       * Jira issue fields assigned AvatarUrls.
+       */
+      @JsonIgnoreProperties(ignoreUnknown = true)
       @Data
-      public class AvatarUrls {
-        public String __invalid_name__16x16;
-
-        public String __invalid_name__48x48;
+      public static class AvatarUrls {
+        @SuppressWarnings("checkstyle:membername")
+        private String __invalid_name__16x16;
+        @SuppressWarnings("checkstyle:membername")
+        private String __invalid_name__48x48;
       }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields reslution.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Resolution {
-      public String self;
+    public static class Resolution {
+      private String self;
 
-      public String id;
+      private String id;
 
-      public String description;
+      private String description;
 
-      public String name;
+      private String name;
     }
 
-    @JsonIgnoreProperties(ignoreUnknown=true)
+    /**
+     * Jira issue fields status.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
-    public class Status {
-      public String self;
+    public static class Status {
+      private String self;
 
-      public String description;
+      private String description;
 
-      public String iconUrl;
+      private String iconUrl;
 
-      public String name;
+      private String name;
 
-      public String id;
+      private String id;
     }
-    
+
   }
-  
+
 }

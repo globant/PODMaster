@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 
-import java.net.URI;
+import com.globant.agilepodmaster.AbstractIntegrationTest;
 
 import org.junit.Test;
 import org.springframework.boot.test.TestRestTemplate;
@@ -17,13 +17,25 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.globant.agilepodmaster.AbstractIntegrationTest;
+import java.net.URI;
 
+/**
+ * Integrity test for service.
+ * 
+ * @author Andres Postiglioni.
+ *
+ */
 public class DashboardResourceTest extends AbstractIntegrationTest {
-  private static final String BASE_URL = "http://localhost:" + SERVER_PORT + "/dashboards";
-
+  /**
+   * Inserts through the service a dashboard to the db and then remove it using
+   * also the service. Finally check through the service that the dashboard does
+   * not exist.
+   *
+   */
   @Test
   public void shouldCreateFollowAndDelete() {
+    final String BASE_URL = "http://localhost:" + this.getServerPort() + "/dashboards";
+
     String requestJson = DashboardJsonFixtures.createDashboard(Dashboard.DashboardType.Account)
         .withWidget("Widget Title", "Widget Name").buildJson();
 

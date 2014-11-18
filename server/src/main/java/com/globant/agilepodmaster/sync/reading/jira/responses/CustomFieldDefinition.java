@@ -1,25 +1,37 @@
 package com.globant.agilepodmaster.sync.reading.jira.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
+/**
+ * Jira custom fields definition. 
+ * @author jose.dominguez@globant.com
+ */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomFieldDefinition {
-  
-  public String id;
-  public String name;
-  public boolean custom;
-  public boolean orderable;
-  public boolean navigable;
-  public boolean searchable;
-  public Schema schema;
-  
-  public class Schema
-  {
-      public String type;
-      public String custom;
-      public int customId;
-      public String system;
-      public String items;
+
+  private String id;
+  private String name;
+  private boolean custom;
+  private boolean orderable;
+  private boolean navigable;
+  private boolean searchable;
+  private Schema schema;
+
+  /**
+   * Jira custom fields schema.
+   *
+   */
+  @Data
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class Schema {
+    private String type;
+    private String schemaCustom;
+    private int customId;
+    private String system;
+    private String items;
   }
-  
+
 }
