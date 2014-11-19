@@ -41,7 +41,7 @@ public class Task extends SnapshotEntity {
    * Kind of types of Tasks.
    */
   public static enum Type {
-    USERSTORY, BUG, TASK
+    STORY, BUG, TASK
   }
 
   /**

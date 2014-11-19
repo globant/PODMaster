@@ -258,7 +258,19 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
           .effort(10)
           .name("task8")
           .owner(null)
-          .status("Closed")
+          .status("Closed")           
+            .addSubTask()
+              .effort(20)
+              .name("subtask1")
+              .owner("jose@gmail.com")
+              .status("Closed") 
+              .addToTask()
+            .addSubTask()
+              .effort(20)
+              .name("subtask2")
+              .owner("jose@gmail.com")
+              .status("Closed")  
+              .addToTask()
         .addToSprint()
       .addToRelease()
     .addToProject()
@@ -279,7 +291,7 @@ public class SnapshotBuilderTest extends AbstractUnitTest {
 
     List<Task> taskbacklog = taskRepository.findByReleaseAndSprint(
         releases.iterator().next(), null);
-    assertThat(taskbacklog, hasSize(2));
+    assertThat(taskbacklog, hasSize(4));
 
     List<Task> taskssprint1 = taskRepository.findByReleaseAndSprint(
         releases.iterator().next(), sprints.get(0));

@@ -1,12 +1,9 @@
 package com.globant.agilepodmaster.sync.reading.db;
 
-import com.globant.agilepodmaster.core.PodMemberRepository;
-import com.globant.agilepodmaster.core.PodRepository;
 import com.globant.agilepodmaster.sync.SyncContext;
 import com.globant.agilepodmaster.sync.reading.PodsBuilder;
 import com.globant.agilepodmaster.sync.reading.Reader;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,18 +15,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class PodsReader implements Reader<PodsBuilder> {
 
-  @Autowired
-  PodRepository podRepository;
-
-  @Autowired  
-  PodMemberRepository podMemberRepository;
-
-
   @Override
-  public void readInto(PodsBuilder builder, SyncContext context) {
-    // TODO Auto-generated method stub
-    
+  public void readInto(PodsBuilder podsBuilder,  SyncContext context) {
+    podsBuilder
+    .withPod("POD1")
+      .withPodMember("Walter", "Pacheco", "walter@ea.com").addToPod()
+      .withPodMember("Pedro", "Laurentz", "pedro@ea.com.com").addToPod()
+      .withPodMember("Maria", "Gomez", "maria@ea.com").addToPod()
+      .addToSnapshot()
+    .withPod("POD2")
+      .withPodMember("Jorge", "Dartes", "jorge@ea.com").addToPod()
+      .withPodMember("Claudia", "Parigi", "claudia@ea.com").addToPod()
+      .withPodMember("Roxana", "Andrade", "roxana@ea.com").addToPod()
+      .addToSnapshot();
   }
-
 
 }

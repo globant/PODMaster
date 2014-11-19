@@ -36,7 +36,6 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
    * 
    * @param name
    *          the name.
-   * @return
    * @return the same Builder.
    */
   public TaskBuilder<P, T> name(String name) {
@@ -108,7 +107,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
   /**
    * Setter for createDate field.
    * 
-   * @param createdIssueDate
+   * @param createdDate
    *          the createDate.
    * @return the same Builder.
    */
@@ -121,13 +120,14 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
   /**
    * Setter for type field.
    * 
-   * @param issueType
+   * @param type
    *          the type.
    * @return the same Builder.
    */
 
-  public TaskBuilder<P, T> type(Task.Type type) {
-    task.setType(type);
+  public TaskBuilder<P, T> type(String type) {
+    String value = type != null ? type.toUpperCase() : null;
+    task.setType(Task.Type.valueOf(value));    
     return this;
 
   }
@@ -135,7 +135,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
   /**
    * Setter for status field.
    * 
-   * @param issueStatus
+   * @param status
    *          the status.
    * @return the same Builder.
    */
@@ -149,7 +149,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
   /**
    * Setter for severity field.
    * 
-   * @param issueSeverity
+   * @param severity
    *          the severity.
    * @return the same Builder.
    */
@@ -175,15 +175,17 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public  TaskBuilder<TaskBuilder, TaskBuilder> addSubTask() {
-    Task subTask = new Task(release, sprint, task);
-    
     TaskBuilder<TaskBuilder, TaskBuilder> nestedBuilder = 
-        subTaskBuilder(subTask, release, sprint, this);
-    
+        subTaskBuilder(this.task, release, sprint, this);       
     this.addNestedBuilder((T) nestedBuilder);
     return nestedBuilder;
   }
-
+  
+  @SuppressWarnings("rawtypes")
+  public TaskBuilder addToTask() {
+    return (TaskBuilder)this.getParentBuilder();
+  }
+  
   @SuppressWarnings("rawtypes")
   public BacklogBuilder addToSprint() {
     P parentBuilder = this.getParentBuilder();

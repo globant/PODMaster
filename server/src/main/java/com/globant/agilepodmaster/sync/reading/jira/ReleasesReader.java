@@ -1,6 +1,18 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import com.globant.agilepodmaster.sync.BacklogBuilder;
+import com.globant.agilepodmaster.sync.OrganizationBuilder;
+import com.globant.agilepodmaster.sync.ProductBuilder;
+import com.globant.agilepodmaster.sync.ProjectBuilder;
+import com.globant.agilepodmaster.sync.ReleaseBuilder;
+import com.globant.agilepodmaster.sync.ReleaseReaderConfiguration;
 import com.globant.agilepodmaster.sync.SyncContext;
+import com.globant.agilepodmaster.sync.reading.IssueTreeBuilder;
+import com.globant.agilepodmaster.sync.reading.IssueTreeBuilder.IssueNode;
+import com.globant.agilepodmaster.sync.reading.TaskDTO.Priority;
+import com.globant.agilepodmaster.sync.reading.TaskDTO.Severity;
+import com.globant.agilepodmaster.sync.reading.TaskDTO.Status;
+import com.globant.agilepodmaster.sync.reading.TaskDTO.Type;
 import com.globant.agilepodmaster.sync.reading.Reader;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 import com.globant.agilepodmaster.sync.reading.TaskDTO;
@@ -8,16 +20,13 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import lombok.Setter;
 
@@ -28,39 +37,67 @@ import lombok.Setter;
  */
 @Service
 public class ReleasesReader implements Reader<ReleasesBuilder> {
+  
+  private static final String DEFAULT_STATUS = "Pending";
+
+  private static final String DEFAULT_TYPE = "Task";
+  
+  private static final String DEFAULT_PRIORITY = "Medium";
+  
+  private static final String DEFAULT_SEVERITY = "Medium";
+  
+  @Autowired
+  IssueTreeBuilder issueTreeBuilder;
 
   @Setter
-  private JiraRestClient restJiraClient;
-
-  @Setter
-  // this per project
-  private List<JiraCustomSettings> settingsList;
-
+  private ReleaseReaderConfiguration configuration;
 
   @Override
   public void readInto(ReleasesBuilder releasesBuilder, SyncContext context) {
-    Assert.notNull(restJiraClient, "RestJiraClient cannot be null");
+    Assert.notNull(configuration, "Configuration cannot be null");
     Assert.notNull(context, "context cannot be null");
 
-    for (JiraCustomSettings settings : settingsList) {
-      readProjectReleases(settings, releasesBuilder, context);
-    }
+    OrganizationBuilder organizationBuilder = releasesBuilder
+        .withOrganization(configuration.getOrganizationName());
 
+    for (ReleaseReaderConfiguration.Product product : configuration
+        .getProducts()) {
+      organizationBuilder = processProduct(organizationBuilder, product,
+          context).addToOrganization();
+    }
   }
 
-  private void readProjectReleases(JiraCustomSettings settings,
-      ReleasesBuilder releaseBuilder, SyncContext context) {
-    Assert.notNull(restJiraClient, "RestJiraClient cannot be null");
-    Assert.notNull(settings, "JiraCustomSettings cannot be null");
-    Assert.notNull(releaseBuilder, "builder cannot be null");
+  private ProductBuilder processProduct(OrganizationBuilder organizationBuilder,
+      ReleaseReaderConfiguration.Product product, SyncContext context) {
 
+    ProductBuilder productBuilder = organizationBuilder.addProduct(product
+        .getProductName());
+
+    for (ReleaseReaderConfiguration.Project project : product.getProjects()) {
+      productBuilder = processProject(productBuilder, project, context)
+          .addToProduct();
+    }
+    return productBuilder;
+  }
+  
+  private ProjectBuilder processProject(ProductBuilder productBuilder,
+      ReleaseReaderConfiguration.Project project, SyncContext context) {
+
+    ProjectBuilder projectBuilder = productBuilder.addProject(project
+        .getProjectName());
 
     // TODO we need read Jira versions and iterate per each version.
-    releaseBuilder = releaseBuilder.addRelease("FAKE Release",
-        settings.getProjectId());
+    ReleaseBuilder releaseBuilder = projectBuilder.withRelease("FAKE Release");
+    releaseBuilder = processRelease(releaseBuilder, project, context);
+    return releaseBuilder.addToProject();
 
-    List<SprintItem> sprints = restJiraClient.getSprintList(settings
-        .getJiraRapidViewId());
+  }
+ 
+  private ReleaseBuilder processRelease(ReleaseBuilder releaseBuilder,
+      ReleaseReaderConfiguration.Project project, SyncContext context) {
+
+    List<SprintItem> sprints = project.getJiraRestClient().getSprintList(
+        project.getJiraRapidViewId());
 
     if (!CollectionUtils.isEmpty(sprints)) {
       context.info("Found " + sprints.size() + " sprints");
@@ -68,36 +105,111 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
       context.warn("No Sprint information found");
     }
 
+    BacklogBuilder backlogBuilder = null;
     for (SprintItem sprint : sprints) {
+
       context.info("Processing sprint: " + sprint.getName());
 
-      Sprint jiraSprint = restJiraClient.getSprint(sprint.getId(),
-          settings.getJiraRapidViewId());
+      Sprint jiraSprint = project.getJiraRestClient().getSprint(sprint.getId(),
+          project.getJiraRapidViewId());
 
       if (sprintIsValid(jiraSprint)) {
 
-        List<Issue> sprintIssues = restJiraClient.getSprintIssues(sprint
-            .getId());
-
-        releaseBuilder = releaseBuilder.addSprint(sprint.getName(),
+        backlogBuilder = releaseBuilder.withSprint(sprint.getName(),
             DateUtil.getDate(jiraSprint.getStartDate(), context),
-            DateUtil.getDate(jiraSprint.getEndDate(), context),
-            buildTaskTree(sprintIssues, context));
+            DateUtil.getDate(jiraSprint.getEndDate(), context));
 
+        backlogBuilder = processSprint(backlogBuilder, project, context, sprint.getId());
+        releaseBuilder = backlogBuilder.addToRelease();
       } else {
         context.info("Skipping sprint " + sprint.getName()
             + ", due to invalid or empty dates");
       }
+    }
+    
+    List<Issue> backlogIssues = project.getJiraRestClient().getBacklogIssues(
+        project.getJiraName());
+    
+    context.info("Collected " + backlogIssues.size() + " backlogIssues issues");
+
+    backlogBuilder = releaseBuilder.withBacklog();
+    backlogBuilder = processBacklog(backlogBuilder, project, context);
+    releaseBuilder = backlogBuilder.addToRelease();
+    
+    return releaseBuilder;
+  }   
+  
+  
+  private BacklogBuilder processSprint(BacklogBuilder backlogBuilder,
+      ReleaseReaderConfiguration.Project project, SyncContext context,
+      int sprintId) {
+    List<Issue> sprintIssues = project.getJiraRestClient().getSprintIssues(
+        sprintId);
+    context.info("Collected " + sprintIssues.size() + " sprint issues");
+
+    return processTasks(backlogBuilder, sprintIssues, context);
+  }
+
+  private BacklogBuilder processBacklog(BacklogBuilder backlogBuilder,
+      ReleaseReaderConfiguration.Project project, SyncContext context) {
+    List<Issue> backlogIssues = project.getJiraRestClient().getBacklogIssues(
+        project.getJiraName());
+
+    return processTasks(backlogBuilder, backlogIssues, context);
+
+  }
+  
+  private BacklogBuilder processTasks(BacklogBuilder backlogBuilder,
+      List<Issue> issues, SyncContext context) {
+
+    List<IssueNode> listRoots = issueTreeBuilder.buildTree(issues);
+
+    for (IssueNode issueNode : listRoots) {
+
+      addTask( issueNode,  backlogBuilder);
 
     }
+    return backlogBuilder;
 
-    List<Issue> backlogIssues = restJiraClient.getBacklogIssues(settings
-        .getJiraProjectName());
+  }
+    
+  private BacklogBuilder addTask(IssueNode issueNode, BacklogBuilder backlogBuilder) {
+    Issue issue = issueNode.getIssue();
+    boolean hasTimetracking = issue.getFields().getTimetracking() != null;
+    
+    backlogBuilder
+        .withTask()
+        .name(issue.getFields().getSummary())
+        .effort(issue.getFields().getStorypoints())
+        .type(
+            (issue.getFields().getIssuetype() != null) ? issue.getFields()
+                .getIssuetype().getName() : DEFAULT_TYPE )
+        .status(
+            (issue.getFields().getStatus() != null) ? issue.getFields()
+                .getStatus().getName() : DEFAULT_STATUS)
+        .severity(
+            (issue.getFields().getSeverity() != null) ? issue.getFields()
+                .getSeverity().getValue() : DEFAULT_SEVERITY )
+        .priority(
+            (issue.getFields().getPriority() != null) ? issue.getFields()
+                .getPriority().getName() : DEFAULT_PRIORITY)
+        .owner(
+            issue.getFields().getAssignee() != null ? issue.getFields()
+                .getAssignee().getEmailAddress() : null)
 
-    releaseBuilder.addBacklog(buildTaskTree(backlogIssues,
-        context));
+        .estimated(
+            hasTimetracking ? issue.getFields().getTimetracking()
+                .getOriginalEstimateSeconds() : 0)
+        .remaining(
+            hasTimetracking ? issue.getFields().getTimetracking()
+                .getRemainingEstimateSeconds() : 0)
+        .actual(
+            hasTimetracking ? (issue.getFields().getTimetracking()
+                .getTimeSpentSeconds() != null ? issue.getFields()
+                .getTimetracking().getTimeSpentSeconds().intValue() : 0) : 0)
+        .addToSprint();
 
-    return;
+    return backlogBuilder;
 
   }
 
@@ -111,98 +223,4 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     return true;
   }
 
-  /**
-   * @return a list of roots.
-   */
-  private List<TaskDTO> buildTaskTree(List<Issue> issues, SyncContext context) {
-
-    Map<Issue, TaskDTO> mappedPairs = new HashMap<Issue, TaskDTO>();
-
-    for (Issue issue : issues) {
-      TaskDTO taskDTO = buildTaskDTO(issue, context);
-      mappedPairs.put(issue, taskDTO);
-    }
-
-    context.info("Collected " + issues.size() + " sprint issues");
-    
-    addSubTasksToMap(mappedPairs, context);
-    return  getRootsDTOs(mappedPairs);
-
-  }
-  
-  private List<TaskDTO> getRootsDTOs(Map<Issue, TaskDTO> mappedPairs) {
-
-    List<TaskDTO> taskRootsDTOs = new ArrayList<TaskDTO>();
-    for (Map.Entry<Issue, TaskDTO> pair : mappedPairs.entrySet()) {
-      if (pair.getKey().getFields().getParent() == null) {
-        taskRootsDTOs.add(pair.getValue());
-      }
-    }
-    return taskRootsDTOs;
-  }
-  
-  private void addSubTasksToMap(Map<Issue, TaskDTO> mappedPairs, SyncContext context) {
-
-    for (Map.Entry<Issue, TaskDTO> pair : mappedPairs.entrySet()) {
-      if (pair.getKey().getFields().getParent() != null) {
-
-        Issue parentIssue = searchIssueById(mappedPairs.keySet(), pair.getKey()
-            .getId());
-
-        if (parentIssue != null) {
-          mappedPairs.get(parentIssue).getSubTasks().add(pair.getValue());
-        } else {
-          context.warn("Parent item " + pair.getKey().getId()
-              + " can't be found in result");
-        }
-      }
-    }
-  }
-
-  private TaskDTO buildTaskDTO(Issue issue, SyncContext context) {
-
-    TaskDTO.Builder builder = new TaskDTO.Builder(context)
-        .name(issue.getFields().getSummary())
-        .effort(issue.getFields().getStorypoints())
-
-        .createDate(issue.getFields().getCreated())
-        .type(
-            (issue.getFields().getIssuetype() != null) ? issue.getFields()
-                .getIssuetype().getName() : null)
-        .status(
-            (issue.getFields().getStatus() != null) ? issue.getFields()
-                .getStatus().getName() : null)
-        .severity(
-            (issue.getFields().getSeverity() != null) ? issue.getFields()
-                .getSeverity().getValue() : null)
-        .priority(
-            (issue.getFields().getPriority() != null) ? issue.getFields()
-                .getPriority().getName() : null);
-    
-    if (issue.getFields().getAssignee() != null) {
-      builder.owner(issue.getFields().getAssignee().getEmailAddress());
-    }
-
-    if (issue.getFields().getTimetracking() != null) {
-      builder
-          .estimated(
-              issue.getFields().getTimetracking().getOriginalEstimateSeconds())
-          .remaining(
-              issue.getFields().getTimetracking().getRemainingEstimateSeconds())
-          .actual(issue.getFields().getTimetracking().getTimeSpentSeconds());
-    }
-
-    return builder.build();
-
-  }
-
-  private Issue searchIssueById(Set<Issue> issues, String id) {
-    Issue result = null;
-    for (Issue issue : issues) {
-      if (issue.getId().equals(id)) {
-        result = issue;
-      }
-    }
-    return null;
-  }
-}
+ }

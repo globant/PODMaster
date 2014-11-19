@@ -1,5 +1,18 @@
 package com.globant.agilepodmaster.sync;
 
+import com.globant.agilepodmaster.core.Organization;
+import com.globant.agilepodmaster.core.Pod;
+import com.globant.agilepodmaster.core.PodMember;
+import com.globant.agilepodmaster.core.Product;
+import com.globant.agilepodmaster.core.Project;
+import com.globant.agilepodmaster.core.Release;
+import com.globant.agilepodmaster.core.Snapshot;
+import com.globant.agilepodmaster.core.Sprint;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.core.Task;
+import com.globant.agilepodmaster.sync.reading.PodsBuilder;
+import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,24 +25,13 @@ import java.util.stream.Stream;
 
 import lombok.Getter;
 
-import com.globant.agilepodmaster.core.Organization;
-import com.globant.agilepodmaster.core.Pod;
-import com.globant.agilepodmaster.core.PodMember;
-import com.globant.agilepodmaster.core.Product;
-import com.globant.agilepodmaster.core.Project;
-import com.globant.agilepodmaster.core.Release;
-import com.globant.agilepodmaster.core.Snapshot;
-import com.globant.agilepodmaster.core.Sprint;
-import com.globant.agilepodmaster.core.SprintPodMetric;
-import com.globant.agilepodmaster.core.Task;
-
 /**
  * Creates a Snapshot in the DB.
  * 
  * @author jose.dominguez@globant.com
  *
  */
-public class SnapshotBuilder {
+public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder{
   private Snapshot snapshot;
 
   @Getter
