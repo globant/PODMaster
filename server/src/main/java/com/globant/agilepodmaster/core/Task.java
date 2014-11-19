@@ -25,9 +25,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
+@ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 public class Task extends SnapshotEntity {
 
   /**
@@ -145,5 +145,9 @@ public class Task extends SnapshotEntity {
   
   public boolean isBug() {
     return Type.BUG.equals(type);
+  }
+
+  public boolean isOpen() {
+    return !Status.CLOSED.equals(status);
   }
 }

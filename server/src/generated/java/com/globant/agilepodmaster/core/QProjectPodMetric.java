@@ -11,23 +11,22 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QProjectMetric is a Querydsl query type for ProjectMetric
+ * QProjectPodMetric is a Querydsl query type for ProjectPodMetric
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QProjectMetric extends EntityPathBase<ProjectMetric> {
+public class QProjectPodMetric extends EntityPathBase<ProjectPodMetric> {
 
-    private static final long serialVersionUID = 11897137L;
+    private static final long serialVersionUID = -1016382156L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QProjectMetric projectMetric = new QProjectMetric("projectMetric");
+    public static final QProjectPodMetric projectPodMetric = new QProjectPodMetric("projectPodMetric");
 
-    public final QMetricData _super;
+    public final QAbstractMetric _super;
 
     //inherited
     public final NumberPath<Long> id;
 
-    // inherited
     protected QPod pod;
 
     protected QProject project;
@@ -40,26 +39,27 @@ public class QProjectMetric extends EntityPathBase<ProjectMetric> {
     //inherited
     public final NumberPath<Integer> version;
 
-    public QProjectMetric(String variable) {
-        this(ProjectMetric.class, forVariable(variable), INITS);
+    public QProjectPodMetric(String variable) {
+        this(ProjectPodMetric.class, forVariable(variable), INITS);
     }
 
-    public QProjectMetric(Path<? extends ProjectMetric> path) {
+    public QProjectPodMetric(Path<? extends ProjectPodMetric> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QProjectMetric(PathMetadata<?> metadata) {
+    public QProjectPodMetric(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QProjectMetric(PathMetadata<?> metadata, PathInits inits) {
-        this(ProjectMetric.class, metadata, inits);
+    public QProjectPodMetric(PathMetadata<?> metadata, PathInits inits) {
+        this(ProjectPodMetric.class, metadata, inits);
     }
 
-    public QProjectMetric(Class<? extends ProjectMetric> type, PathMetadata<?> metadata, PathInits inits) {
+    public QProjectPodMetric(Class<? extends ProjectPodMetric> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this._super = new QMetricData(type, metadata, inits);
+        this._super = new QAbstractMetric(type, metadata, inits);
         this.id = _super.id;
+        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
         this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
         this.version = _super.version;
     }

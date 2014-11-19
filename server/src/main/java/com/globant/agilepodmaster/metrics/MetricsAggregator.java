@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.core.MetricData;
-import com.globant.agilepodmaster.core.ProjectMetric;
+import com.globant.agilepodmaster.core.AbstractMetric;
+import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
 @Component
 public class MetricsAggregator {
-  public Set<Metric<?>> aggregate(List<MetricData> list) {
+  public Set<Metric<?>> aggregate(List<AbstractMetric> list) {
     Set<Metric<?>> metrics = new HashSet<Metric<?>>();
 
     this.collectSprintPodMetrics(list, metrics);
@@ -23,16 +23,16 @@ public class MetricsAggregator {
     return metrics;
   }
 
-  private void collectProjectMetrics(List<MetricData> list, Set<Metric<?>> metrics) {
-    if (list.stream().filter(m -> m instanceof ProjectMetric).count() < 1) {
+  private void collectProjectMetrics(List<AbstractMetric> list, Set<Metric<?>> metrics) {
+    if (list.stream().filter(m -> m instanceof ProjectPodMetric).count() < 1) {
       return;
     }
 
-    int remainingSp = pmStream(list).mapToInt(ProjectMetric::getRemainingStoryPoints).sum();
+    int remainingSp = pmStream(list).mapToInt(ProjectPodMetric::getRemainingStoryPoints).sum();
     metrics.add(new Metric<Integer>("remaining-story-points", remainingSp, "story points"));
   }
 
-  private void collectSprintPodMetrics(List<MetricData> list, Set<Metric<?>> metrics) {
+  private void collectSprintPodMetrics(List<AbstractMetric> list, Set<Metric<?>> metrics) {
     if (list.stream().filter(m -> m instanceof SprintPodMetric).count() < 1) {
       return;
     }
@@ -44,11 +44,11 @@ public class MetricsAggregator {
     metrics.add(new Metric<Double>("accuracy-of-estimations", accoe, "percentage"));
   }
 
-  private Stream<SprintPodMetric> spmStream(List<MetricData> list) {
+  private Stream<SprintPodMetric> spmStream(List<AbstractMetric> list) {
     return list.stream().filter(m -> m instanceof SprintPodMetric).map(m -> (SprintPodMetric) m);
   }
   
-  private Stream<ProjectMetric> pmStream(List<MetricData> list) {
-    return list.stream().filter(m -> m instanceof ProjectMetric).map(m -> (ProjectMetric) m);
+  private Stream<ProjectPodMetric> pmStream(List<AbstractMetric> list) {
+    return list.stream().filter(m -> m instanceof ProjectPodMetric).map(m -> (ProjectPodMetric) m);
   }
 }

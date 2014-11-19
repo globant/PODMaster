@@ -11,16 +11,16 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QMetricData is a Querydsl query type for MetricData
+ * QAbstractPodMetric is a Querydsl query type for AbstractPodMetric
  */
 @Generated("com.mysema.query.codegen.SupertypeSerializer")
-public class QMetricData extends EntityPathBase<MetricData> {
+public class QAbstractPodMetric extends EntityPathBase<AbstractMetric> {
 
-    private static final long serialVersionUID = -336508046L;
+    private static final long serialVersionUID = -1363783333L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QMetricData metricData = new QMetricData("metricData");
+    public static final QAbstractPodMetric abstractPodMetric = new QAbstractPodMetric("abstractPodMetric");
 
     public final QSnapshotEntity _super;
 
@@ -35,23 +35,23 @@ public class QMetricData extends EntityPathBase<MetricData> {
     //inherited
     public final NumberPath<Integer> version;
 
-    public QMetricData(String variable) {
-        this(MetricData.class, forVariable(variable), INITS);
+    public QAbstractPodMetric(String variable) {
+        this(AbstractMetric.class, forVariable(variable), INITS);
     }
 
-    public QMetricData(Path<? extends MetricData> path) {
+    public QAbstractPodMetric(Path<? extends AbstractMetric> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QMetricData(PathMetadata<?> metadata) {
+    public QAbstractPodMetric(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QMetricData(PathMetadata<?> metadata, PathInits inits) {
-        this(MetricData.class, metadata, inits);
+    public QAbstractPodMetric(PathMetadata<?> metadata, PathInits inits) {
+        this(AbstractMetric.class, metadata, inits);
     }
 
-    public QMetricData(Class<? extends MetricData> type, PathMetadata<?> metadata, PathInits inits) {
+    public QAbstractPodMetric(Class<? extends AbstractMetric> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this._super = new QSnapshotEntity(type, metadata, inits);
         this.id = _super.id;

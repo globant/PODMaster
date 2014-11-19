@@ -22,7 +22,7 @@ import com.globant.agilepodmaster.metrics.partition.Partitioner;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SprintPodMetric extends MetricData {
+public class SprintPodMetric extends AbstractMetric {
   @NonNull @Getter
   @ManyToOne @NotNull
   private Sprint sprint;
@@ -36,9 +36,13 @@ public class SprintPodMetric extends MetricData {
   @Getter @Setter
   private int numberOfBugs;
 
+  @NonNull @Getter
+  @ManyToOne @NotNull
+  private Pod pod;
+
   public SprintPodMetric(Sprint sprint, Pod pod) {
-    super(pod);
     this.sprint = sprint;
+    this.pod = pod;
   }
 
   public double getEstimationAccuracy() {
@@ -46,7 +50,7 @@ public class SprintPodMetric extends MetricData {
   }
   
   @Override
-  public Partition<?> visit(Partitioner<? extends MetricData, ? extends Partition<?>> p) {
+  public Partition<?> visit(Partitioner<? extends Partition<?>> p) {
     return p.extractPartition(this);
   }
 }

@@ -22,7 +22,7 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public static final QSprintPodMetric sprintPodMetric = new QSprintPodMetric("sprintPodMetric");
 
-    public final QMetricData _super;
+    public final QAbstractMetric _super;
 
     public final NumberPath<Integer> acceptedStoryPoints = createNumber("acceptedStoryPoints", Integer.class);
 
@@ -33,7 +33,6 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public final NumberPath<Integer> plannedStoryPoints = createNumber("plannedStoryPoints", Integer.class);
 
-    // inherited
     protected QPod pod;
 
     // inherited
@@ -62,8 +61,9 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public QSprintPodMetric(Class<? extends SprintPodMetric> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this._super = new QMetricData(type, metadata, inits);
+        this._super = new QAbstractMetric(type, metadata, inits);
         this.id = _super.id;
+        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
         this.sprint = inits.isInitialized("sprint") ? new QSprint(forProperty("sprint"), inits.get("sprint")) : null;
         this.version = _super.version;
     }

@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.globant.agilepodmaster.core.MetricData;
-import com.globant.agilepodmaster.core.QMetricData;
-import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.core.QAbstractMetric;
 import com.globant.agilepodmaster.metrics.filter.BooleanExpressionPropertyEditor;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
@@ -34,11 +32,11 @@ public class MetricsController {
       @PathVariable("snapshotid") 
         Long snapshotId,
       @RequestParam(value = "aggregation")
-        List<Partitioner<? extends MetricData, ? extends Partition<?>>> partitioners, 
+        List<Partitioner<? extends Partition<?>>> partitioners, 
       @RequestParam(value = "filter", required = false) 
         List<BooleanExpression> filters) {
 
-    filters.add(QMetricData.metricData.snapshot().id.eq(snapshotId));
+    filters.add(QAbstractMetric.abstractMetric.snapshot().id.eq(snapshotId));
     BooleanExpression predicate = filters != null 
         ? BooleanExpression.allOf(filters.toArray(new BooleanExpression[0])) 
         : null;

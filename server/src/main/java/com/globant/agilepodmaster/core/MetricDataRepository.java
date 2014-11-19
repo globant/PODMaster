@@ -4,6 +4,6 @@ import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 public interface MetricDataRepository extends 
-    QueryDslPredicateExecutor<MetricData>,
-    CrudRepository<MetricData, Long> {
+    QueryDslPredicateExecutor<AbstractMetric>,
+    CrudRepository<AbstractMetric, Long> {
 }
