@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,26 +15,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.globant.agilepodmaster.core.DummyDataSprintPodMetricRepository;
+import com.globant.agilepodmaster.core.MetricData;
+import com.globant.agilepodmaster.core.MetricDataRepository;
 import com.globant.agilepodmaster.core.Quarter;
 import com.globant.agilepodmaster.core.SprintPodMetric;
-import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 import com.globant.agilepodmaster.metrics.partition.PodPartitioner;
 import com.globant.agilepodmaster.metrics.partition.QuarterPartitioner;
 import com.globant.agilepodmaster.metrics.partition.SprintPartitioner;
 import com.globant.agilepodmaster.metrics.partition.YearPartitioner;
+import com.mysema.query.types.OrderSpecifier;
+import com.mysema.query.types.Predicate;
 
 
 @RunWith(Parameterized.class)
 public class MetricsAggregatorCommandTest {
   private Set<MetricAggregation> expectedResult; 
-  private List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners;
+  private List<Partitioner<? extends MetricData, ? extends Partition<?>>> partitioners;
 
   public MetricsAggregatorCommandTest(
-      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners,
+      List<Partitioner<? extends MetricData, ? extends Partition<?>>> partitioners,
       Set<MetricAggregation> expectedResult) {
     this.expectedResult = expectedResult;
     this.partitioners = partitioners;
@@ -54,8 +60,91 @@ public class MetricsAggregatorCommandTest {
     return new MetricsAggregatorCommand(new MetricsAggregator(), createDummyRepo());
   }
 
-  private SprintPodMetricRepository createDummyRepo() {
-    return new DummyDataSprintPodMetricRepository();
+  private MetricDataRepository createDummyRepo() {
+    DummyDataSprintPodMetricRepository dummyRepo = new DummyDataSprintPodMetricRepository();
+    return new MetricDataRepository() {
+
+      @Override
+      public MetricData findOne(Predicate predicate) {
+        return dummyRepo.findOne(predicate);
+      }
+
+      @Override
+      public Iterable<MetricData> findAll(Predicate predicate) {
+        Iterable<SprintPodMetric> findAll = dummyRepo.findAll(predicate);
+
+        List<MetricData> list = new LinkedList<MetricData>();
+        findAll.forEach(m -> list.add(m));
+
+        return list;
+      }
+
+      @Override
+      public Iterable<MetricData> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
+        return null;
+      }
+
+      @Override
+      public Page<MetricData> findAll(Predicate predicate, Pageable pageable) {
+        return null;
+      }
+
+      @Override
+      public long count(Predicate predicate) {
+        return 0;
+      }
+
+      @Override
+      public <S extends MetricData> S save(S entity) {
+        return null;
+      }
+
+      @Override
+      public <S extends MetricData> Iterable<S> save(Iterable<S> entities) {
+        return null;
+      }
+
+      @Override
+      public MetricData findOne(Long id) {
+        return null;
+      }
+
+      @Override
+      public boolean exists(Long id) {
+        return false;
+      }
+
+      @Override
+      public Iterable<MetricData> findAll() {
+        return null;
+      }
+
+      @Override
+      public Iterable<MetricData> findAll(Iterable<Long> ids) {
+        return null;
+      }
+
+      @Override
+      public long count() {
+        return 0;
+      }
+
+      @Override
+      public void delete(Long id) {
+      }
+
+      @Override
+      public void delete(MetricData entity) {
+      }
+
+      @Override
+      public void delete(Iterable<? extends MetricData> entities) {
+      }
+
+      @Override
+      public void deleteAll() {
+      }
+    };
   }
 
   @Parameters

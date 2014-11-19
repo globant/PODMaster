@@ -2,6 +2,7 @@ package com.globant.agilepodmaster.metrics.partition;
 
 import org.springframework.stereotype.Component;
 
+import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
 @Component
@@ -15,5 +16,10 @@ public class SprintPartitioner extends Partitioner<SprintPodMetric, Partition<St
   @Override
   public Partition<String> extractPartition(SprintPodMetric data) {
     return new Partition<String>(PARTITION, data.getSprint().getName());
+  }
+
+  @Override
+  public Partition<String> extractPartition(ProjectMetric projectMetric) {
+    return null;
   }
 }

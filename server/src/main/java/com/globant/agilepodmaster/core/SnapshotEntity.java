@@ -10,7 +10,7 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter(AccessLevel.PACKAGE)
-public class SnapshotEntity extends AbstractEntity {
+public abstract class SnapshotEntity extends AbstractEntity {
   @ManyToOne
   private Snapshot snapshot;
 }

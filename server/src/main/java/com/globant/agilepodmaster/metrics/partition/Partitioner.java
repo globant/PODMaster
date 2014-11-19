@@ -2,6 +2,9 @@ package com.globant.agilepodmaster.metrics.partition;
 
 import lombok.EqualsAndHashCode;
 
+import com.globant.agilepodmaster.core.ProjectMetric;
+import com.globant.agilepodmaster.core.SprintPodMetric;
+
 @EqualsAndHashCode
 public abstract class Partitioner<T, P> {
   private final String acceptedDimension;
@@ -23,5 +26,6 @@ public abstract class Partitioner<T, P> {
     return this.acceptedDimension;
   }
 
-  public abstract P extractPartition(T data);
+  public abstract P extractPartition(SprintPodMetric sprintPodMetric);
+  public abstract P extractPartition(ProjectMetric projectMetric);
 }
