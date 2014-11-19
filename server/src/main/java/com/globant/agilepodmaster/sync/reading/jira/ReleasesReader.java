@@ -1,5 +1,6 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
+import com.globant.agilepodmaster.core.TaskBuilder;
 import com.globant.agilepodmaster.sync.BacklogBuilder;
 import com.globant.agilepodmaster.sync.OrganizationBuilder;
 import com.globant.agilepodmaster.sync.ProductBuilder;
@@ -9,13 +10,8 @@ import com.globant.agilepodmaster.sync.ReleaseReaderConfiguration;
 import com.globant.agilepodmaster.sync.SyncContext;
 import com.globant.agilepodmaster.sync.reading.IssueTreeBuilder;
 import com.globant.agilepodmaster.sync.reading.IssueTreeBuilder.IssueNode;
-import com.globant.agilepodmaster.sync.reading.TaskDTO.Priority;
-import com.globant.agilepodmaster.sync.reading.TaskDTO.Severity;
-import com.globant.agilepodmaster.sync.reading.TaskDTO.Status;
-import com.globant.agilepodmaster.sync.reading.TaskDTO.Type;
 import com.globant.agilepodmaster.sync.reading.Reader;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
-import com.globant.agilepodmaster.sync.reading.TaskDTO;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
@@ -165,31 +161,30 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     List<IssueNode> listRoots = issueTreeBuilder.buildTree(issues);
 
     for (IssueNode issueNode : listRoots) {
-
-      addTask( issueNode,  backlogBuilder);
-
+      TaskBuilder taskBuilder = addTask(issueNode, backlogBuilder.withTask()); 
+      backlogBuilder = taskBuilder.addToSprint();
     }
     return backlogBuilder;
 
   }
-    
-  private BacklogBuilder addTask(IssueNode issueNode, BacklogBuilder backlogBuilder) {
+
+  private TaskBuilder addTask(IssueNode issueNode,
+      TaskBuilder taskBuilder) {
     Issue issue = issueNode.getIssue();
     boolean hasTimetracking = issue.getFields().getTimetracking() != null;
-    
-    backlogBuilder
-        .withTask()
+
+    taskBuilder = taskBuilder
         .name(issue.getFields().getSummary())
         .effort(issue.getFields().getStorypoints())
         .type(
             (issue.getFields().getIssuetype() != null) ? issue.getFields()
-                .getIssuetype().getName() : DEFAULT_TYPE )
+                .getIssuetype().getName() : DEFAULT_TYPE)
         .status(
             (issue.getFields().getStatus() != null) ? issue.getFields()
                 .getStatus().getName() : DEFAULT_STATUS)
         .severity(
             (issue.getFields().getSeverity() != null) ? issue.getFields()
-                .getSeverity().getValue() : DEFAULT_SEVERITY )
+                .getSeverity().getValue() : DEFAULT_SEVERITY)
         .priority(
             (issue.getFields().getPriority() != null) ? issue.getFields()
                 .getPriority().getName() : DEFAULT_PRIORITY)
@@ -206,10 +201,13 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
         .actual(
             hasTimetracking ? (issue.getFields().getTimetracking()
                 .getTimeSpentSeconds() != null ? issue.getFields()
-                .getTimetracking().getTimeSpentSeconds().intValue() : 0) : 0)
-        .addToSprint();
+                .getTimetracking().getTimeSpentSeconds().intValue() : 0) : 0);
 
-    return backlogBuilder;
+    for (IssueNode subIssueNode : issueNode.getSubIssues()) {
+      taskBuilder = addTask(issueNode, taskBuilder.addSubTask());
+      taskBuilder.addToTask();
+    }
+    return taskBuilder;
 
   }
 
@@ -223,4 +221,4 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     return true;
   }
 
- }
+}
