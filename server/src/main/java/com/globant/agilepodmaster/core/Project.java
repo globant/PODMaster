@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,11 +20,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @Entity
+@ToString
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Project extends SnapshotEntity {
   
+  @Getter
+  @Setter
   @NonNull
   private String name;
   
@@ -34,6 +38,6 @@ public class Project extends SnapshotEntity {
   private Product product;
   
   @Setter
+  @Getter
   private String description;
-
 }

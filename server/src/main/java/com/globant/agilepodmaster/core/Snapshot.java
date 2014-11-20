@@ -73,6 +73,10 @@ public class Snapshot extends AbstractEntity {
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
   private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
 
+  @Getter
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
+  private Set<ProjectPodMetric> projectMetrics = new HashSet<ProjectPodMetric>();
+
   /**
    * Constructor.
    * 
@@ -144,5 +148,10 @@ public class Snapshot extends AbstractEntity {
   public void addPodMember(PodMember podMember) {
     podMember.setSnapshot(this);
     podMembers.add(podMember);
+  }
+
+  public void addProjectMetric(ProjectPodMetric projectMetric) {
+    projectMetric.setSnapshot(this);
+    projectMetrics.add(projectMetric);
   }
 }

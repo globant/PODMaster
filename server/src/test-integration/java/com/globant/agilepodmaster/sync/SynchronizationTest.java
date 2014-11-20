@@ -6,6 +6,14 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
+
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.OrganizationRepository;
 import com.globant.agilepodmaster.core.Pod;
@@ -30,13 +38,6 @@ import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
 import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
 import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 import com.mysema.query.types.expr.BooleanExpression;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Integration test for Jira Readers.
@@ -88,7 +89,7 @@ public class SynchronizationTest extends AbstractIntegrationTest {
   /**
    * Test for ProjectDataSetBuilder.
    */
-  @Test
+  @Test @Ignore
   public void testSnapshotBuilder() {
 
     JiraRestClient jiraRestClient = new JiraAPIFactory()

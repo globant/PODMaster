@@ -24,9 +24,13 @@ public class QTask extends EntityPathBase<Task> {
 
     public final QSnapshotEntity _super;
 
+    public final BooleanPath accepted = createBoolean("accepted");
+
     public final NumberPath<Double> accuracy = createNumber("accuracy", Double.class);
 
     public final NumberPath<Integer> actual = createNumber("actual", Integer.class);
+
+    public final BooleanPath bug = createBoolean("bug");
 
     public final DateTimePath<java.util.Date> createdDate = createDateTime("createdDate", java.util.Date.class);
 
@@ -38,6 +42,8 @@ public class QTask extends EntityPathBase<Task> {
     public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
+
+    public final BooleanPath open = createBoolean("open");
 
     protected QPodMember owner;
 

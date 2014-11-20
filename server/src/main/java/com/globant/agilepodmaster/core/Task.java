@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -20,14 +21,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * A task can be a User Story, Bug or Task. It can belong to a Sprint or
  * Release. We consider that a task is part of a "backlog" when it belongs to a
  * Release.
- * 
- * @author jose.dominguez@globant.com
  *
+ * @author jose.dominguez@globant.com
  */
 @Entity
+@ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 public class Task extends SnapshotEntity {
 
   /**
@@ -145,5 +145,14 @@ public class Task extends SnapshotEntity {
   
   public boolean isBug() {
     return Type.BUG.equals(type);
+  }
+
+  public boolean isOpen() {
+    return !Status.CLOSED.equals(status);
+  }
+
+  @Transient
+  public Project getProject() {
+    return sprint != null? sprint.getRelease().getProject() : release.getProject();
   }
 }

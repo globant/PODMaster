@@ -22,39 +22,26 @@ import com.globant.agilepodmaster.metrics.partition.Partitioner;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SprintPodMetric extends AbstractMetric {
-  @NonNull @Getter
-  @ManyToOne @NotNull
-  private Sprint sprint;
-
+public class ProjectPodMetric extends AbstractMetric {
   @Getter @Setter
-  private int acceptedStoryPoints;
-
-  @Getter @Setter
-  private int plannedStoryPoints;
-
-  @Getter @Setter
-  private int numberOfBugs;
+  private int remainingStoryPoints;
+  
+  @Getter
+  @NonNull
+  @ManyToOne
+  private Project project;
 
   @NonNull @Getter
   @ManyToOne @NotNull
   private Pod pod;
-
-  public SprintPodMetric(Sprint sprint, Pod pod) {
-    this.sprint = sprint;
+  
+  public ProjectPodMetric(Project project, Pod pod) {
+    this.project = project;
     this.pod = pod;
   }
 
-  public double getEstimationAccuracy() {
-    return acceptedStoryPoints / (double) plannedStoryPoints;
-  }
-  
   @Override
   public Partition<?> visit(Partitioner<? extends Partition<?>> p) {
     return p.extractPartition(this);
-  }
-
-  public Project getProject() {
-    return sprint.getRelease().getProject();
   }
 }

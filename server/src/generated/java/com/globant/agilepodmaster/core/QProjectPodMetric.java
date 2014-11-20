@@ -11,60 +11,56 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QSprintPodMetric is a Querydsl query type for SprintPodMetric
+ * QProjectPodMetric is a Querydsl query type for ProjectPodMetric
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
+public class QProjectPodMetric extends EntityPathBase<ProjectPodMetric> {
 
-    private static final long serialVersionUID = -1506535325L;
+    private static final long serialVersionUID = -1016382156L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QSprintPodMetric sprintPodMetric = new QSprintPodMetric("sprintPodMetric");
+    public static final QProjectPodMetric projectPodMetric = new QProjectPodMetric("projectPodMetric");
 
     public final QAbstractMetric _super;
-
-    public final NumberPath<Integer> acceptedStoryPoints = createNumber("acceptedStoryPoints", Integer.class);
 
     //inherited
     public final NumberPath<Long> id;
 
-    public final NumberPath<Integer> numberOfBugs = createNumber("numberOfBugs", Integer.class);
-
-    public final NumberPath<Integer> plannedStoryPoints = createNumber("plannedStoryPoints", Integer.class);
-
     protected QPod pod;
+
+    protected QProject project;
+
+    public final NumberPath<Integer> remainingStoryPoints = createNumber("remainingStoryPoints", Integer.class);
 
     // inherited
     protected QSnapshot snapshot;
 
-    protected QSprint sprint;
-
     //inherited
     public final NumberPath<Integer> version;
 
-    public QSprintPodMetric(String variable) {
-        this(SprintPodMetric.class, forVariable(variable), INITS);
+    public QProjectPodMetric(String variable) {
+        this(ProjectPodMetric.class, forVariable(variable), INITS);
     }
 
-    public QSprintPodMetric(Path<? extends SprintPodMetric> path) {
+    public QProjectPodMetric(Path<? extends ProjectPodMetric> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSprintPodMetric(PathMetadata<?> metadata) {
+    public QProjectPodMetric(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSprintPodMetric(PathMetadata<?> metadata, PathInits inits) {
-        this(SprintPodMetric.class, metadata, inits);
+    public QProjectPodMetric(PathMetadata<?> metadata, PathInits inits) {
+        this(ProjectPodMetric.class, metadata, inits);
     }
 
-    public QSprintPodMetric(Class<? extends SprintPodMetric> type, PathMetadata<?> metadata, PathInits inits) {
+    public QProjectPodMetric(Class<? extends ProjectPodMetric> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this._super = new QAbstractMetric(type, metadata, inits);
         this.id = _super.id;
         this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
-        this.sprint = inits.isInitialized("sprint") ? new QSprint(forProperty("sprint"), inits.get("sprint")) : null;
+        this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
         this.version = _super.version;
     }
 
@@ -75,18 +71,18 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
         return pod;
     }
 
+    public QProject project() {
+        if (project == null) {
+            project = new QProject(forProperty("project"));
+        }
+        return project;
+    }
+
     public QSnapshot snapshot() {
         if (snapshot == null) {
             snapshot = new QSnapshot(forProperty("snapshot"));
         }
         return snapshot;
-    }
-
-    public QSprint sprint() {
-        if (sprint == null) {
-            sprint = new QSprint(forProperty("sprint"));
-        }
-        return sprint;
     }
 
 }

@@ -37,6 +37,8 @@ public class QSnapshot extends EntityPathBase<Snapshot> {
 
     public final SetPath<Product, QProduct> products = this.<Product, QProduct>createSet("products", Product.class, QProduct.class, PathInits.DIRECT2);
 
+    public final SetPath<ProjectPodMetric, QProjectPodMetric> projectMetrics = this.<ProjectPodMetric, QProjectPodMetric>createSet("projectMetrics", ProjectPodMetric.class, QProjectPodMetric.class, PathInits.DIRECT2);
+
     public final SetPath<Project, QProject> projects = this.<Project, QProject>createSet("projects", Project.class, QProject.class, PathInits.DIRECT2);
 
     public final SetPath<Release, QRelease> releases = this.<Release, QRelease>createSet("releases", Release.class, QRelease.class, PathInits.DIRECT2);
