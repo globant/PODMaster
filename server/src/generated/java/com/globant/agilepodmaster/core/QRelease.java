@@ -22,21 +22,22 @@ public class QRelease extends EntityPathBase<Release> {
 
     public static final QRelease release = new QRelease("release");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
     public final NumberPath<Integer> number = createNumber("number", Integer.class);
 
-    public final QProject project;
+    protected QProject project;
 
-    public final QSnapshot snapshot;
+    // inherited
+    protected QSnapshot snapshot;
 
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QRelease(String variable) {
         this(Release.class, forVariable(variable), INITS);
@@ -56,8 +57,24 @@ public class QRelease extends EntityPathBase<Release> {
 
     public QRelease(Class<? extends Release> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
         this.project = inits.isInitialized("project") ? new QProject(forProperty("project"), inits.get("project")) : null;
-        this.snapshot = inits.isInitialized("snapshot") ? new QSnapshot(forProperty("snapshot"), inits.get("snapshot")) : null;
+        this.version = _super.version;
+    }
+
+    public QProject project() {
+        if (project == null) {
+            project = new QProject(forProperty("project"));
+        }
+        return project;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

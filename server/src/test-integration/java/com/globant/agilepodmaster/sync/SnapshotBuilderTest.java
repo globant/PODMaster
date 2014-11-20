@@ -2,16 +2,14 @@ package com.globant.agilepodmaster.sync;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,15 +17,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.globant.agilepodmaster.AbstractIntegrationTest;
-import com.globant.agilepodmaster.core.Organization;
 import com.globant.agilepodmaster.core.OrganizationRepository;
 import com.globant.agilepodmaster.core.Pod;
 import com.globant.agilepodmaster.core.PodMember;
 import com.globant.agilepodmaster.core.PodMemberRepository;
 import com.globant.agilepodmaster.core.PodRepository;
-import com.globant.agilepodmaster.core.Product;
 import com.globant.agilepodmaster.core.ProductRepository;
-import com.globant.agilepodmaster.core.Project;
 import com.globant.agilepodmaster.core.ProjectRepository;
 import com.globant.agilepodmaster.core.QSprintPodMetric;
 import com.globant.agilepodmaster.core.Release;
@@ -40,8 +35,6 @@ import com.globant.agilepodmaster.core.SprintPodMetricRepository;
 import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
-import com.globant.agilepodmaster.sync.reading.PodMemberDTO;
-import com.globant.agilepodmaster.sync.reading.TaskDTO;
 import com.mysema.query.types.expr.BooleanExpression;
 
 
@@ -51,8 +44,11 @@ import com.mysema.query.types.expr.BooleanExpression;
  * @author jose.dominguez@globant.com
  *
  */
+
 @Slf4j
+@Transactional
 public class SnapshotBuilderTest extends AbstractIntegrationTest {
+
   @Autowired
   SnapshotBuilder snapshotBuilder;
 
@@ -82,215 +78,122 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
 
   @Autowired
   PodMemberRepository podMemberRepository;
-  
+
   @Autowired
   SprintPodMetricRepository sprintPodMetricRepository;
-
-  /**
-   * Testing AddWith method. Adding Task with Parent
-   */
-  @Test
-  public void testAddWithParent() {
-    Organization organization = new Organization("Org Prueba");
-    Product product = new Product("Prod Prueba", organization);
-    Project project = new Project("Proj Prueba", product);
-    Snapshot snapshot = new Snapshot("Snap Prueba");
-    Release release = new Release("Rel Prueba", snapshot, project);
-    Sprint sprint = new Sprint("Sprint Prueba", release, new Date(), new Date());
-    SyncContext context = new SyncContext();
-
-    TaskDTO taskDTO1 = new TaskDTO.Builder(context).name("task1").build();
-
-    List<Task> taskList = new ArrayList<Task>();
-    snapshotBuilder.addTask(taskDTO1, null, release, sprint, taskList);
-
-    Task task1 = taskList.get(0);
-    assertThat(task1.getName(), is("task1"));
-    assertThat(task1.getParentTask(), nullValue());
-
-    TaskDTO taskDTO2 = new TaskDTO.Builder(context).name("task2").build();
-
-    snapshotBuilder.addTask(taskDTO2, task1, release, sprint, taskList);
-
-    Task task2 = taskList.get(1);
-    assertThat(task2.getName(), is("task2"));
-    assertThat(task2.getParentTask(), equalTo(task1));
-    assertThat(task2.getSprint().getName(), equalTo("Sprint Prueba"));
-  }
-
-  /**
-   * Testing AddWith method. Adding Task with Subtasks.
-   */
-  @Test
-  public void testAddTaskWithSubTasks() {
-
-    Organization organization = new Organization("Org Prueba");
-    Product product = new Product("Prod Prueba", organization);
-    Project project = new Project("Proj Prueba", product);
-    Snapshot snapshot = new Snapshot("Snap Prueba");
-    Release release = new Release("Rel Prueba", snapshot, project);
-    Sprint sprint = new Sprint("Sprint Prueba", release, new Date(), new Date());
-    SyncContext context = new SyncContext();
-
-    TaskDTO taskDTO1 = new TaskDTO.Builder(context).name("task1").build();
-    TaskDTO taskDTO2 = new TaskDTO.Builder(context).name("task2").build();
-    TaskDTO taskDTO3 = new TaskDTO.Builder(context).name("task3").build();
-
-
-    List<TaskDTO> subTasks = new ArrayList<TaskDTO>();
-    subTasks.add(taskDTO2);
-    subTasks.add(taskDTO3);
-
-    taskDTO1.setSubTasks(subTasks);
-
-    List<Task> taskList = new ArrayList<Task>();
-    snapshotBuilder.addTask(taskDTO1, null, release, sprint, taskList);
-
-    Task task1 = taskList.get(0);
-    assertThat(task1.getName(), is("task1"));
-
-    Task task2 = taskList.get(1);
-    assertThat(task2.getName(), is("task2"));
-
-    Task task3 = taskList.get(2);
-    assertThat(task3.getName(), is("task3"));
-
-    assertThat(task2.getParentTask(), equalTo(task1));
-    assertThat(task3.getParentTask(), equalTo(task1));
-  }
-
-  /**
-   * Testing AddWith method. Adding Task with Member.
-   */
-  @Test
-  public void testAddTaskWithMember() {
-    Organization organization = new Organization("Org Prueba");
-    Product product = new Product("Prod Prueba", organization);
-    Project project = new Project("Proj Prueba", product);
-    Snapshot snapshot = new Snapshot("Snap Prueba");
-    Release release = new Release("Rel Prueba", snapshot, project);
-    Sprint sprint = new Sprint("Sprint Prueba", release, new Date(), new Date());
-    SyncContext context = new SyncContext();
-
-    TaskDTO taskDTO1 = new TaskDTO.Builder(context).name("task1")
-        .owner("jose@gmail.com").build();
-
-    PodMemberDTO memberDTO1 = new PodMemberDTO("jose@gmail.com", "Jose",
-        "Dominguez", "POD1");
-    Map<String, PodMemberDTO> podMembersMap = new HashMap<String, PodMemberDTO>();
-    podMembersMap.put("jose@gmail.com", memberDTO1);
-    snapshotBuilder.addMembersMap(podMembersMap);
-
-    List<Task> taskList = new ArrayList<Task>();
-    snapshotBuilder.addTask(taskDTO1, null, release, sprint, taskList);
-
-    Task task1 = taskList.get(0);
-    assertThat(task1.getName(), is("task1"));
-    assertThat(task1.getOwner(), notNullValue());
-
-    PodMember podMember = task1.getOwner();
-    assertThat(podMember.getEmail(), is("jose@gmail.com"));
-    assertThat(podMember.getFirstName(), is("Jose"));
-    assertThat(podMember.getLastName(), is("Dominguez"));
-
-    Pod pod = podMember.getPod();
-    assertThat(pod.getName(), is("POD1"));
-
-  }
 
   /**
    * Test what was store in the DB.
    */
   @Test
   public void testBuild() {
-
-    Organization organization = new Organization("Org Prueba");
-    Product product = new Product("Prod Prueba", organization);
-    Project project = new Project("Proj Prueba", product);
-
-    organizationRepository.save(organization);
-    product = productRepository.save(product);
-    project = projectRepository.save(project);
-
-//    List<Project> list = (List<Project>) projectRepository.findAll();
-
     SyncContext context = new SyncContext();
 
-    TaskDTO task1 = new TaskDTO.Builder(context).name("task1")
-        .owner("jose@gmail.com").effort(10).status("Closed").build();
+    SnapshotBuilder snapshotBuilder = new SnapshotBuilder(context);
 
-    TaskDTO task2 = new TaskDTO.Builder(context).name("task2")
-        .owner("maria@gmail.com").effort(10).status("Closed").build();
-
-    TaskDTO task3 = new TaskDTO.Builder(context).name("task3")
-        .owner("ruben@gmail.com").effort(10).status("Closed").build();
-
-    TaskDTO task4 = new TaskDTO.Builder(context)
-        .owner("ruben@gmail.com").effort(10).status("Closed").build();
-
-    TaskDTO task5 = new TaskDTO.Builder(context).name("task5").status("Closed").effort(10).build();
-
-    TaskDTO task6 = new TaskDTO.Builder(context).name("task6").status("Closed").effort(10).build();
-
-    TaskDTO task7 = new TaskDTO.Builder(context).name("task7")
-        .owner("juana@gmail.com").effort(10).build();
-
-    TaskDTO task8 = new TaskDTO.Builder(context).name("task8")
-        .owner("maria@gmail.com").effort(10).build();
-
-    List<TaskDTO> taskSprint1 = new ArrayList<TaskDTO>();
-    taskSprint1.add(task1);
-    taskSprint1.add(task2);
-    taskSprint1.add(task8);
-
-    List<TaskDTO> taskSprint2 = new ArrayList<TaskDTO>();
-    taskSprint2.add(task3);
-    taskSprint2.add(task4);
-    taskSprint2.add(task7);
-
-    List<TaskDTO> backlog = new ArrayList<TaskDTO>();
-    backlog.add(task5);
-    backlog.add(task6);
-
-    PodMemberDTO memberDTO1 = new PodMemberDTO("jose@gmail.com", "Jose",
-        "Dominguez", "POD1");
-    PodMemberDTO memberDTO2 = new PodMemberDTO("maria@gmail.com", "Maria",
-        "Gomez", "POD1");
-    PodMemberDTO memberDTO3 = new PodMemberDTO("ruben@gmail.com", "Ruben",
-        "Dartes", "POD2");
-    Map<String, PodMemberDTO> podMembersMap = new HashMap<String, PodMemberDTO>();
-    podMembersMap.put("jose@gmail.com", memberDTO1);
-    podMembersMap.put("maria@gmail.com", memberDTO2);
-    podMembersMap.put("ruben@gmail.com", memberDTO3);
-
-    Snapshot snapshot = snapshotBuilder
-        .withProduct(product)
-        .addMembersMap(podMembersMap)
-        .addRelease("release1", project.getId())
-        .addSprint("sprint1", new Date(), new Date(), taskSprint1)
-        .addSprint("sprint2", new Date(), new Date(), taskSprint2)
-        .addBacklog(backlog).build();
+    snapshotBuilder
+    .withPod("POD1")
+      .withPodMember("Jose", "Dominguez", "jose@gmail.com").addToPod()
+      .withPodMember("Maria", "Gomez", "maria@gmail.com").addToPod()
+      .addToSnapshot()
+    .withPod("POD2")
+      .withPodMember("Ruben", "Dartes", "ruben@gmail.com").addToPod()
+      .withPodMember("Juana", "Manso", "juana@gmail.com").addToPod()
+      .addToSnapshot()
+    .withOrganization("Org Prueba")
+      .addProduct("Prod prueba")
+       .addProject("Proj prueba")
+        .withRelease("release1")
+        .withSprint("sprint1", new Date(), new Date())
+        .withTask()
+          .effort(10)
+          .name("task1")
+          .owner("jose@gmail.com")
+          .status("Closed")
+        .addToSprint()
+        .withTask()
+          .effort(10)
+          .name("task2")
+          .owner("maria@gmail.com")
+          .status("Closed")
+        .addToSprint()
+        .withTask()
+          .effort(10)
+          .name("task3")
+          .owner("maria@gmail.com")
+        .addToSprint()
+      .addToRelease()
+      .withSprint("sprint2", new Date(), new Date())
+        .withTask()
+          .effort(10)
+          .name("task4")
+          .owner("ruben@gmail.com")
+          .status("Closed")
+        .addToSprint()
+        .withTask()
+          .effort(10)
+          .name("task5")
+          .owner("juana@gmail.com")
+          .status("Closed")
+        .addToSprint()
+        .withTask()
+          .effort(10)
+          .name("task6")
+          .owner("juana@gmail.com")
+        .addToSprint()
+      .addToRelease()
+      .withBacklog()
+        .withTask()
+          .effort(10)
+          .name("task7")
+          .owner(null)
+          .status("Closed")
+        .addToSprint()
+        .withTask()
+          .effort(10)
+          .name("task8")
+          .owner(null)
+          .status("Closed")           
+            .addSubTask()
+              .effort(20)
+              .name("subtask1")
+              .owner("jose@gmail.com")
+              .status("Closed") 
+              .addToTask()
+            .addSubTask()
+              .effort(20)
+              .name("subtask2")
+              .owner("jose@gmail.com")
+              .status("Closed")  
+              .addToTask()
+        .addToSprint()
+      .addToRelease()
+    .addToProject()
+    .addToProduct().addToOrganization().addToSnapshot();
     
+    Snapshot snapshot = snapshotBuilder.build();
+
     snapshotRepository.save(snapshot);
 
-    assertThat(snapshot.getProduct(), equalTo(product));
-
-    List<Release> releases = releaseRepository.findBySnapshot(snapshot);
+    
+    Set<Release> releases = snapshotRepository.findOne(snapshot.getId()).getReleases();
     assertThat(releases, hasSize(1));
 
-    List<Sprint> sprints = sprintRepository.findByRelease(releases.get(0));
+    List<Sprint> sprints = sprintRepository.findByRelease(releases.iterator().next());
     assertThat(sprints, hasSize(2));
+    Sprint sprint1 = sprints.stream().filter(s -> "sprint1".equals(s.getName())).findAny().get();
+    Sprint sprint2 = sprints.stream().filter(s -> "sprint2".equals(s.getName())).findAny().get();
 
     List<Task> taskbacklog = taskRepository.findByReleaseAndSprint(
-        releases.get(0), null);
-    assertThat(taskbacklog, hasSize(2));
-    
+        releases.iterator().next(), null);
+    assertThat(taskbacklog, hasSize(4));
+
     List<Task> taskssprint1 = taskRepository.findByReleaseAndSprint(
-        releases.get(0), sprints.get(0));
+        releases.iterator().next(), sprints.get(0));
     assertThat(taskssprint1, hasSize(3));
 
     List<Task> taskssprint2 = taskRepository.findByReleaseAndSprint(
-        releases.get(0), sprints.get(1));
+        releases.iterator().next(), sprints.get(1));
     assertThat(taskssprint2, hasSize(3));
 
     Pod pod1 = podRepository.findByName("POD1").iterator().next();
@@ -303,31 +206,28 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     assertThat(pod2, notNullValue());
 
     podMembers = podMemberRepository.findByPod(pod2);
-    assertThat(podMembers, hasSize(1));
+    assertThat(podMembers, hasSize(2));
     
-    Sprint sprint1 = sprints.stream().filter(s->"sprint1".equals(s.getName())).findAny().get();
-    Sprint sprint2 = sprints.stream().filter(s->"sprint2".equals(s.getName())).findAny().get();
+    QSprintPodMetric qspm = QSprintPodMetric.sprintPodMetric;
 
-    BooleanExpression pod1SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod1);
-    assertThat(sprintPodMetricRepository.count(pod1SpmQuery), equalTo(2L));    
-    Iterable<SprintPodMetric> pod1Spm = sprintPodMetricRepository.findAll(pod1SpmQuery);
-    for (SprintPodMetric spm: pod1Spm) {
-      assertThat(spm.getPod(), equalTo(pod1));
-      assertThat(spm.getAcceptedStoryPoints(), equalTo(sprint1.equals(spm.getSprint()) ? 20 : 0));
-    }
-
+    BooleanExpression pod1Sp1Query = qspm.pod().eq(pod1).and(qspm.sprint().eq(sprint1));
+    SprintPodMetric pod1Sp1m = sprintPodMetricRepository.findOne(pod1Sp1Query);
+    assertThat(pod1Sp1m.getPod(), equalTo(pod1));
+    assertThat(pod1Sp1m.getAcceptedStoryPoints(), equalTo(20));
     
-    BooleanExpression pod2SpmQuery = QSprintPodMetric.sprintPodMetric.pod.eq(pod2);
-    assertThat(sprintPodMetricRepository.count(pod2SpmQuery), equalTo(2L));
-    Iterable<SprintPodMetric> pod2Spm = sprintPodMetricRepository.findAll(pod2SpmQuery);
-    for (SprintPodMetric spm: pod2Spm) {
-      assertThat(spm.getPod(), equalTo(pod2));
-      int expected = sprint2.equals(spm.getSprint()) ? 20 : 0;
-      log.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      log.error(spm.getSprint() + ":" + spm.getAcceptedStoryPoints());
-      log.error("expected: " + expected);
-      log.error("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      assertThat(spm.getAcceptedStoryPoints(), equalTo(expected));
-    }
+    BooleanExpression pod1Sp2Query = qspm.pod().eq(pod1).and(qspm.sprint().eq(sprint2));
+    SprintPodMetric pod1Sp2m = sprintPodMetricRepository.findOne(pod1Sp2Query);
+    assertThat(pod1Sp2m.getPod(), equalTo(pod1));
+    assertThat(pod1Sp2m.getAcceptedStoryPoints(), equalTo(0));
+    
+    BooleanExpression pod2Sp1Query = qspm.pod().eq(pod2).and(qspm.sprint().eq(sprint1));
+    SprintPodMetric pod2Sp1m = sprintPodMetricRepository.findOne(pod2Sp1Query);
+    assertThat(pod2Sp1m.getPod(), equalTo(pod2));
+    assertThat(pod2Sp1m.getAcceptedStoryPoints(), equalTo(0));
+    
+    BooleanExpression pod2Sp2Query = qspm.pod().eq(pod2).and(qspm.sprint().eq(sprint2));
+    SprintPodMetric pod2Sp2m = sprintPodMetricRepository.findOne(pod2Sp2Query);
+    assertThat(pod2Sp2m.getPod(), equalTo(pod2));
+    assertThat(pod2Sp2m.getAcceptedStoryPoints(), equalTo(20));
   }
 }

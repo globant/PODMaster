@@ -10,8 +10,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.core.SprintPodMetric;
-import com.globant.agilepodmaster.core.SprintPodMetricRepository;
+import com.globant.agilepodmaster.core.AbstractMetric;
+import com.globant.agilepodmaster.core.MetricDataRepository;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 import com.mysema.query.types.Predicate;
@@ -19,20 +19,21 @@ import com.mysema.query.types.Predicate;
 @Component
 public class MetricsAggregatorCommand {
   private MetricsAggregator aggregator;
-  private SprintPodMetricRepository repo;
+  private MetricDataRepository repo;
 
   @Autowired
-  public MetricsAggregatorCommand(MetricsAggregator aggregator, SprintPodMetricRepository repo) {
+  public MetricsAggregatorCommand(MetricsAggregator aggregator, MetricDataRepository repo) {
     this.aggregator = aggregator;
     this.repo = repo;
   }
 
   public Set<MetricAggregation> execute(
-      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners, Predicate filters) {
+      List<Partitioner<? extends Partition<?>>> partitioners, 
+      Predicate filters) {
 
-    Iterable<SprintPodMetric> spmList = repo.findAll(filters);
+    Iterable<AbstractMetric> spmList = repo.findAll(filters);
 
-    Map<Set<Partition<?>>, List<SprintPodMetric>> partitions = createPartitions(
+    Map<Set<Partition<?>>, List<AbstractMetric>> partitions = createPartitions(
         spmList, partitioners);
     
     Set<MetricAggregation> aggregated = this.aggregate(partitions);
@@ -40,7 +41,7 @@ public class MetricsAggregatorCommand {
     return aggregated;
   }
 
-  private Set<MetricAggregation> aggregate(Map<Set<Partition<?>>, List<SprintPodMetric>> parts) {
+  private Set<MetricAggregation> aggregate(Map<Set<Partition<?>>, List<AbstractMetric>> parts) {
 
     Set<MetricAggregation> aggregated = new HashSet<MetricAggregation>();
     parts.forEach(
@@ -51,8 +52,8 @@ public class MetricsAggregatorCommand {
   }
 
   private SprintPodMetricPartitionsMap createPartitions(
-      Iterable<SprintPodMetric> spmList,
-      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners) {
+      Iterable<? extends AbstractMetric> spmList,
+      List<Partitioner<? extends Partition<?>>> partitioners) {
 
     SprintPodMetricPartitionsMap partitions = new SprintPodMetricPartitionsMap();
     spmList.forEach(spm -> partitions.get(createPartitions(spm, partitioners)).add(spm));
@@ -61,22 +62,29 @@ public class MetricsAggregatorCommand {
   }
 
   private Set<Partition<?>> createPartitions(
-      SprintPodMetric spm,
-      List<Partitioner<SprintPodMetric, ? extends Partition<?>>> partitioners) {
+      AbstractMetric data,
+      List<Partitioner<? extends Partition<?>>> partitioners) {
 
-    Set<Partition<?>> partition = new HashSet<Partition<?>>();
-    partitioners.forEach(p -> partition.add(p.extractPartition(spm)));
+    Set<Partition<?>> partitions = new HashSet<Partition<?>>();
+    
+    for(Partitioner<? extends Partition<?>> partitioner: partitioners) {
+      Partition<?> partition = data.visit(partitioner);
+      
+      if (partition != null) {
+        partitions.add(partition);
+      }
+    }
 
-    return partition;
+    return partitions;
   }
 }
 
 @SuppressWarnings("serial")
-class SprintPodMetricPartitionsMap extends HashMap<Set<Partition<?>>, List<SprintPodMetric>> {
+class SprintPodMetricPartitionsMap extends HashMap<Set<Partition<?>>, List<AbstractMetric>> {
   @SuppressWarnings("unchecked")
   @Override
-  public List<SprintPodMetric> get(Object key) {
-    this.putIfAbsent((Set<Partition<?>>) key, new LinkedList<SprintPodMetric>());
+  public List<AbstractMetric> get(Object key) {
+    this.putIfAbsent((Set<Partition<?>>) key, new LinkedList<AbstractMetric>());
     return super.get(key);
   }
 }

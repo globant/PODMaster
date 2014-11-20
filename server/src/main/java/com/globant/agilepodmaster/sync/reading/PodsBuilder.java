@@ -1,6 +1,6 @@
 package com.globant.agilepodmaster.sync.reading;
 
-import java.util.Map;
+import com.globant.agilepodmaster.sync.PodBuilder;
 
 /**
  * Defines the functionality of a Pod builder.
@@ -8,14 +8,12 @@ import java.util.Map;
  *
  */
 public interface PodsBuilder {
-
+  
   /**
-   * Add information of Members and Pods taken from app configuration.
-   * @param podMembersMap Map whose key is the user name and value is a MemberDTO.
-   * @return this snapshotBuilder
+   * Add pod to builder.
+   * @param name name of the Pod.
+   * @return the same PodBuilder.
    */
-  PodsBuilder addMembersMap(Map<String, PodMemberDTO> podMembersMap);
-
-
+  PodBuilder withPod(String name);
 
 }

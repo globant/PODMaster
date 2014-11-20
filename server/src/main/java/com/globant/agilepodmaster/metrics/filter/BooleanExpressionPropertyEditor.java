@@ -66,9 +66,9 @@ public class BooleanExpressionPropertyEditor extends PropertyEditorSupport {
     ComparableExpression<?> operand1Exp = null;
 
     if ("pod.name".equalsIgnoreCase(operand1)) {
-      operand1Exp = sprintpodmetric.pod.name;
+      operand1Exp = sprintpodmetric.pod().name;
     } else if ("sprint.name".equalsIgnoreCase(operand1)) {
-      operand1Exp = sprintpodmetric.sprint.name;
+      operand1Exp = sprintpodmetric.sprint().name;
     } else {
       throw new IllegalArgumentException("Cannot parse operand: " + operand1);
     }

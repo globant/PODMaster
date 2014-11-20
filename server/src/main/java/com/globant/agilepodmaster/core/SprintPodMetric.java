@@ -14,25 +14,47 @@ import lombok.ToString;
 
 import org.hibernate.annotations.Immutable;
 
+import com.globant.agilepodmaster.metrics.partition.Partition;
+import com.globant.agilepodmaster.metrics.partition.Partitioner;
+
 @Entity
 @Immutable
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@EqualsAndHashCode(callSuper = false)
 @ToString
-public class SprintPodMetric extends AbstractEntity {
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class SprintPodMetric extends AbstractMetric {
   @NonNull @Getter
   @ManyToOne @NotNull
   private Sprint sprint;
 
+  @Getter @Setter
+  private int acceptedStoryPoints;
+
+  @Getter @Setter
+  private int plannedStoryPoints;
+
+  @Getter @Setter
+  private int numberOfBugs;
+
   @NonNull @Getter
   @ManyToOne @NotNull
   private Pod pod;
-  
-  @Getter @Setter
-  private int acceptedStoryPoints;
-  
+
   public SprintPodMetric(Sprint sprint, Pod pod) {
     this.sprint = sprint;
     this.pod = pod;
+  }
+
+  public double getEstimationAccuracy() {
+    return acceptedStoryPoints / (double) plannedStoryPoints;
+  }
+  
+  @Override
+  public Partition<?> visit(Partitioner<? extends Partition<?>> p) {
+    return p.extractPartition(this);
+  }
+
+  public Project getProject() {
+    return sprint.getRelease().getProject();
   }
 }

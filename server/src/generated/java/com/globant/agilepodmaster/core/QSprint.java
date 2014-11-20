@@ -22,23 +22,26 @@ public class QSprint extends EntityPathBase<Sprint> {
 
     public static final QSprint sprint = new QSprint("sprint");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     public final DateTimePath<java.util.Date> endDate = createDateTime("endDate", java.util.Date.class);
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
     public final NumberPath<Integer> number = createNumber("number", Integer.class);
 
-    public final QRelease release;
+    protected QRelease release;
+
+    // inherited
+    protected QSnapshot snapshot;
 
     public final DateTimePath<java.util.Date> startDate = createDateTime("startDate", java.util.Date.class);
 
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QSprint(String variable) {
         this(Sprint.class, forVariable(variable), INITS);
@@ -58,7 +61,24 @@ public class QSprint extends EntityPathBase<Sprint> {
 
     public QSprint(Class<? extends Sprint> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
         this.release = inits.isInitialized("release") ? new QRelease(forProperty("release"), inits.get("release")) : null;
+        this.version = _super.version;
+    }
+
+    public QRelease release() {
+        if (release == null) {
+            release = new QRelease(forProperty("release"));
+        }
+        return release;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }

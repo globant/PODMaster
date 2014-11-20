@@ -1,7 +1,5 @@
 package com.globant.agilepodmaster.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -12,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Project of a Product. 
@@ -19,11 +20,13 @@ import lombok.Setter;
  *
  */
 @Entity
+@ToString
 @EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class Project extends AbstractEntity {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Project extends SnapshotEntity {
   
+  @Setter
   @NonNull
   @Getter
   private String name;
@@ -35,6 +38,6 @@ public class Project extends AbstractEntity {
   private Product product;
   
   @Setter
+  @Getter
   private String description;
-
 }

@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class Sprint extends AbstractEntity {
+public class Sprint extends SnapshotEntity {
   public int number;
   
   @NonNull

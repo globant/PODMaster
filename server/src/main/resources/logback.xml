@@ -16,9 +16,9 @@
   </appender>
 
   <logger name="org.springframework.web" level="ERROR"/>
-<!--   <logger name="org.hibernate.SQL" level="DEBUG"/> -->
-<!--   <logger name="org.hibernate.type" level="TRACE"/>  --> <!-- ### log JDBC bind parameters ### -->
-<!--   <logger name="org.hibernate.tool.hbm2ddl" level="ERROR"/> -->
+  <logger name="org.hibernate.SQL" level="DEBUG"/>
+  <logger name="org.hibernate.type" level="TRACE"/> 
+  <logger name="org.hibernate.tool.hbm2ddl" level="ERROR"/>
   
   <root level="INFO">
     <appender-ref ref="CONSOLE" />

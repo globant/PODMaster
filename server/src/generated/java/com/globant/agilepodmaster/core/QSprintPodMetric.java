@@ -22,19 +22,26 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public static final QSprintPodMetric sprintPodMetric = new QSprintPodMetric("sprintPodMetric");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QAbstractMetric _super;
 
     public final NumberPath<Integer> acceptedStoryPoints = createNumber("acceptedStoryPoints", Integer.class);
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
-    public final QPod pod;
+    public final NumberPath<Integer> numberOfBugs = createNumber("numberOfBugs", Integer.class);
 
-    public final QSprint sprint;
+    public final NumberPath<Integer> plannedStoryPoints = createNumber("plannedStoryPoints", Integer.class);
+
+    protected QPod pod;
+
+    // inherited
+    protected QSnapshot snapshot;
+
+    protected QSprint sprint;
 
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QSprintPodMetric(String variable) {
         this(SprintPodMetric.class, forVariable(variable), INITS);
@@ -54,8 +61,32 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public QSprintPodMetric(Class<? extends SprintPodMetric> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod")) : null;
+        this._super = new QAbstractMetric(type, metadata, inits);
+        this.id = _super.id;
+        this.pod = inits.isInitialized("pod") ? new QPod(forProperty("pod"), inits.get("pod")) : null;
         this.sprint = inits.isInitialized("sprint") ? new QSprint(forProperty("sprint"), inits.get("sprint")) : null;
+        this.version = _super.version;
+    }
+
+    public QPod pod() {
+        if (pod == null) {
+            pod = new QPod(forProperty("pod"));
+        }
+        return pod;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
+    }
+
+    public QSprint sprint() {
+        if (sprint == null) {
+            sprint = new QSprint(forProperty("sprint"));
+        }
+        return sprint;
     }
 
 }

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Product of an organization. It is composed of one or more projects.
@@ -19,11 +20,11 @@ import lombok.Setter;
  *
  */
 @Entity
+@ToString
+@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
-public class Product extends AbstractEntity {
-  
+public class Product extends SnapshotEntity {
   @NonNull
   @Getter
   private String name;
@@ -35,5 +36,4 @@ public class Product extends AbstractEntity {
   
   @Setter
   private String description;
-
 }

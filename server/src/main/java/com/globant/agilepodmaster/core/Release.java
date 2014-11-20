@@ -9,8 +9,10 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 
 /**
  * A Release groups sprints and a backlog. It is for just one project and one
@@ -22,21 +24,25 @@ import lombok.NonNull;
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Release extends AbstractEntity {
+@ToString
+public class Release extends SnapshotEntity {
   
   private int number;
   
   @NonNull
+  @Getter
   private String name;
   
-  @NonNull
-  @ManyToOne
-  @JsonIgnore
-  private Snapshot snapshot;
+//  @NonNull
+//  @ManyToOne
+//  @JsonIgnore
+//  @Setter(AccessLevel.PACKAGE)
+//  private Snapshot snapshot;
   
   @NonNull
   @ManyToOne
   @JsonIgnore
+  @Getter
   private Project project;
 
   /**
@@ -45,16 +51,11 @@ public class Release extends AbstractEntity {
    * @param snapshot the snapshot of this release.
    * @param project the project of this release.
    */
-  public Release(String name, Snapshot snapshot, Project project) {
+  public Release(String name, Project project) {
     super();
     Assert.notNull(name, "name cannot be null");
-    Assert.notNull(snapshot, "snapshot cannot be null");
     Assert.notNull(project, "project cannot be null");
     this.name = name;
-    this.snapshot = snapshot;
     this.project = project;
   }
-  
-  
-
 }

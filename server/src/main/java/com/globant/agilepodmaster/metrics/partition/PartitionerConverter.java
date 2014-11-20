@@ -8,16 +8,16 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PartitionerConverter implements Converter<String, Partitioner<?,?>> {
-  private final List<Partitioner<?,?>> partitioners;
+public class PartitionerConverter implements Converter<String, Partitioner<?>> {
+  private final List<Partitioner<?>> partitioners;
   
   @Autowired  
-  public PartitionerConverter(List<Partitioner<?,?>> partitioners) {
+  public PartitionerConverter(List<Partitioner<?>> partitioners) {
     this.partitioners = Collections.unmodifiableList(partitioners);
   }
 
   @Override
-  public Partitioner<?,?> convert(String source) {
+  public Partitioner<?> convert(String source) {
     return partitioners.stream().filter(p -> p.accepts(source)).findFirst().get();
   }
 }

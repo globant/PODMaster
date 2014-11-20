@@ -22,19 +22,22 @@ public class QProduct extends EntityPathBase<Product> {
 
     public static final QProduct product = new QProduct("product");
 
-    public final QAbstractEntity _super = new QAbstractEntity(this);
+    public final QSnapshotEntity _super;
 
     public final StringPath description = createString("description");
 
     //inherited
-    public final NumberPath<Long> id = _super.id;
+    public final NumberPath<Long> id;
 
     public final StringPath name = createString("name");
 
-    public final QOrganization organization;
+    protected QOrganization organization;
+
+    // inherited
+    protected QSnapshot snapshot;
 
     //inherited
-    public final NumberPath<Integer> version = _super.version;
+    public final NumberPath<Integer> version;
 
     public QProduct(String variable) {
         this(Product.class, forVariable(variable), INITS);
@@ -54,7 +57,24 @@ public class QProduct extends EntityPathBase<Product> {
 
     public QProduct(Class<? extends Product> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization")) : null;
+        this._super = new QSnapshotEntity(type, metadata, inits);
+        this.id = _super.id;
+        this.organization = inits.isInitialized("organization") ? new QOrganization(forProperty("organization"), inits.get("organization")) : null;
+        this.version = _super.version;
+    }
+
+    public QOrganization organization() {
+        if (organization == null) {
+            organization = new QOrganization(forProperty("organization"));
+        }
+        return organization;
+    }
+
+    public QSnapshot snapshot() {
+        if (snapshot == null) {
+            snapshot = new QSnapshot(forProperty("snapshot"));
+        }
+        return snapshot;
     }
 
 }
