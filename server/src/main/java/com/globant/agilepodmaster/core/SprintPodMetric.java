@@ -53,4 +53,8 @@ public class SprintPodMetric extends AbstractMetric {
   public Partition<?> visit(Partitioner<? extends Partition<?>> p) {
     return p.extractPartition(this);
   }
+
+  public Project getProject() {
+    return sprint.getRelease().getProject();
+  }
 }
