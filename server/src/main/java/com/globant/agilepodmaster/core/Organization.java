@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.Setter;
 public class Organization extends SnapshotEntity {
   
   @NonNull
+  @Getter
   private String name;
 
   @Setter

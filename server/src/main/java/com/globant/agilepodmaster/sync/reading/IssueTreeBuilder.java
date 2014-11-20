@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,14 +48,15 @@ public class IssueTreeBuilder {
     for (Map.Entry<Issue, IssueNode> pair : mappedPairs.entrySet()) {
       if (pair.getKey().getFields().getParent() != null) {
 
-        Issue parentIssue = searchIssueById(mappedPairs.keySet(), pair.getKey()
-            .getFields().getParent().getId());
+        String parentId = pair.getKey().getFields().getParent().getId();
+
+        Issue parentIssue = mappedPairs.keySet().stream()
+            .filter(u -> u.getId().equals(parentId)).findFirst().get();
 
         if (parentIssue != null) {
           mappedPairs.get(parentIssue).getSubIssues().add(pair.getValue());
         } else {
-          log.warning("Parent item " + pair.getKey()
-              .getFields().getParent().getId()
+          log.warning("Parent item " + parentIssue
               + " can't be found in result");
         }
       }
@@ -72,16 +72,6 @@ public class IssueTreeBuilder {
       }
     }
     return taskRootsDTOs;
-  }
-
-  private Issue searchIssueById(Set<Issue> issues, String id) {
-    Issue result = null;
-    for (Issue issue : issues) {
-      if (issue.getId().equals(id)) {
-        return issue;
-      }
-    }
-    return null;
   }
 
   @Data

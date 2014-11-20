@@ -26,9 +26,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Project extends SnapshotEntity {
   
-  @Getter
   @Setter
   @NonNull
+  @Getter
   private String name;
   
   @Getter
