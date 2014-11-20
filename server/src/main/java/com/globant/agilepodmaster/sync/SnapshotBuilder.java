@@ -58,19 +58,22 @@ public class SnapshotBuilder {
   }
 
   private void createProjectMetrics() {
-    for(Pod pod: snapshot.getPods()) {
-      int remainingStoryPoints = (int) 
-          snapshot.getTasks().stream()
-          .filter(t -> t.getOwner() != null)
-          .filter(t -> pod.equals(t.getOwner().getPod()))
-          .filter(t -> t.isOpen())
-          .mapToDouble(Task::getEffort)
-          .sum();
-
-      ProjectPodMetric projectMetric = new ProjectPodMetric(null, pod);
-      projectMetric.setRemainingStoryPoints(remainingStoryPoints);
-      
-      snapshot.addProjectMetric(projectMetric);
+    for (Project project: snapshot.getProjects()) {
+      for(Pod pod: snapshot.getPods()) {
+        int remainingStoryPoints = (int) 
+            snapshot.getTasks().stream()
+            .filter(t -> project.equals(t.getProject()))
+            .filter(t -> t.getOwner() != null)
+            .filter(t -> pod.equals(t.getOwner().getPod()))
+            .filter(t -> t.isOpen())
+            .mapToDouble(Task::getEffort)
+            .sum();
+        
+        ProjectPodMetric projectMetric = new ProjectPodMetric(project, pod);
+        projectMetric.setRemainingStoryPoints(remainingStoryPoints);
+        
+        snapshot.addProjectMetric(projectMetric);
+      }
     }
   }
 

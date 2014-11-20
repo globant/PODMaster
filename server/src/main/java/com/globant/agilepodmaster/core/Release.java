@@ -5,9 +5,9 @@ import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 
 import org.springframework.util.Assert;
@@ -41,6 +41,7 @@ public class Release extends SnapshotEntity {
   @NonNull
   @ManyToOne
   @JsonIgnore
+  @Getter
   private Project project;
 
   /**
