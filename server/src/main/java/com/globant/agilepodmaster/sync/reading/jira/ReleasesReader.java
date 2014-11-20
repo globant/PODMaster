@@ -122,11 +122,6 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
             + ", due to invalid or empty dates");
       }
     }
-    
-    List<Issue> backlogIssues = project.getJiraRestClient().getBacklogIssues(
-        project.getJiraName());
-    
-    context.info("Collected " + backlogIssues.size() + " backlogIssues issues");
 
     backlogBuilder = releaseBuilder.withBacklog();
     backlogBuilder = processBacklog(backlogBuilder, project, context);
@@ -150,6 +145,7 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
       ReleaseReaderConfiguration.Project project, SyncContext context) {
     List<Issue> backlogIssues = project.getJiraRestClient().getBacklogIssues(
         project.getJiraName());
+    context.info("Collected " + backlogIssues.size() + " backlogIssues issues");
 
     return processTasks(backlogBuilder, backlogIssues, context);
 
@@ -204,8 +200,9 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
                 .getTimetracking().getTimeSpentSeconds().intValue() : 0) : 0);
 
     for (IssueNode subIssueNode : issueNode.getSubIssues()) {
-      taskBuilder = addTask(issueNode, taskBuilder.addSubTask());
-      taskBuilder.addToTask();
+      taskBuilder = taskBuilder.addSubTask();
+      taskBuilder = addTask(subIssueNode, taskBuilder);
+      taskBuilder = taskBuilder.addToTask();
     }
     return taskBuilder;
 

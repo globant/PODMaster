@@ -1,18 +1,18 @@
 package com.globant.agilepodmaster.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.springframework.util.Assert;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
-
-import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A Release groups sprints and a backlog. It is for just one project and one
@@ -30,6 +30,7 @@ public class Release extends SnapshotEntity {
   private int number;
   
   @NonNull
+  @Getter
   private String name;
   
 //  @NonNull
