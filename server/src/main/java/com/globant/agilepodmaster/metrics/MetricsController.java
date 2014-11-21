@@ -1,5 +1,6 @@
 package com.globant.agilepodmaster.metrics;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,11 @@ public class MetricsController {
         List<Partitioner<? extends Partition<?>>> partitioners, 
       @RequestParam(value = "filter", required = false) 
         List<BooleanExpression> filters) {
-
+    
+    if (filters == null) {
+      filters = new LinkedList<BooleanExpression>();
+    }
+    
     filters.add(QAbstractMetric.abstractMetric.snapshot().id.eq(snapshotId));
     BooleanExpression predicate = filters != null 
         ? BooleanExpression.allOf(filters.toArray(new BooleanExpression[0])) 
