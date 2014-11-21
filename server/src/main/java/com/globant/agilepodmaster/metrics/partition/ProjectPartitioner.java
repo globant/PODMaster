@@ -1,8 +1,11 @@
 package com.globant.agilepodmaster.metrics.partition;
 
+import org.springframework.stereotype.Component;
+
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
+@Component
 public class ProjectPartitioner extends Partitioner<Partition<String>> {
   private static final String PARTITION = "project";
 
