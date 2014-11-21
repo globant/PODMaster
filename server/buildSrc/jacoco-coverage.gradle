@@ -32,6 +32,8 @@ task testAll(type: Test) {
   classpath = sourceSets.allTests.runtimeClasspath
 }
 
+test.dependsOn testIntegration
+
 task jacocoTestAllReport(type: JacocoReport, dependsOn: testAll) {
   sourceSets sourceSets.main
   executionData testAll
