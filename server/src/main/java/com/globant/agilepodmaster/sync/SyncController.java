@@ -1,18 +1,9 @@
 package com.globant.agilepodmaster.sync;
 
-import com.globant.agilepodmaster.core.Organization;
-import com.globant.agilepodmaster.core.OrganizationRepository;
-import com.globant.agilepodmaster.core.Product;
-import com.globant.agilepodmaster.core.ProductRepository;
-import com.globant.agilepodmaster.core.Project;
-import com.globant.agilepodmaster.core.ProjectRepository;
-import com.globant.agilepodmaster.core.Snapshot;
-import com.globant.agilepodmaster.core.SnapshotRepository;
-import com.globant.agilepodmaster.sync.reading.db.PodsReader;
-import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
-import com.globant.agilepodmaster.sync.reading.jira.JiraCustomSettings;
-import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
-import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
+import java.util.Arrays;
+import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,21 +22,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.globant.agilepodmaster.core.Organization;
+import com.globant.agilepodmaster.core.OrganizationRepository;
+import com.globant.agilepodmaster.core.Product;
+import com.globant.agilepodmaster.core.ProductRepository;
+import com.globant.agilepodmaster.core.Project;
+import com.globant.agilepodmaster.core.ProjectRepository;
+import com.globant.agilepodmaster.core.Snapshot;
+import com.globant.agilepodmaster.core.SnapshotRepository;
+import com.globant.agilepodmaster.sync.reading.db.PodsReader;
+import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
+import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
+import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
 
-import lombok.extern.slf4j.Slf4j;
-
-
-
-@RestController
 @Slf4j
+@RestController
 public class SyncController implements
     ResourceProcessor<RepositoryLinksResource> {
-
-  @Autowired
-  SnapshotBuilder snapshotBuilder;
 
   @Autowired
   ReleasesReader releasesReader;

@@ -105,10 +105,7 @@ public class SynchronizationTest extends AbstractIntegrationTest {
 
     releasesReader.setConfiguration(configuration);
 
-    JiraRestClient jiraRestClient = new JiraAPIFactory()
-        .withCredentials(username, password).withTemplate(restTemplate)
-        .withUrlRoot(urlRoot).create();
-
+    SyncContext context = new SyncContext();
     SnapshotBuilder snapshotBuilder = new SnapshotBuilder(context);
     podsReader.readInto(snapshotBuilder, context);
     releasesReader.readInto(snapshotBuilder, context);

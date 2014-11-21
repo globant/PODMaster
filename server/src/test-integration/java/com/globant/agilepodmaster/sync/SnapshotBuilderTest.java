@@ -11,8 +11,6 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,14 +42,8 @@ import com.mysema.query.types.expr.BooleanExpression;
  * @author jose.dominguez@globant.com
  *
  */
-
-@Slf4j
 @Transactional
 public class SnapshotBuilderTest extends AbstractIntegrationTest {
-
-  @Autowired
-  SnapshotBuilder snapshotBuilder;
-
   @Autowired
   OrganizationRepository organizationRepository;
 
