@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -110,44 +111,47 @@ public class SyncController implements
       throw new PropertyNotFoundException(
           "No projects found for organization: " + organizationName);
     }
-
+    
+    Project project = projects.get(0);
+    
     // TODO We are considering a JIRA for all the projects.
     JiraRestClient jiraRestClient = new JiraAPIFactory()
         .withCredentials(username, password).withTemplate(restTemplate)
         .withUrlRoot(urlRoot).create();
-    releasesReader.setRestJiraClient(jiraRestClient);
-
-    List<JiraCustomSettings> settingsList = new ArrayList<JiraCustomSettings>();
-    for (Project project : projects) {
-      String jiraProjectName = env.getProperty("gopods.jira."
-          + project.getName().toLowerCase() + ".project_name");
-      if (StringUtils.isEmpty(jiraProjectName)) {
-        throw new PropertyNotFoundException("This property was not found: "
-            + jiraProjectName);
-      }
-
-      String jiraRapidViewId = env.getProperty("gopods.jira."
-          + project.getName().toLowerCase() + ".rapid_view_id");
-      if (StringUtils.isEmpty(jiraRapidViewId)) {
-        throw new PropertyNotFoundException("This property was not found: "
-            + jiraRapidViewId);
-
-      }
-      JiraCustomSettings settings = new JiraCustomSettings();
-      settings.setJiraProjectName(jiraProjectName);
-      settings.setJiraRapidViewId(jiraRapidViewId);
-      settings.setProjectId(project.getId());
-      settingsList.add(settings);
+    
+    String jiraProjectName = env.getProperty("gopods.jira."
+        + project.getName().toLowerCase() + ".project_name");
+    if (StringUtils.isEmpty(jiraProjectName)) {
+      throw new PropertyNotFoundException("This property was not found: "
+          + jiraProjectName);
+    }
+    
+    String jiraRapidViewId = env.getProperty("gopods.jira."
+        + project.getName().toLowerCase() + ".rapid_view_id");
+    if (StringUtils.isEmpty(jiraRapidViewId)) {
+      throw new PropertyNotFoundException("This property was not found: "
+          + jiraRapidViewId);
 
     }
+    
+    ReleaseReaderConfiguration.Project projectConfig = new ReleaseReaderConfiguration.Project(
+        project.getName(), jiraProjectName,  jiraRapidViewId, jiraRestClient);
+    ReleaseReaderConfiguration.Product productConfig = new ReleaseReaderConfiguration.Product(
+        product.getName(), Arrays.asList(projectConfig));
+    ReleaseReaderConfiguration configuration = new ReleaseReaderConfiguration(
+        organization.getName(), Arrays.asList(productConfig));
 
-    releasesReader.setSettingsList(settingsList);
-
-    Snapshot snapshot = snapshotBuilder.withProduct(product)
-        .addReader(podsReader).addReader(releasesReader).build();
+    releasesReader.setConfiguration(configuration);
+    
+    SyncContext context = new SyncContext();
+    
+    SnapshotBuilder snapshotBuilder = new SnapshotBuilder(context);
+    podsReader.readInto(snapshotBuilder, context);
+    releasesReader.readInto(snapshotBuilder, context);
+    Snapshot snapshot = snapshotBuilder.build();
     
     snapshotRepository.save(snapshot);
-    return snapshotBuilder.getSyncContext();
+    return context;
 
   }
 
