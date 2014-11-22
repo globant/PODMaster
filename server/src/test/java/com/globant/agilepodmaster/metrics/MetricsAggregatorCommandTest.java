@@ -19,9 +19,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.globant.agilepodmaster.core.AbstractMetricRepository;
 import com.globant.agilepodmaster.core.CollectionBasedQueryDslPredicateExecutor;
 import com.globant.agilepodmaster.core.DummyDataGenerator;
-import com.globant.agilepodmaster.core.MetricDataRepository;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.QProjectPodMetric;
 import com.globant.agilepodmaster.core.QSprintPodMetric;
@@ -53,7 +53,10 @@ public class MetricsAggregatorCommandTest {
   @Test
   public void test() {
     MetricsAggregatorCommand command = 
-        new MetricsAggregatorCommand(new MetricsAggregator(), createDummyRepo(repo));
+        new MetricsAggregatorCommand(
+            new MetricsAggregator(), 
+            createDummyRepo(repo, AbstractMetricRepository.class)
+        );
 
     Set<MetricAggregation> aggregations = command.execute(partitioners, null);
 
@@ -63,7 +66,8 @@ public class MetricsAggregatorCommandTest {
     assertThat(aggregations, equalTo(expectedResult));
   }
 
-  private MetricDataRepository createDummyRepo(Object delegate) {
+  @SuppressWarnings("unchecked")
+  private <T> T createDummyRepo(Object delegate, Class<T> clazz) {
     InvocationHandler handler = new InvocationHandler() {
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -74,11 +78,7 @@ public class MetricsAggregatorCommandTest {
         return toInvoke.invoke(delegate, args);
       }
     };
-    return (MetricDataRepository) Proxy.newProxyInstance(
-        MetricDataRepository.class.getClassLoader(),
-        new Class[] { MetricDataRepository.class },
-        handler 
-    );
+    return ((T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, handler));
   }
 
   private static <T> CollectionBasedQueryDslPredicateExecutor<T> createRepoMixin(

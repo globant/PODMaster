@@ -30,7 +30,7 @@ public class SimpleRegressionCommand {
           .map(n -> new Pair<Double, Double>(n, regression.predict(n)))
           .collect(Collectors.toList())
         : new LinkedList<Pair<Double, Double>>();
-    
+
     ConfidenceInterval slopeInterval = 
         new ConfidenceInterval(slope, slope - delta, slope + delta, confidenceLevel);
     

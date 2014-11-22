@@ -104,6 +104,8 @@ dependencies {
   querydslapt "com.mysema.querydsl:querydsl-apt:3.5.0"  
 
   testCompile("com.mysema.querydsl:querydsl-collections:3.5.0")
+  
+  testCompile(group: "com.github.fge", name: "json-schema-validator", version: "2.2.6")  
 }
 
 task coverageCheck(type: JacocoCoverageCheck) {

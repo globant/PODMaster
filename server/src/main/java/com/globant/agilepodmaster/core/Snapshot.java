@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -70,11 +71,13 @@ public class Snapshot extends AbstractEntity {
   private Set<Task> tasks = new HashSet<Task>();
 
   @Getter
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "snapshot_id", insertable = false, updatable = false)
   private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
 
   @Getter
-  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "snapshot")
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "snapshot_id", insertable = false, updatable = false)
   private Set<ProjectPodMetric> projectMetrics = new HashSet<ProjectPodMetric>();
 
   /**

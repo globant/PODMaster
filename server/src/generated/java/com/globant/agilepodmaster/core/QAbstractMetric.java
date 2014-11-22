@@ -13,7 +13,7 @@ import com.mysema.query.types.path.PathInits;
 /**
  * QAbstractMetric is a Querydsl query type for AbstractMetric
  */
-@Generated("com.mysema.query.codegen.SupertypeSerializer")
+@Generated("com.mysema.query.codegen.EntitySerializer")
 public class QAbstractMetric extends EntityPathBase<AbstractMetric> {
 
     private static final long serialVersionUID = 537673322L;

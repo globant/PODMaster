@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "aggregated": {
+      "id": "http://jsonschema.net/aggregated#",
+      "type": "array",
+      "additionalProperties": false,
+      "items": {
+        "id": "http://jsonschema.net/aggregated/2#",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "partitions": {
+            "id": "http://jsonschema.net/aggregated/2/partitions#",
+            "type": "array",
+            "additionalProperties": false,
+            "items": {
+              "id": "http://jsonschema.net/aggregated/2/partitions/0#",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "id": "http://jsonschema.net/aggregated/2/partitions/0/key#",
+                  "type": "string",
+                  "additionalProperties": false
+                },
+                "partition": {
+                  "id": "http://jsonschema.net/aggregated/2/partitions/0/partition#",
+                  "type": "string",
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "key",
+                "partition"
+              ]
+            },
+            "required": [
+              "0"
+            ]
+          },
+          "metrics": {
+            "id": "http://jsonschema.net/aggregated/2/metrics#",
+            "type": "array",
+            "additionalProperties": false,
+            "items": {
+              "id": "http://jsonschema.net/aggregated/2/metrics/2#",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "id": "http://jsonschema.net/aggregated/2/metrics/2/name#",
+                  "type": "string",
+                  "additionalProperties": false
+                },
+                "value": {
+                  "id": "http://jsonschema.net/aggregated/2/metrics/2/value#",
+                  "type": "number",
+                  "additionalProperties": false
+                },
+                "unit": {
+                  "id": "http://jsonschema.net/aggregated/2/metrics/2/unit#",
+                  "type": "string",
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "name",
+                "value",
+                "unit"
+              ]
+            },
+            "required": [
+              "0",
+              "1",
+              "2"
+            ]
+          }
+        },
+        "required": [
+          "partitions",
+          "metrics"
+        ]
+      },
+      "required": [
+        "0",
+        "1",
+        "2"
+      ]
+    }
+  },
+  "required": [
+    "aggregated"
+  ]
+}

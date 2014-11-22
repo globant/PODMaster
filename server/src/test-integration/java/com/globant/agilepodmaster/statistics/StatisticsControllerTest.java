@@ -20,8 +20,7 @@ public class StatisticsControllerTest extends AbstractIntegrationTest {
 
     String requestParams = "pair=(1,2)&pair=(2,4.1)&pair=(3,6.05)&pair=(4,7.99)"
                          + "&intercept=true"
-                         + "&predict=5&predict=6.1"
-                         + "&precision=4";
+                         + "&predict=5&predict=6.1";
 
     String expected = new JsonBuilder()
       .withNestedObject("slopeInterval", i -> i

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.globant.agilepodmaster.core.AbstractMetric;
-import com.globant.agilepodmaster.core.MetricDataRepository;
+import com.globant.agilepodmaster.core.AbstractMetricRepository;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 import com.mysema.query.types.Predicate;
@@ -19,10 +19,13 @@ import com.mysema.query.types.Predicate;
 @Component
 public class MetricsAggregatorCommand {
   private MetricsAggregator aggregator;
-  private MetricDataRepository repo;
+  private AbstractMetricRepository repo;
 
   @Autowired
-  public MetricsAggregatorCommand(MetricsAggregator aggregator, MetricDataRepository repo) {
+  public MetricsAggregatorCommand(
+      MetricsAggregator aggregator, 
+      AbstractMetricRepository repo) {
+    
     this.aggregator = aggregator;
     this.repo = repo;
   }
@@ -31,6 +34,7 @@ public class MetricsAggregatorCommand {
       List<Partitioner<? extends Partition<?>>> partitioners, 
       Predicate filters) {
 
+//    Iterable<AbstractMetric> spmList = findMetrics(filters);
     Iterable<AbstractMetric> spmList = repo.findAll(filters);
 
     Map<Set<Partition<?>>, List<AbstractMetric>> partitions = createPartitions(
