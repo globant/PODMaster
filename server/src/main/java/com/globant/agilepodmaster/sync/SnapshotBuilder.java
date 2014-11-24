@@ -88,7 +88,9 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder{
             .filter(m -> m.getEmail().equals(ownerEmail)).findAny().get();
         taskList.forEach(t -> t.setOwner(podMember));
       } catch (NoSuchElementException ne) {
-        syncContext.warn("Task owner not found: " + ownerEmail);
+        StringBuilder taskNameList = new StringBuilder();
+        taskList.forEach(t -> taskNameList.append(t.getName()).append(" - "));
+        syncContext.warn("Task owner not found: " + ownerEmail + "for tasks: " + taskNameList);
       }
 
       taskList.forEach(t -> snapshot.addTask(t));

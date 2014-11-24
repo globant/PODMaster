@@ -37,13 +37,13 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprin
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReleasesReader implements Reader<ReleasesBuilder> {
   
-  private static final String DEFAULT_STATUS = "Pending";
+  private static final String DEFAULT_STATUS = "Open";
 
   private static final String DEFAULT_TYPE = "Task";
   
-  private static final String DEFAULT_PRIORITY = "Medium";
+  private static final String DEFAULT_PRIORITY = "Major";
   
-  private static final String DEFAULT_SEVERITY = "Medium";
+  private static final String DEFAULT_SEVERITY = "Major";
   
   @Autowired
   IssueTreeBuilder issueTreeBuilder;
@@ -81,6 +81,8 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
   
   private ProjectBuilder processProject(ProductBuilder productBuilder,
       ReleaseReaderConfiguration.Project project, SyncContext context) {
+    
+    context.info("Processing project: " + project.getJiraName());
 
     ProjectBuilder projectBuilder = productBuilder.addProject(project
         .getProjectName());
@@ -213,9 +215,9 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
   private boolean sprintIsValid(final Sprint sprint) {
     if (sprint == null || StringUtils.isEmpty(sprint.getStartDate())
-        || sprint.getStartDate() == "None"
+        || sprint.getStartDate().equalsIgnoreCase("None")
         || StringUtils.isEmpty(sprint.getEndDate())
-        || sprint.getEndDate() == "None") {
+        || sprint.getEndDate().equalsIgnoreCase("None")) {
       return false;
     }
     return true;

@@ -42,6 +42,10 @@ public class MetricsAggregator {
 
     double accoe = spmStream(list).collect(averagingDouble(SprintPodMetric::getEstimationAccuracy));
     metrics.add(new Metric<Double>("accuracy-of-estimations", accoe, "percentage"));
+    
+    int sumNumberOfBugs = spmStream(list).mapToInt(SprintPodMetric::getNumberOfBugs).sum();
+    metrics.add(new Metric<Integer>("bugs", sumNumberOfBugs, "number of bugs"));
+    
   }
 
   private Stream<SprintPodMetric> spmStream(List<AbstractMetric> list) {

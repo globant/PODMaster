@@ -62,7 +62,9 @@ public class SyncCommand {
     releasesReader.readInto(snapshotBuilder, context);
     Snapshot snapshot = snapshotBuilder.build();
 
-    snapshotRepository.save(snapshot);
+    snapshot = snapshotRepository.save(snapshot);
+    
+    context.info("Snapshot id: " + snapshot.getId());
     return context;
 
   }

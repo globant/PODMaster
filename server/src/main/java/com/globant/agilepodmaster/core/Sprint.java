@@ -1,5 +1,9 @@
 package com.globant.agilepodmaster.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.springframework.util.Assert;
+
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -11,8 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Represents a set of tasks.
@@ -49,6 +51,10 @@ public class Sprint extends SnapshotEntity {
    */
   public Sprint(String name, Release release, Date startDate, Date endDate) {
     super();
+    Assert.notNull(name, "name must not be null");
+    Assert.notNull(release, "release must not be null");
+    Assert.notNull(startDate, "startDate must not be null");
+    Assert.notNull(endDate, "endDate must not be null");
     this.name = name;
     this.release = release;
     this.startDate = new Date(startDate.getTime());

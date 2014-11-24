@@ -126,7 +126,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
    */
 
   public TaskBuilder<P, T> type(String type) {
-    String value = type != null ? type.toUpperCase() : null;
+    String value = type != null ? type.toUpperCase().replaceAll("\\s","") : null;
     task.setType(Task.Type.valueOf(value));    
     return this;
 
@@ -140,7 +140,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
    * @return the same Builder.
    */
   public TaskBuilder<P, T> status(String status) {
-    String value = status != null ? status.toUpperCase() : null;
+    String value = status != null ? status.toUpperCase().replaceAll("\\s","") : null;
     task.setStatus(Task.Status.valueOf(value));
     return this;
 
@@ -154,7 +154,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
    * @return the same Builder.
    */
   public TaskBuilder<P, T> severity(String severity) {
-    String value = severity != null ? severity.toUpperCase() : null;
+    String value = severity != null ? severity.toUpperCase().replaceAll("\\s","") : null;
     task.setSeverity(Task.Severity.valueOf(value));
     return this;
 
@@ -168,7 +168,7 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
    * @return the same Builder.
    */
   public TaskBuilder<P, T> priority(String priority) {
-    String value = priority != null ? priority.toUpperCase() : null;
+    String value = priority != null ? priority.toUpperCase().replaceAll("\\s","") : null;
     task.setPriority(Task.Priority.valueOf(value));
     return this;
   }

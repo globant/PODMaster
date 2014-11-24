@@ -93,6 +93,7 @@ public class MetricsAggregatorCommandTest {
         scenarioEmptyPartitionersList(),
         scenarioYearQuarterPod(),
         scenarioSprintPod(),
+        scenarioSprintPodBugs(),
         scenarioPod(),
         
         // ProjectMetric scenarios
@@ -177,9 +178,10 @@ public class MetricsAggregatorCommandTest {
     Metric<Integer> velocity240sp = new Metric<Integer>("velocity", 240, "story points");
     Metric<Double> acc = 
         new Metric<Double>("accuracy-of-estimations", 0.45, "percentage");
+    Metric<Integer> ceroBugs = new Metric<Integer>("bugs", 0, "number of bugs");
 
     Set<MetricAggregation> expected = asSet(
-        new MetricAggregation(new HashSet<Partition<?>>(), asSet(velocity240sp, acc))
+        new MetricAggregation(new HashSet<Partition<?>>(), asSet(velocity240sp, acc, ceroBugs))
     );
     
     List<Partitioner<? extends Partition<?>>> input = 
@@ -202,11 +204,12 @@ public class MetricsAggregatorCommandTest {
     Metric<Integer> velocity80sp = new Metric<Integer>("velocity", 80, "story points");
     Metric<Double> acc = 
         new Metric<Double>("accuracy-of-estimations", 0.45, "percentage");
+    Metric<Integer> ceroBugs = new Metric<Integer>("bugs", 0, "number of bugs");
     
     Set<MetricAggregation> expected = asSet(
-        new MetricAggregation(asSet(partitionPod1), asSet(velocity80sp, acc)),
-        new MetricAggregation(asSet(partitionPod2), asSet(velocity80sp, acc)),
-        new MetricAggregation(asSet(partitionPod3), asSet(velocity80sp, acc))
+        new MetricAggregation(asSet(partitionPod1), asSet(velocity80sp, acc, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2), asSet(velocity80sp, acc, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3), asSet(velocity80sp, acc, ceroBugs))
     );
     
     
@@ -242,10 +245,12 @@ public class MetricsAggregatorCommandTest {
     Metric<Double> acc05 = new Metric<Double>("accuracy-of-estimations", 0.5, "percentage");
     Metric<Double> acc1 = new Metric<Double>("accuracy-of-estimations", 1.0, "percentage");
     
-    Set<Metric<?>> q1Metrics = asSet(vel20sp, acc1);
-    Set<Metric<?>> q2Metrics = asSet(vel20sp, acc05);
-    Set<Metric<?>> q3Metrics = asSet(vel20sp, acc02);
-    Set<Metric<?>> q4Metrics = asSet(vel20sp, acc01);
+    Metric<Integer> ceroBugs = new Metric<Integer>("bugs", 0, "number of bugs");
+    
+    Set<Metric<?>> q1Metrics = asSet(vel20sp, acc1, ceroBugs);
+    Set<Metric<?>> q2Metrics = asSet(vel20sp, acc05, ceroBugs);
+    Set<Metric<?>> q3Metrics = asSet(vel20sp, acc02, ceroBugs);
+    Set<Metric<?>> q4Metrics = asSet(vel20sp, acc01, ceroBugs);
 
     Set<MetricAggregation> expected = asSet(
         new MetricAggregation(asSet(partitionQ1, partitionPod1, partition2014), q1Metrics),
@@ -295,32 +300,58 @@ public class MetricsAggregatorCommandTest {
     Partition<String> sprintQ3n2 = new Partition<String>("sprint", "scenario1-sprint-q3-2");
     Partition<String> sprintQ4n1 = new Partition<String>("sprint", "scenario1-sprint-q4-1");
     Partition<String> sprintQ4n2 = new Partition<String>("sprint", "scenario1-sprint-q4-2");
+    
+    Metric<Integer> ceroBugs = new Metric<Integer>("bugs", 0, "number of bugs");
 
     Set<MetricAggregation> expected = asSet(
-        new MetricAggregation(asSet(partitionPod1, sprintQ1n1), asSet(velocity10sp, acc1)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ1n2), asSet(velocity10sp, acc1)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ2n1), asSet(velocity10sp, acc05)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ2n2), asSet(velocity10sp, acc05)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ3n1), asSet(velocity10sp, acc02)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ3n2), asSet(velocity10sp, acc02)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ4n1), asSet(velocity10sp, acc01)),
-        new MetricAggregation(asSet(partitionPod1, sprintQ4n2), asSet(velocity10sp, acc01)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ1n1), asSet(velocity10sp, acc1)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ1n2), asSet(velocity10sp, acc1)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ2n1), asSet(velocity10sp, acc05)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ2n2), asSet(velocity10sp, acc05)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ3n1), asSet(velocity10sp, acc02)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ3n2), asSet(velocity10sp, acc02)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ4n1), asSet(velocity10sp, acc01)),
-        new MetricAggregation(asSet(partitionPod2, sprintQ4n2), asSet(velocity10sp, acc01)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ1n1), asSet(velocity10sp, acc1)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ1n2), asSet(velocity10sp, acc1)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ2n1), asSet(velocity10sp, acc05)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ2n2), asSet(velocity10sp, acc05)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ3n1), asSet(velocity10sp, acc02)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ3n2), asSet(velocity10sp, acc02)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ4n1), asSet(velocity10sp, acc01)),
-        new MetricAggregation(asSet(partitionPod3, sprintQ4n2), asSet(velocity10sp, acc01))
+        new MetricAggregation(asSet(partitionPod1, sprintQ1n1), asSet(
+            velocity10sp, acc1, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ1n2), asSet(
+            velocity10sp, acc1, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ2n1), asSet(
+            velocity10sp, acc05, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ2n2), asSet(
+            velocity10sp, acc05, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ3n1), asSet(
+            velocity10sp, acc02, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ3n2), asSet(
+            velocity10sp, acc02, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ4n1), asSet(
+            velocity10sp, acc01, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod1, sprintQ4n2), asSet(
+            velocity10sp, acc01, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ1n1), asSet(
+            velocity10sp, acc1, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ1n2), asSet(
+            velocity10sp, acc1, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ2n1), asSet(
+            velocity10sp, acc05, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ2n2), asSet(
+            velocity10sp, acc05, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ3n1), asSet(
+            velocity10sp, acc02, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ3n2), asSet(
+            velocity10sp, acc02, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ4n1), asSet(
+            velocity10sp, acc01, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod2, sprintQ4n2), asSet(
+            velocity10sp, acc01, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ1n1), asSet(
+            velocity10sp, acc1, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ1n2), asSet(
+            velocity10sp, acc1, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ2n1), asSet(
+            velocity10sp, acc05, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ2n2), asSet(
+            velocity10sp, acc05, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ3n1), asSet(
+            velocity10sp, acc02, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ3n2), asSet(
+            velocity10sp, acc02, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ4n1), asSet(
+            velocity10sp, acc01, ceroBugs)),
+        new MetricAggregation(asSet(partitionPod3, sprintQ4n2), asSet(
+            velocity10sp, acc01, ceroBugs))
     );
 
     
@@ -335,6 +366,45 @@ public class MetricsAggregatorCommandTest {
     
     return new Object[] { input, expected, dataGenerator };
   }
+  
+  private static Object[] scenarioSprintPodBugs() {
+    Partition<String> partitionPod1 = new Partition<String>("pod", "scenario3-pod1");
+    Partition<String> partitionPod2 = new Partition<String>("pod", "scenario3-pod2");
+    
+    Metric<Integer> velocity0sp = new Metric<Integer>("velocity", 0, "story points");
+
+    Metric<Double> accNaN = new Metric<Double>("accuracy-of-estimations", Double.NaN, "percentage");
+    
+    Partition<String> sprint1 = new Partition<String>("sprint", "scenario3-sprint-1");
+    Partition<String> sprint2 = new Partition<String>("sprint", "scenario3-sprint-2");
+    
+    Metric<Integer> bugs1 = new Metric<Integer>("bugs", 1, "number of bugs");
+    Metric<Integer> bugs2 = new Metric<Integer>("bugs", 2, "number of bugs");
+    Metric<Integer> bugs3 = new Metric<Integer>("bugs", 3, "number of bugs");
+    Metric<Integer> bugs4 = new Metric<Integer>("bugs", 4, "number of bugs");
+
+    Set<MetricAggregation> expected = asSet(
+        new MetricAggregation(asSet(partitionPod1, sprint1), asSet(velocity0sp,
+            accNaN, bugs1)),
+        new MetricAggregation(asSet(partitionPod1, sprint2), asSet(velocity0sp,
+            accNaN, bugs2)),
+        new MetricAggregation(asSet(partitionPod2, sprint1), asSet(velocity0sp,
+            accNaN, bugs3)), 
+        new MetricAggregation(asSet(partitionPod2, sprint2),
+            asSet(velocity0sp, accNaN, bugs4)));
+    
+    List<Partitioner<? extends Partition<?>>> input = Arrays.asList(
+        new SprintPartitioner(), new PodPartitioner());
+    
+    CollectionBasedQueryDslPredicateExecutor<SprintPodMetric> dataGenerator = 
+        createRepoMixin(
+            QSprintPodMetric.sprintPodMetric, 
+            new DummyDataGenerator().buildScenario3().getSprintMetrics()
+        );
+    
+    return new Object[] { input, expected, dataGenerator };
+  }
+  
   
   @SafeVarargs
   private static <T> Set<T> asSet(T... elements) {

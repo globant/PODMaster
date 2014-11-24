@@ -17,6 +17,10 @@ public class DummyDataGenerator {
     return this.populateScenario2(new SnapshotBuilder(new SyncContext())).build();
   }
   
+  public Snapshot buildScenario3() {
+    return this.populateScenario3(new SnapshotBuilder(new SyncContext())).build();
+  }
+  
   /**
    * Scenario 2
    * - 2 pods
@@ -174,6 +178,58 @@ public class DummyDataGenerator {
       .withPodMember("pepe", "pepe", pod3Members[1]).addToPod()
     .addToSnapshot();
     
+    return builder;
+  }
+  
+  
+  /**
+   * Scenario 3
+   * - 2 pods
+   * - 2 sprints
+   * - Sprint 1 : POD1 -> 1 bug, POD2 -> 4 bugs
+   * - Sprint 2 : POD1 -> 2 bugs, POD2 -> 3 bugs
+   *  
+   * @param builder
+   * @return the same builder, populated with data representing the scenario described
+   */
+  public SnapshotBuilder populateScenario3(SnapshotBuilder builder) {
+    String[] pod1Members = { "scenario3-pod1-member1", "scenario3-pod1-member2" };
+    String[] pod2Members = { "scenario3-pod2-member1", "scenario3-pod2-member2" };
+
+    builder
+    .withOrganization("scenario3-organization")
+      .addProduct("scenario3-product 1")
+        .addProject("scenario3-project 1")
+          .withRelease("scenario3-release 1")
+            .withSprint("scenario3-sprint-1", toDate(2014, 01, 1), toDate(2014, 01, 14))
+              .withTask().name("bug1").type("bug").owner(pod1Members[0]).addToSprint()
+              .withTask().name("bug2").type("bug").owner(pod2Members[0]).addToSprint()
+              .withTask().name("bug3").type("bug").owner(pod2Members[0]).addToSprint()
+              .withTask().name("bug4").type("bug").owner(pod2Members[1]).addToSprint()
+            .addToRelease()
+            .withSprint("scenario3-sprint-2", toDate(2014, 01, 1), toDate(2014, 01, 14))
+              .withTask().name("bug5").type("bug").owner(pod1Members[0]).addToSprint()
+              .withTask().name("bug6").type("bug").owner(pod1Members[1]).addToSprint()
+              .withTask().name("bug7").type("bug").owner(pod2Members[0]).addToSprint()
+              .withTask().name("bug8").type("bug").owner(pod2Members[1]).addToSprint()
+              .withTask().name("bug9").type("bug").owner(pod2Members[0]).addToSprint()
+              .withTask().name("bug10").type("bug").owner(pod2Members[1]).addToSprint()              
+            .addToRelease()            
+          .addToProject()
+        .addToProduct()
+      .addToOrganization()
+    .addToSnapshot()
+    // Add pods
+    .withPod("scenario3-pod1")
+      .withPodMember("pepe", "pepe", pod1Members[0]).addToPod()
+      .withPodMember("pepe", "pepe", pod1Members[1]).addToPod()
+    .addToSnapshot()
+    .withPod("scenario3-pod2")
+      .withPodMember("pepe", "pepe", pod2Members[0]).addToPod()
+      .withPodMember("pepe", "pepe", pod2Members[1]).addToPod()
+    .addToSnapshot();
+    
+
     return builder;
   }
   

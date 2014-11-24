@@ -23,7 +23,7 @@ public class PodsReader implements Reader<PodsBuilder> {
     podsBuilder
     .withPod("POD1")
       .withPodMember("Walter", "Pacheco", "walter@ea.com").addToPod()
-      .withPodMember("Pedro", "Laurentz", "pedro@ea.com.com").addToPod()
+      .withPodMember("Pedro", "Laurentz", "pedro@ea.com").addToPod()
       .withPodMember("Maria", "Gomez", "maria@ea.com").addToPod()
       .addToSnapshot()
     .withPod("POD2")

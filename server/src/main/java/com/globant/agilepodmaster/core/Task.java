@@ -34,28 +34,28 @@ public class Task extends SnapshotEntity {
    * Kind of statuses of Tasks.
    */
   public static enum Status {
-    PENDING, INPROGRESS, CLOSED
+    OPEN, INPROGRESS, REOPENED, RESOLVED, CLOSED, TODO, INREVIEW, DONE
   }
 
   /**
    * Kind of types of Tasks.
    */
   public static enum Type {
-    STORY, BUG, TASK
+    BUG, EPIC, IMPROVEMENT, NEWFEATURE, STORY, TASK
   }
 
   /**
    * Kind of priorities of Tasks.
    */
   public static enum Priority {
-    LOW, MEDIUM, HIGH, CRITICAL
+    BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL
   }
 
   /**
    * Kind of severities of Tasks.
    */  
   public static enum Severity {
-    LOW, MEDIUM, HIGH, CRITICAL
+    BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL
   }
 
   @Getter
