@@ -25,10 +25,13 @@ define(
         this.__super__ = Marionette.ItemView.prototype;
         this.__super__.initialize(this, arguments);
         // jscs:enable disallowDanglingUnderscores
-        this.collection.bind('change reset add remove', this.render, this);
       },
 
       render: function() {
+        this.collection.bind('change reset add remove', this.renderChart, this);
+      },
+
+      renderChart: function() {
         this.ensureSVGElement();
         this.renderMargins();
 
@@ -45,54 +48,6 @@ define(
         this.svg = d3.select(this.el).append('svg').append('g');
       },
 
-      // Get the minimum or maximum value over the whole data for linear scales
-      getLinearExtent: function(attr, minmax) {
-        // Return extent over all series
-        var
-          opts = this.options,
-          collection = this.collection,
-          getLinearExtents = function(minmax) {
-            var
-              boundary = _[minmax],
-              rank = _.property(attr),
-              valuesAttr = opts.valuesAttr,
-              seriesExtents = collection.map(
-                function(series) {
-                  var
-                    values = series.get(valuesAttr),
-                    bounds = boundary(values, rank);
-                  return bounds[attr];
-                },
-              this);
-            return _[minmax](seriesExtents);
-          };
-        if (!minmax) {
-          return [
-            getLinearExtents('min'),
-            getLinearExtents('max')
-          ];
-        }
-        return getLinearExtents(minmax);
-      },
-
-      // Get the x value for a datum
-      getX: function(d) {
-        return this.getDatumValue(d, this.options.xAttr);
-      },
-
-      // Get the y value for a datum
-      getY: function(d) {
-        return this.getDatumValue(d, this.options.yAttr);
-      },
-
-      // Return x/y value for the given datum or model
-      getDatumValue: function(d, attrName) {
-        if (d instanceof Backbone.Model) {
-          return d.get(attrName);
-        } else {
-          return d ? d[attrName] : null;
-        }
-      },
       renderAxes: function() {},
       renderData: function() {}
 

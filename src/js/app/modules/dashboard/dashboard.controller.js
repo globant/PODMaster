@@ -24,13 +24,13 @@ define(function(require) {
           dashboardView = new DashboardView(),
           // Create chart object
           chart = new AreaChart({
-          // View options
-          el: this.el,
-          collection: theCollection,
-          xFormat: function(date) {
-            return moment(date).format('YYYY/[Q]Q');
-          }
-        });
+            // View options
+            el: this.el,
+            collection: theCollection,
+            xFormat: function(date) {
+              return moment(date).format('YYYY/[Q]Q');
+            }
+          });
         $.ajax({
           url: path + '?' + params,
           headers: {
