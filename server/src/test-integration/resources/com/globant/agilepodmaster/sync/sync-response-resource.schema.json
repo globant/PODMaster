@@ -1,0 +1,43 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"required":false,
+	"properties":{
+		"logEntries": {
+			"type":"array",
+			"id": "http://jsonschema.net/logEntries",
+			"required":false,
+			"items":
+				{
+					"type":"object",
+					"id": "http://jsonschema.net/logEntries/0",
+					"required":false,
+					"properties":{
+						"createdDate": {
+							"type":"number",
+							"id": "http://jsonschema.net/logEntries/0/createdDate",
+							"required":false
+						},
+						"eventType": {
+							"type":"string",
+							"id": "http://jsonschema.net/logEntries/0/eventType",
+							"required":false
+						},
+						"message": {
+							"type":"string",
+							"id": "http://jsonschema.net/logEntries/0/message",
+							"required":false
+						},
+						"sequence": {
+							"type":"number",
+							"id": "http://jsonschema.net/logEntries/0/sequence",
+							"required":false
+						}
+					}
+				}
+			
+
+		}
+	}
+}

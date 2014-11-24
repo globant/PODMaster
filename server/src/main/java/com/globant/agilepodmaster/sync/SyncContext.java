@@ -18,10 +18,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SyncContext {
-  
-  @Getter
-  @Setter
-  private int elementCount;
 
   @Getter
   private List<SyncLogEntry> logEntries;
