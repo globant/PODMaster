@@ -15,6 +15,13 @@ For the usage inside an IDE do the following:
    4.1 Set up your ide to use the project pmd.xml located at buildSrc/config/pmd
 5. Install findbugs plugin (Eclipse site: http://findbugs.cs.umd.edu/eclipse/)
 6. Restart Eclipse.
+7. If you're using Eclipse or STS:
+   7.1 Navigate to Preferences -> Java -> Code Style -> Formatter
+   7.2 Click the Edit button
+   7.3 Select the Off/On Tags tab
+   7.4 Ensure Enable Off/On tags is selected
+   7.5 Click OK
+
 
 ## Generate eclipse project
 - gradlew **eclipse**
@@ -26,4 +33,4 @@ For the usage inside an IDE do the following:
 - browse the server in: [http://localhost:8080](http://localhost:8080)
 
 ## Befor pushing code
-- gradlew **check** 
+- gradlew **check**
