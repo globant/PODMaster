@@ -18,9 +18,8 @@ import com.globant.agilepodmaster.AgilePodMaster.WebConfiguration;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(
-    classes = { ApplicationConfiguration.class, WebConfiguration.class }
-)
+@SpringApplicationConfiguration(classes = {
+    ApplicationConfiguration.class, WebConfiguration.class})
 @WebAppConfiguration
 @IntegrationTest("server.port:0")
 public abstract class AbstractIntegrationTest {

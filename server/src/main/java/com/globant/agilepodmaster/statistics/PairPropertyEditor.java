@@ -16,10 +16,10 @@ public class PairPropertyEditor extends PropertyEditorSupport {
       throw new IllegalArgumentException("Cannot parse: " + text);
     }
 
-    Double xValue = Double.valueOf(matcher.group("x"));
-    Double yValue = Double.valueOf(matcher.group("y"));
+    Double valueX = Double.valueOf(matcher.group("x"));
+    Double valueY = Double.valueOf(matcher.group("y"));
 
-    super.setValue(new Pair<Double, Double>(xValue, yValue));
+    super.setValue(new Pair<Double, Double>(valueX, valueY));
   }
 
   @Override
@@ -27,6 +27,6 @@ public class PairPropertyEditor extends PropertyEditorSupport {
     @SuppressWarnings("unchecked")
     Pair<Double, Double> pair = (Pair<Double, Double>) super.getValue();
     
-    return "(" + pair.getX() + "," + pair.getY() + ")";
+    return "(" + pair.getValueX() + "," + pair.getValueY() + ")";
   }
 }

@@ -36,8 +36,8 @@ public class NormalApproximationCommand {
     List<Double> collect = data.stream().map(n -> n.doubleValue()).collect(Collectors.toList());
 
     double[] values = new double[collect.size()];
-    for (int i = 0; i < values.length; i++) {
-      values[i] = collect.get(i);
+    for (int index = 0; index < values.length; index++) {
+      values[index] = collect.get(index);
     }
     return values;
   }

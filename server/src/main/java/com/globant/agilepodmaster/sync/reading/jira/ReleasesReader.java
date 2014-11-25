@@ -173,22 +173,26 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
       TaskBuilder taskBuilder) {
     Issue issue = issueNode.getIssue();
     boolean hasTimetracking = issue.getFields().getTimetracking() != null;
+    
+    String priority = (issue.getFields().getPriority() != null) ? issue
+        .getFields().getPriority().getName() : DEFAULT_PRIORITY;
+
+    String type = (issue.getFields().getIssuetype() != null) ? issue
+        .getFields().getIssuetype().getName() : DEFAULT_TYPE;
+
+    String status = (issue.getFields().getStatus() != null) ? issue.getFields()
+        .getStatus().getName() : DEFAULT_STATUS;
+
+    String severity = (issue.getFields().getSeverity() != null) ? issue
+        .getFields().getSeverity().getValue() : DEFAULT_SEVERITY;
 
     taskBuilder = taskBuilder
         .name(issue.getFields().getSummary())
         .effort(issue.getFields().getStorypoints())
-        .type(
-            (issue.getFields().getIssuetype() != null) ? issue.getFields()
-                .getIssuetype().getName() : DEFAULT_TYPE)
-        .status(
-            (issue.getFields().getStatus() != null) ? issue.getFields()
-                .getStatus().getName() : DEFAULT_STATUS)
-        .severity(
-            (issue.getFields().getSeverity() != null) ? issue.getFields()
-                .getSeverity().getValue() : DEFAULT_SEVERITY)
-        .priority(
-            (issue.getFields().getPriority() != null) ? issue.getFields()
-                .getPriority().getName() : DEFAULT_PRIORITY)
+        .type(type)
+        .status(status)
+        .severity(severity)
+        .priority(priority)
         .owner(
             issue.getFields().getAssignee() != null ? issue.getFields()
                 .getAssignee().getEmailAddress() : null)

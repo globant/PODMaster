@@ -89,7 +89,9 @@ public class SynchronizationTest extends AbstractIntegrationTest {
   /**
    * Test for ProjectDataSetBuilder.
    */
-  @Test @Ignore
+  @Test
+  @Ignore
+  @SuppressWarnings("PMD")
   public void testSnapshotBuilder() {
 
     JiraRestClient jiraRestClient = new JiraAPIFactory()

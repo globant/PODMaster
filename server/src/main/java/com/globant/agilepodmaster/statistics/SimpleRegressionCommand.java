@@ -20,7 +20,7 @@ public class SimpleRegressionCommand {
     double alpha = 1.0 - confidenceLevel;
 
     SimpleRegression regression = new SimpleRegression(hasIntercept);
-    data.forEach(p -> regression.addData(p.getX().doubleValue(), p.getY().doubleValue()));
+    data.forEach(p -> regression.addData(p.getValueX().doubleValue(), p.getValueY().doubleValue()));
     double slope = regression.getSlope();
 
     double delta = regression.getSlopeConfidenceInterval(alpha);

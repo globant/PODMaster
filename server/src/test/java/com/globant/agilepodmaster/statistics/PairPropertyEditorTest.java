@@ -5,8 +5,16 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+/**
+ * Test for PairPropertyEditor.
+ * @author Andres Postiglioni
+ *
+ */
 public class PairPropertyEditorTest {
 
+  /**
+   * Test conversion of a pair of doubles.
+   */
   @Test
   public void test() {
     PairPropertyEditor editor = new PairPropertyEditor();

@@ -78,6 +78,7 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
    * Test what was store in the DB.
    */
   @Test
+  @SuppressWarnings("PMD")
   public void testBuild() {
     SyncContext context = new SyncContext();
 

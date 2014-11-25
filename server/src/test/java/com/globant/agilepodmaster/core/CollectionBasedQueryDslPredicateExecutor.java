@@ -13,10 +13,21 @@ import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.path.EntityPathBase;
 
+/**
+ * QueryDslPredicateExecutor that works on a collection.
+ * @author Andres Postiglioni.
+ *
+ * @param <T>
+ */
 public class CollectionBasedQueryDslPredicateExecutor<T> implements QueryDslPredicateExecutor<T> {
   private EntityPathBase<T> query;
   private Iterable<T> collection;
 
+  /**
+   * Constructor.
+   * @param query source expression
+   * @param collection source collection
+   */
   public CollectionBasedQueryDslPredicateExecutor(EntityPathBase<T> query, Iterable<T> collection) {
     this.query = query;
     this.collection = collection;

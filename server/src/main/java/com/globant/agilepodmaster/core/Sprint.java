@@ -61,11 +61,19 @@ public class Sprint extends SnapshotEntity {
     this.endDate = new Date(endDate.getTime());
   }
 
+  /**
+   * Return the sprint start date.
+   * @return the sprint start date.
+   */
   public Date getStartDate() {
     //TODO: Use java8 localdate to avoid this uglyness
     return cloneDate(startDate);
   }
   
+  /**
+   * Return the sprint end date.
+   * @return the sprint end date.
+   */
   public Date getEndDate() {
     //TODO: Use java8 localdate to avoid this uglyness
     return cloneDate(endDate);

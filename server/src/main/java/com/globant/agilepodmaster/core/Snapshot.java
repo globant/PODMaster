@@ -108,51 +108,91 @@ public class Snapshot extends AbstractEntity {
     this.creationDate = new Date(creationDate.getTime());
   }
 
+  /**
+   * Add a SprintPodMetric to this snapshot.
+   * @param spm the SprintPodMetric.
+   */
   public void addSprintMetric(SprintPodMetric spm) {
     spm.setSnapshot(this);
     sprintMetrics.add(spm);
   }
 
+  /**
+   * Add an organization to this snapshot.
+   * @param organization the organization.
+   */
   public void addOrganization(Organization organization) {
     organization.setSnapshot(this);
     organizations.add(organization);
   }
 
+  /**
+   * Add a project to this snapshot.
+   * @param project the project.
+   */
   public void addProject(Project project) {
     project.setSnapshot(this);
     projects.add(project);
   }
 
+  /**
+   * Add a product to this snapshot.
+   * @param product the product.
+   */
   public void addProduct(Product product) {
     product.setSnapshot(this);
     products.add(product);
   }
   
+  /**
+   * Add a release to this snapshot.
+   * @param release the release.
+   */
   public void addRelease(Release release) {
     release.setSnapshot(this);
     releases.add(release);
   }
 
+  /**
+   * Add a sprint to this snapshot.
+   * @param sprint the sprint.
+   */
   public void addSprint(Sprint sprint) {
     sprint.setSnapshot(this);
     sprints.add(sprint);
   }
 
+  /**
+   * Add a task to this snapshot.
+   * @param task the task.
+   */
   public void addTask(Task task) {
     task.setSnapshot(this);
     tasks.add(task);
   }
 
+  /**
+   * Add a pod to this snapshot.
+   * @param pod the pod.
+   */
   public void addPod(Pod pod) {
     pod.setSnapshot(this);
     pods.add(pod);
   }
 
+  /**
+   * Add a pod member to this snapshot.
+   * @param podMember the pod member.
+   */
   public void addPodMember(PodMember podMember) {
     podMember.setSnapshot(this);
     podMembers.add(podMember);
   }
 
+  /**
+   * Add a project metric to this snapshot.
+   * @param projectMetric the project metric.
+   */
   public void addProjectMetric(ProjectPodMetric projectMetric) {
     projectMetric.setSnapshot(this);
     projectMetrics.add(projectMetric);

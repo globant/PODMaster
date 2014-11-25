@@ -26,15 +26,24 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Test for SyncController.
+ * @author jose.dominguez@globant.com
+ *
+ */
 public class SyncControllerTest extends AbstractIntegrationTest {
   @Autowired
   private SnapshotRepository repo;
   
+  /**
+   * Test if the controller returns the right json.
+   * @throws IOException exception that is thrown if we can read file.
+   * @throws ProcessingException 
+   */
   @Test
   public void testShouldReturnCorrectJsonSchema() throws IOException, ProcessingException {
-    String SCHEMA = "/com/globant/agilepodmaster/sync/sync-response-resource.schema.json";
-    String BASE_URL = "http://localhost:" + this.getServerPort() 
-        + "/sync";
+    String schemaResource = "/com/globant/agilepodmaster/sync/sync-response-resource.schema.json";
+    String baseUrl = "http://localhost:" + this.getServerPort() + "/sync";
 
     JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
@@ -45,13 +54,13 @@ public class SyncControllerTest extends AbstractIntegrationTest {
     
     RestTemplate rest = new TestRestTemplate();
     ResponseEntity<String> responseEntity = rest.exchange(
-        BASE_URL, HttpMethod.POST, requestEntity, String.class);
+        baseUrl, HttpMethod.POST, requestEntity, String.class);
     
     String response = responseEntity.getBody();
     System.out.println(response);
 
     JsonNode json = JsonLoader.fromString(response);
-    JsonNode schema = JsonLoader.fromResource(SCHEMA);
+    JsonNode schema = JsonLoader.fromResource(schemaResource);
     
     ProcessingReport validationReport = validator.validate(schema, json);
     assertThat(validationReport.isSuccess(), equalTo(true));

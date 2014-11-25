@@ -185,19 +185,21 @@ public class JiraRestClientTest extends AbstractUnitTest {
   @Rule
   public ExpectedException exception = ExpectedException.none();
   
+  /**
+   * Test what happen with a 404 response.
+   */
   @Test
   public void testGetMessage_404() {
- 
-    
-      mockServer.expect(requestTo("https://jira.corp.globant.com/rest/api/latest/field"))
-              .andExpect(method(HttpMethod.GET))
-              .andRespond(withStatus(HttpStatus.NOT_FOUND));
+    mockServer
+        .expect(
+            requestTo("https://jira.corp.globant.com/rest/api/latest/field"))
+        .andExpect(method(HttpMethod.GET))
+        .andRespond(withStatus(HttpStatus.NOT_FOUND));
 
-      exception.expect(ConexionResponseErrorException.class);
-      CustomFieldDefinition[] customFieldDefinitions = jiraRestClient
-          .getCustomFieldDefinitions();
+    exception.expect(ConexionResponseErrorException.class);
+    jiraRestClient.getCustomFieldDefinitions();
 
-      mockServer.verify();
+    mockServer.verify();
 
   }
 

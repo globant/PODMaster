@@ -42,9 +42,11 @@ public class MetricsController {
     }
     
     filters.add(QAbstractMetric.abstractMetric.snapshot().id.eq(snapshotId));
-    BooleanExpression predicate = filters != null 
-        ? BooleanExpression.allOf(filters.toArray(new BooleanExpression[0])) 
-        : null;
+    BooleanExpression predicate = null;
+    
+    if (filters != null) {
+      predicate = BooleanExpression.allOf(filters.toArray(new BooleanExpression[0]));
+    }
 
     Set<MetricAggregation> aggregated = command.execute(partitioners, predicate);
 

@@ -7,6 +7,11 @@ import java.util.List;
 
 import lombok.Getter;
 
+/**
+ * Quarter enumeration.
+ * @author Andres Postiglioni.
+ *
+ */
 public enum Quarter {
   Q1(Calendar.JANUARY, Calendar.MARCH), 
   Q2(Calendar.APRIL, Calendar.JUNE), 
@@ -24,6 +29,11 @@ public enum Quarter {
     this.endMonth = endMonth;
   }
   
+  /**
+   * Tells if a date is in this quarter.
+   * @param date to be checked.
+   * @return true if is in this quarter, false otherwise.
+   */
   public boolean isInQuarter(Date date) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
@@ -31,12 +41,22 @@ public enum Quarter {
     return this.startMonth <= dateMonth && dateMonth <= this.endMonth; 
   }
   
+  /**
+   * Calculates the quarter of a date.
+   * @param date the date to be considered.
+   * @return the quarter calculated.
+   */
   public static Quarter toQuarter(Date date) {
     List<Quarter> quarters = Arrays.asList(Quarter.Q1, Quarter.Q2, Quarter.Q3, Quarter.Q4);
     Quarter quarter = quarters.stream().filter(q -> q.isInQuarter(date)).findAny().get();
     return quarter;
   }
   
+  /**
+   * Calculates the year quarter of a date.
+   * @param date the date to be considered.
+   * @return the year quarter calculated.
+   */
   public static YearQuarter toYearQuarter(Date date) {
     Quarter quarter = toQuarter(date);
     

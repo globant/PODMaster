@@ -148,7 +148,7 @@ public class SyncCommand {
    *
    */
   @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Application Property Not Found")
-  public class PropertyNotFoundException extends RuntimeException {
+  public static class PropertyNotFoundException extends RuntimeException {
     /**
      * Constructor.
      * @param msg error message.

@@ -12,7 +12,16 @@ import org.springframework.web.client.RestTemplate;
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.JsonBuilder;
 
+/**
+ * Test for StatisticsController.
+ * @author Andres Postiglioni.
+ *
+ */
 public class StatisticsControllerTest extends AbstractIntegrationTest {
+  
+  /**
+   * Testing RegressionSimple.
+   */
   @Test
   public void testRegressionSimple() {
     final String BASE_URL = "http://localhost:" + this.getServerPort() 
@@ -23,24 +32,20 @@ public class StatisticsControllerTest extends AbstractIntegrationTest {
                          + "&predict=5&predict=6.1";
 
     String expected = new JsonBuilder()
-      .withNestedObject("slopeInterval", i -> i
-        .withProperty("center", 1.9920000000000002)
-        .withProperty("lowerBound", 1.875113467250817)
-        .withProperty("upperBound", 2.10888653274924)
-        .withProperty("confidenceLevel", 0.95)
-      )
-      .withProperty("intercept", 0.054999999999999716)
-      .withArray("predictions", b -> b
-          .addNestedObject(n -> n
-              .withProperty("x", 5.0)
-              .withProperty("y", 10.015)
-           )
-           .addNestedObject(n -> n
-               .withProperty("x", 6.1)
-               .withProperty("y", 12.2062)
-           )
-      )
-     .build();
+        .withNestedObject(
+            "slopeInterval",
+            i -> i.withProperty("center", 1.9920000000000002)
+                .withProperty("lowerBound", 1.875113467250817)
+                .withProperty("upperBound", 2.10888653274924)
+                .withProperty("confidenceLevel", 0.95))
+        .withProperty("intercept", 0.054999999999999716)
+        .withArray(
+            "predictions",
+            b -> b.addNestedObject(
+                n -> n.withProperty("x", 5.0).withProperty("y", 10.015))
+                .addNestedObject(
+                    n -> n.withProperty("x", 6.1).withProperty("y", 12.2062)))
+        .build();
 
     RestTemplate rest = new TestRestTemplate();
 
@@ -57,17 +62,18 @@ public class StatisticsControllerTest extends AbstractIntegrationTest {
 //    assertThat(responseBody, equalTo(expected));
   }
 
+  /**
+   * Testing Normal Approximation.
+   */
   @Test
   public void normalApproximation() {
     final String BASE_URL = 
         "http://localhost:" + this.getServerPort() + "/statistics/approximation/normal?";
     String requestParams = "data=1&data=1.5&data=1.55&data=0.95&data=0.8";
-    String expected = new JsonBuilder()
-    .withProperty("center", 1.16)
-    .withProperty("lowerBound", 0.8605036503340853)
-    .withProperty("upperBound", 1.4594963496659146)
-    .withProperty("confidenceLevel", 0.95)
-    .build();
+    String expected = new JsonBuilder().withProperty("center", 1.16)
+        .withProperty("lowerBound", 0.8605036503340853)
+        .withProperty("upperBound", 1.4594963496659146)
+        .withProperty("confidenceLevel", 0.95).build();
     
     RestTemplate rest = new TestRestTemplate();
     

@@ -98,7 +98,6 @@ public class Task extends SnapshotEntity {
   @Setter(AccessLevel.PACKAGE)
   private Type type;
   
-  @Getter  
   @Setter(AccessLevel.PACKAGE)
   private Date createdDate;
 
@@ -131,7 +130,6 @@ public class Task extends SnapshotEntity {
    * @param release release of the task.
    * @param sprint sprint of the task.
    * @param parentTask parent task.
-   * @param taskDTO task DTO.
    */
   public Task(Release release, Sprint sprint, Task parentTask) {
     this.release = release;
@@ -139,20 +137,36 @@ public class Task extends SnapshotEntity {
     this.parentTask = parentTask;
   }
 
+  /**
+   * Tells if we can take the task for calculations.
+   * @return true if we can take it, false otherwise.
+   */
   public boolean isAccepted() {
     return Status.CLOSED.equals(status);
   }
   
+  /**
+   * Tells if the task is a bug.
+   * @return true if it is a bug, false otherwise.
+   */
   public boolean isBug() {
     return Type.BUG.equals(type);
   }
 
+  /**
+   * Tells if the task is open.
+   * @return true if it is open, false otherwise.
+   */
   public boolean isOpen() {
     return !Status.CLOSED.equals(status);
   }
 
+  /**
+   * Get the project of this task.
+   * @return the project of this task.
+   */
   @Transient
   public Project getProject() {
-    return sprint != null? sprint.getRelease().getProject() : release.getProject();
+    return sprint != null ? sprint.getRelease().getProject() : release.getProject();
   }
 }

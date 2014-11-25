@@ -4,6 +4,7 @@ import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinit
 
 import org.springframework.util.Assert;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class CustomFieldReplacements {
     customFieldsMap = Collections.unmodifiableMap(staticMap);
   }
 
-  CustomFieldDefinition[] customFields;
+  private CustomFieldDefinition[] customFields;
 
   /**
    * Constructor.
@@ -36,8 +37,7 @@ public class CustomFieldReplacements {
    */
   public CustomFieldReplacements(CustomFieldDefinition[] customFields) {
     Assert.notNull(customFields, "customFields cannot be null");
-    this.customFields = customFields;
-
+    this.customFields = Arrays.copyOf(customFields,customFields.length);
   }
 
   /**

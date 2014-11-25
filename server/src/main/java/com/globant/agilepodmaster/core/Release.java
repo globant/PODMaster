@@ -33,12 +33,6 @@ public class Release extends SnapshotEntity {
   @Getter
   private String name;
   
-//  @NonNull
-//  @ManyToOne
-//  @JsonIgnore
-//  @Setter(AccessLevel.PACKAGE)
-//  private Snapshot snapshot;
-  
   @NonNull
   @ManyToOne
   @JsonIgnore
@@ -48,7 +42,6 @@ public class Release extends SnapshotEntity {
   /**
    * Constructor.
    * @param name the release name.
-   * @param snapshot the snapshot of this release.
    * @param project the project of this release.
    */
   public Release(String name, Project project) {

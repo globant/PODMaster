@@ -32,7 +32,7 @@ import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
  * @author jose.dominguez@globant.com
  *
  */
-public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder{
+public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   private Snapshot snapshot;
 
   @Getter
@@ -44,12 +44,17 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder{
 
   /**
    * Constructor.
+   * @param context the context where the process will log.
    */
   public SnapshotBuilder(SyncContext context) {
     this.syncContext = context;
     this.snapshot = new Snapshot("Snapshot " + new Date());
   }
 
+  /**
+   * Assign owner to tasks, calculates metrics, associates entities to snapshot.
+   * @return the snapshot.
+   */
   public Snapshot build() {
     builders.forEach(b -> b.collect(this));
     snapshot.setCreationDate(new Date());
@@ -61,7 +66,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder{
 
   private void createProjectMetrics() {
     for (Project project: snapshot.getProjects()) {
-      for(Pod pod: snapshot.getPods()) {
+      for (Pod pod: snapshot.getPods()) {
         int remainingStoryPoints = (int) 
             snapshot.getTasks().stream()
             .filter(t -> project.equals(t.getProject()))
@@ -125,47 +130,83 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder{
     .collect(Collectors.toList()).stream();
   }
 
+
+  @Override
   public PodBuilder withPod(String name) {
     PodBuilder podBuilder = new PodBuilder(name, this);
     builders.add(podBuilder);
     return podBuilder;
   }
 
+  @Override
   public OrganizationBuilder withOrganization(String organizationName) {
     OrganizationBuilder builder = new OrganizationBuilder(organizationName, this);
     builders.add(builder);
     return builder;
   }
 
+  /**
+   * Add an organization to the snapshot.
+   * @param organization the organization
+   */
   public void addOrganization(Organization organization) {
     snapshot.addOrganization(organization);
   }
 
+  /**
+   * Add a project to the snapshot.
+   * @param project the project.
+   */
   public void addProject(Project project) {
     snapshot.addProject(project);
   }
 
+  /**
+   * Add a product to the snapshot.
+   * @param product the product.
+   */
   public void addProduct(Product product) {
     snapshot.addProduct(product);
   }
 
+  /**
+   * Add a release to the snapshot.
+   * @param release the release.
+   */
   public void addRelease(Release release) {
     snapshot.addRelease(release);
   }
 
+  /**
+   * Add a sprint to the snapshot.
+   * @param sprint the sprint.
+   */
   public void addSprint(Sprint sprint) {
     snapshot.addSprint(sprint);
   }
 
+  /**
+   * Add a owner to the snapshot tasks and associates the task.
+   * @param owner the owner.
+   * @param task the task.
+   */
   public void addTaskAssignedTo(String owner, Task task) {
     tasks.putIfAbsent(owner, new LinkedList<Task>());
     tasks.get(owner).add(task);
   }
 
+  /**
+   * Add the pod to the snapshot.
+   * @param pod the pod.
+   */
   public void addPod(Pod pod) {
     snapshot.addPod(pod);
   }
 
+  /**
+   * Add the pod member to the snapshot.
+   * @param podMember the pod member.
+   */
   public void addPodMember(PodMember podMember) {
     snapshot.addPodMember(podMember);
   }

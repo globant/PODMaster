@@ -50,8 +50,8 @@ public class SprintPodMetric extends AbstractMetric {
   }
   
   @Override
-  public Partition<?> visit(Partitioner<? extends Partition<?>> p) {
-    return p.extractPartition(this);
+  public Partition<?> visit(Partitioner<? extends Partition<?>> partitioner) {
+    return partitioner.extractPartition(this);
   }
 
   public Project getProject() {

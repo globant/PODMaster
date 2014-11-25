@@ -17,6 +17,11 @@ import org.hibernate.annotations.Immutable;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 
+/**
+ * Entity class that represents metrics of projects by pod.
+ * @author Andres Postiglioni.
+ *
+ */
 @Entity
 @Immutable
 @ToString
@@ -35,13 +40,18 @@ public class ProjectPodMetric extends AbstractMetric {
   @ManyToOne @NotNull
   private Pod pod;
   
+  /**
+   * Constructor.
+   * @param project the project.
+   * @param pod the pod.
+   */
   public ProjectPodMetric(Project project, Pod pod) {
     this.project = project;
     this.pod = pod;
   }
 
   @Override
-  public Partition<?> visit(Partitioner<? extends Partition<?>> p) {
-    return p.extractPartition(this);
+  public Partition<?> visit(Partitioner<? extends Partition<?>> partitioner) {
+    return partitioner.extractPartition(this);
   }
 }

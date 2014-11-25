@@ -28,23 +28,36 @@ import com.globant.agilepodmaster.core.IDummyDataGenerator;
 import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.SnapshotRepository;
 
+/**
+ * Test for MetricsController.
+ * @author Andres Postiglioni.
+ *
+ */
 public class MetricsControllerTest extends AbstractIntegrationTest {
   @Autowired
   private SnapshotRepository repo;
 
   private Snapshot snapshot;
 
+  /**
+   * Creates data for testing in the DB.
+   */
   @Before
   public void createData() {
     snapshot = repo.save(new IDummyDataGenerator().buildScenario1());
   }
 
+  /**
+   * Test json returned by controller schema.
+   * @throws IOException exception that is thrown when the file cannot be found.
+   * @throws ProcessingException exception that is thrown when validation has an issue. 
+   */
   @Test
   public void test() throws IOException, ProcessingException {
-    String SCHEMA = "/com/globant/agilepodmaster/metrics/metrics-collection-resource.schema.json";
-    String BASE_URL = "http://localhost:" + this.getServerPort() 
-        + "/snapshots/" + snapshot.getId() +
-        "/metrics?aggregation=pod";
+    String schemaResource = 
+        "/com/globant/agilepodmaster/metrics/metrics-collection-resource.schema.json";
+    String baseUrl = "http://localhost:" + this.getServerPort() + "/snapshots/"
+        + snapshot.getId() + "/metrics?aggregation=pod";
 
     JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
@@ -55,13 +68,13 @@ public class MetricsControllerTest extends AbstractIntegrationTest {
     
     RestTemplate rest = new TestRestTemplate();
     ResponseEntity<String> responseEntity = rest.exchange(
-        BASE_URL, HttpMethod.GET, requestEntity, String.class);
+        baseUrl, HttpMethod.GET, requestEntity, String.class);
     
     String response = responseEntity.getBody();
     System.out.println(response);
 
     JsonNode json = JsonLoader.fromString(response);
-    JsonNode schema = JsonLoader.fromResource(SCHEMA);
+    JsonNode schema = JsonLoader.fromResource(schemaResource);
     
     ProcessingReport validationReport = validator.validate(schema, json);
     assertThat(validationReport.isSuccess(), equalTo(true));

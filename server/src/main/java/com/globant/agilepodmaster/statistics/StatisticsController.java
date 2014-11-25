@@ -34,7 +34,7 @@ public class StatisticsController {
         boolean intercept,
       @RequestParam(value = "predict", required = false)
         List<Double> requiredPredictions,
-      @RequestParam(value="precision", required=false)
+      @RequestParam(value = "precision", required = false)
         Integer precision) {
     
     return srCommand.regress(

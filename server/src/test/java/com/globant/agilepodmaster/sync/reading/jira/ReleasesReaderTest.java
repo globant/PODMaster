@@ -2,6 +2,7 @@ package com.globant.agilepodmaster.sync.reading.jira;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -42,6 +43,7 @@ public class ReleasesReaderTest extends AbstractUnitTest {
    * Testing readInto.
    */
   @Test
+  @SuppressWarnings("PMD")
   public void testReadIntoHappyPath() {
 
     // mock creation
@@ -138,6 +140,7 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     assertThat( snapshot.getOrganizations(), hasSize(1));
     Organization organization = snapshot.getOrganizations().stream()
         .filter(s -> "EA".equals(s.getName())).findAny().get();
+    assertThat( organization, notNullValue());
     
     assertThat( snapshot.getProducts(), hasSize(1));
     Product product = snapshot.getProducts().stream()
@@ -146,7 +149,7 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     assertThat( snapshot.getProjects(), hasSize(1));
     Project project = snapshot.getProjects().stream()
         .filter(s -> "TeammateIntelligence".equals(s.getName())).findAny().get();   
-    assertThat( project.getProduct(), equalTo (product));  
+    assertThat( project.getProduct(), equalTo(product));  
     
     assertThat( snapshot.getReleases(), hasSize(1));
     Release release = snapshot.getReleases().stream()
@@ -155,7 +158,7 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     assertThat( snapshot.getSprints(), hasSize(2));
     Sprint sprint1 = snapshot.getSprints().stream()
         .filter(s -> "Sprint 1".equals(s.getName())).findAny().get();    
-    assertThat( sprint1.getRelease(), equalTo (release));  
+    assertThat( sprint1.getRelease(), equalTo(release));  
     
     Sprint sprint2 = snapshot.getSprints().stream()
         .filter(s -> "Sprint 2".equals(s.getName())).findAny().get();
@@ -165,43 +168,43 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     Task task1 = snapshot.getTasks().stream()
         .filter(s -> "Task1".equals(s.getName())).findAny().get();
 //    assertThat( task1.getRelease(), equalTo (null)); 
-    assertThat( task1.getSprint(), equalTo (sprint1));     
+    assertThat( task1.getSprint(), equalTo(sprint1));     
     
     Task task2 = snapshot.getTasks().stream()
         .filter(s -> "Task2".equals(s.getName())).findAny().get();  
 //    assertThat( task2.getRelease(), equalTo (null)); 
-    assertThat( task2.getSprint(), equalTo (sprint1));   
-    assertThat( task2.getParentTask(), equalTo (task1)); 
+    assertThat( task2.getSprint(), equalTo(sprint1));   
+    assertThat( task2.getParentTask(), equalTo(task1)); 
     
     Task task3 = snapshot.getTasks().stream()
         .filter(s -> "Task3".equals(s.getName())).findAny().get(); 
 //    assertThat( task3.getRelease(), equalTo (null)); 
-    assertThat( task3.getSprint(), equalTo (sprint1));   
-    assertThat( task3.getParentTask(), equalTo (task1)); 
+    assertThat( task3.getSprint(), equalTo(sprint1));   
+    assertThat( task3.getParentTask(), equalTo(task1)); 
     
     Task task4 = snapshot.getTasks().stream()
         .filter(s -> "Task4".equals(s.getName())).findAny().get();  
 //    assertThat( task4.getRelease(), equalTo (null)); 
-    assertThat( task4.getSprint(), equalTo (sprint2)); 
-    assertThat( task4.getParentTask(), equalTo (null)); 
+    assertThat( task4.getSprint(), equalTo(sprint2)); 
+    assertThat( task4.getParentTask(), equalTo(null)); 
     
     Task task5 = snapshot.getTasks().stream()
         .filter(s -> "Task5".equals(s.getName())).findAny().get();
 //    assertThat( task5.getRelease(), equalTo (null)); 
-    assertThat( task5.getSprint(), equalTo (sprint2));   
-    assertThat( task5.getParentTask(), equalTo (task4)); 
+    assertThat( task5.getSprint(), equalTo(sprint2));   
+    assertThat( task5.getParentTask(), equalTo(task4)); 
     
     Task task6 = snapshot.getTasks().stream()
         .filter(s -> "Task6".equals(s.getName())).findAny().get();  
-    assertThat( task6.getRelease(), equalTo (release));  
-    assertThat( task6.getSprint(), equalTo (null));   
-    assertThat( task6.getParentTask(), equalTo (null)); 
+    assertThat( task6.getRelease(), equalTo(release));  
+    assertThat( task6.getSprint(), equalTo(null));   
+    assertThat( task6.getParentTask(), equalTo(null)); 
     
     Task task7 = snapshot.getTasks().stream()
         .filter(s -> "Task7".equals(s.getName())).findAny().get();
-    assertThat( task7.getRelease(), equalTo (release));  
-    assertThat( task7.getSprint(), equalTo (null));   
-    assertThat( task7.getParentTask(), equalTo (null)); 
+    assertThat( task7.getRelease(), equalTo(release));  
+    assertThat( task7.getSprint(), equalTo(null));   
+    assertThat( task7.getParentTask(), equalTo(null)); 
         
     verify(mockJiraRestClient).getSprintList("3");
     verify(mockJiraRestClient).getSprint(1,"3");

@@ -7,9 +7,20 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 
+/**
+ * Builds a String with Json format.
+ * @author Andres Postiglioni
+ *
+ */
 public class JsonBuilder {
   private List<String> body = new LinkedList<String>();
   
+  /**
+   * Add a property with a number as value to the body.
+   * @param name the name of the property.
+   * @param number the value of the property.
+   * @return the same builder.
+   */
   public JsonBuilder withProperty(String name, Number number) {
     addToBody(name, number);
     return this;
@@ -20,9 +31,15 @@ public class JsonBuilder {
   }
 
   private String quote(String str) {
-    return str != null? "\"" + str + "\"" : null; 
+    return str != null ? "\"" + str + "\"" : null; 
   }
 
+  /**
+   * Add a property with a String as value to the body.
+   * @param name the name of the property.
+   * @param value the value of the property.
+   * @return the same builder.
+   */
   public JsonBuilder withProperty(String name, String value) {
     addToBody(name, this.quote(value));
     return this;
@@ -51,13 +68,14 @@ public class JsonBuilder {
     strBuilder.append("{");
     strBuilder.append(
         body.stream().map(p -> p.toString()).collect(Collectors.joining(","))
-    );
+    ); 
     strBuilder.append("}");
     
     return strBuilder.toString();
+
   }
   
-  public class ArrayBuilder {
+  public static class ArrayBuilder {
     @Getter
     private List<String> elements = new LinkedList<String>();
     public ArrayBuilder addNestedObject(Function<JsonBuilder, JsonBuilder> function) {

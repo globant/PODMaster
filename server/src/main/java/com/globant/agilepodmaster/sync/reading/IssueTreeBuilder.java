@@ -56,8 +56,7 @@ public class IssueTreeBuilder {
         if (parentIssue != null) {
           mappedPairs.get(parentIssue).getSubIssues().add(pair.getValue());
         } else {
-          log.warning("Parent item " + parentIssue
-              + " can't be found in result");
+          log.warning("Parent item " + parentId + " can't be found in result");
         }
       }
     }
@@ -74,9 +73,13 @@ public class IssueTreeBuilder {
     return taskRootsDTOs;
   }
 
+  /**
+   * Class that represents the node of the tree.
+   *
+   */
   @Data
   @AllArgsConstructor
-  public class IssueNode {
+  public static class IssueNode {
 
     private Issue issue;
 

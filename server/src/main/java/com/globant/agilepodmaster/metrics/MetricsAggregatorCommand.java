@@ -71,7 +71,7 @@ public class MetricsAggregatorCommand {
 
     Set<Partition<?>> partitions = new HashSet<Partition<?>>();
     
-    for(Partitioner<? extends Partition<?>> partitioner: partitioners) {
+    for ( Partitioner<? extends Partition<?>> partitioner: partitioners) {
       Partition<?> partition = data.visit(partitioner);
       
       if (partition != null) {

@@ -11,11 +11,21 @@ import org.springframework.web.client.RestTemplate;
 
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 
+/**
+ * Test for SimpleCORSFilter.
+ * 
+ * @author Andres Postiglioni.
+ *
+ */
 public class SimpleCORSFilterTest extends AbstractIntegrationTest {
 
+  /**
+   * Test if a response header header has the right property to deal with CORS.
+   */
   @Test
   public void shouldCreateFollowAndDelete() {
-    final String BASE_URL = "http://localhost:" + this.getServerPort() + "/dashboards";
+    final String BASE_URL = "http://localhost:" + this.getServerPort()
+        + "/dashboards";
     RestTemplate rest = new TestRestTemplate();
 
     ResponseEntity<String> response = rest.getForEntity(BASE_URL, String.class);

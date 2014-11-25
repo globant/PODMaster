@@ -124,7 +124,8 @@ public class JiraRestClient {
   protected Sprint getSprint(final int sprintId, final String rapidViewId) {
     
     log.info("Getting Sprint details ...");
-    SprintReport sprintReport =connect(rootUrl + SPRINT_REPORT_URL, SprintReport.class, rapidViewId, sprintId);
+    SprintReport sprintReport = connect(rootUrl + SPRINT_REPORT_URL, SprintReport.class
+        , rapidViewId, sprintId);
     
     return sprintReport.getSprint();
   }
@@ -199,7 +200,8 @@ public class JiraRestClient {
     while (moreContent) {
       
       log.info("Getting issues ...");
-      IssuesSearchResult issuesSearchResult = connect(rootUrl + SEARCH_URL, IssuesSearchResult.class, jql, fields,
+      IssuesSearchResult issuesSearchResult = connect(rootUrl + SEARCH_URL
+          , IssuesSearchResult.class, jql, fields,
           customfields, startAt, MAX_SEARCH_SIZE);
     
       if (CollectionUtils.isEmpty(issuesSearchResult.getIssues())) {
