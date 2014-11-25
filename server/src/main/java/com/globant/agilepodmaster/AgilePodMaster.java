@@ -31,6 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.globant.agilepodmaster.security.OAuth2ServerConfiguration;
+import com.globant.agilepodmaster.security.WebSecurityConfiguration;
+
 /**
  * Spring Boot application.
  */
@@ -75,7 +78,10 @@ public class AgilePodMaster extends SpringBootServletInitializer {
    * @author Andres Postiglioni
    */
   @Configuration
-  @Import({ ApplicationConfiguration.class })
+  @Import({ 
+    ApplicationConfiguration.class, 
+    OAuth2ServerConfiguration.class, 
+    WebSecurityConfiguration.class })
   @ComponentScan(excludeFilters = @Filter({ Service.class, Configuration.class }))
   static class WebConfiguration {
     @Bean
