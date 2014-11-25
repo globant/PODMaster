@@ -8,8 +8,12 @@ define(function(require, exports) {
       moment = require('moment'),
       Mixins = require('lib/chartMixins');
 
+    exports.AxisModel = Backbone.Model.extend({
+
+    });
+
     exports.PointModel = Backbone.Model.extend({
-      get: function(attr) {
+      parse: function(raw) {
         var
           parseYearQuarter = function(raw) {
             var
@@ -22,10 +26,8 @@ define(function(require, exports) {
               .startOf('quarter')
               .unix() * 1000;
           };
-        if ( attr === 'x' ) {
-          return parseYearQuarter(this.attributes.x);
-        }
-        return Backbone.Model.prototype.get.apply(this, arguments);
+        raw.x = parseYearQuarter(raw.x);
+        return raw;
       },
 
       toJSON: function()  {
@@ -34,17 +36,19 @@ define(function(require, exports) {
         result.x = this.get('x');
         return result;
       }
-
     });
 
-    exports.ChartSeries = Backbone.Collection.extend({
-        model: Backbone.Model,//exports.PointModel,
-        x: d3.time.scale(),
-        y: d3.scale.linear(),
-        //x: d3.scale.linear().range([0,???]),
+    exports.SeriesCollection = Backbone.Collection.extend({
+      model: Backbone.Model,//exports.PointModel,
+
       initialize: function() {
         Backbone.Collection.prototype.initialize.apply(this, arguments);
         Cocktail.mixin( this, Mixins.Timeline );
+      },
+
+      parse: function(raw) {
+        this.series = raw.series;
+        return raw.data;
       },
 
       toJSON: function() {
@@ -61,62 +65,132 @@ define(function(require, exports) {
             return item;
           }
         );
+      }
+    });
+
+    exports.MetricModel = Backbone.Model.extend({
+      initialize: function() {
+        this.set('series', new exports.SeriesCollection([]));
       },
 
-      parse: function(series) {
+      parse: function(data) {
         var
-          seriesPartition =  _.first(
-              _.reject(
-                series.aggregated[0].partitions,
-                {partition: 'pod'}
-              )
-            ).partition,
-          result = _(series.aggregated).groupBy(
-            function(aggregation) {
-              return _.findWhere(aggregation.partitions, {partition:'pod'}).key;
-            })
-            .map(
-              function(podAggregations, podKey) {
-                return {
-                  name: podKey,
-                  values: _.map(
-                    podAggregations,
+          result = {
+            name: data.name,
+            categories: data.categories,
+            series: this.get('series')
+          };
+        this.get('series').reset(//new exports.SeriesCollection(
+          {
+            series:data.series,
+            data: _(data.rawData).groupBy(
+              function(aggregation) {
+                return _.findWhere(
+                  aggregation.partitions,
+                  {partition:data.categories}
+                ).key;
+              })
+              .map(
+                function(podAggregations, podKey) {
+                  return {
+                    name: podKey,
+                    values: _.map(
+                      podAggregations,
                       function(agg) {
                         var
                           foundX = _.findWhere(
                             agg.partitions,
-                            {partition:seriesPartition}),
+                            {partition:data.series}),
                           foundY = _.findWhere(
                             agg.metrics,
                            {name:'velocity'});
                         return new exports.PointModel({
-                          x: foundX.key, //parseYearQuarter(foundX.key),
-                          y: foundY.value
-                        });
-                      }
-                  )
-                };
-              }).value();
+                            x: foundX.key,
+                            y: foundY.value
+                          }, {parse:true});
+                      })
+                  };
+                }).value()
+            },
+            {parse: true}
+        );
         return result;
-      },
-      // Get the x value for a datum
-      getX: function(d) {
-        return this.getDatumValue(d, 'x');//this.options.xAttr);
-      },
-
-      // Get the y value for a datum
-      getY: function(d) {
-        return this.getDatumValue(d, 'y');//this.options.yAttr);
-      },
-
-      // Return x/y value for the given datum or model
-      getDatumValue: function(d, attrName) {
-        if (d instanceof Backbone.Model) {
-          return d.get(attrName);
-        } else {
-          return d ? d[attrName] : null;
-        }
-      },
+      }
     });
+
+    exports.MetricsModel = Backbone.Model.extend({
+      scaleX: d3.time.scale(),
+      scaleY: d3.scale.linear(),
+
+      initialize: function() {
+        this.set('velocity', new exports.MetricModel());
+      },
+
+      parse: function(partitions) {
+        var
+          theMetrics = {
+            velocity:  this.get('velocity')
+          },
+          //Applicative `if`: returns a function that confitionally apply
+          // trueF or falseF depending on the result of confF
+          ifF = function(condF, trueF, falseF) {
+            return function(arg) {
+              return condF(arg) ? trueF(arg) : falseF(arg);
+            };
+          },
+          // Check if an array's length is exactly 1
+          isSizeEqualOne = _.compose(
+            _.partialRight(_.isEqual, 1),
+            _.size
+          ),
+          deepGetter = function(where, what) {
+            return _.compose(
+              _.partialRight(_.pluck, what),
+              _.property(where)
+            );
+          },
+          getMetricName = deepGetter('metrics', 'name'),
+          getPartitionName = deepGetter('partitions', 'partition'),
+          metricNames = _(partitions.aggregated)
+            .map(getMetricName)
+            .flatten()
+            .unique()
+          .value(),
+          partitionNames = _(partitions.aggregated)
+            .map(getPartitionName)
+            .flatten()
+            .unique()
+            .groupBy(
+              function(partition)
+              {
+                return partition === 'pod' ? 'categories' : 'series';
+              }
+            )
+            .mapValues( ifF( isSizeEqualOne, _.first, _.identity) )
+          .value(),
+          result = _(metricNames).reduce(
+            function(result, metricName) {
+              var
+                theMetric = theMetrics[metricName];
+              result[metricName] = theMetric//this.get(metricName)
+              .set(
+                theMetric.parse(
+                  {
+                    name:metricName,
+                    categories: partitionNames.categories,
+                    series: partitionNames.series,
+                    rawData: partitions.aggregated
+                  }
+                )
+              );
+              return result;
+            },
+            {}
+          );
+        return result;
+      }
+
+    });
+
   }
 );

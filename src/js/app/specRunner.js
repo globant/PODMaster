@@ -18,6 +18,9 @@ require(['../../config/amd'], function() {
 
   chai.should();
   mocha.setup('bdd');
+  //chai.config.includeStack = false;
+  //chai.config.showDiff = true;
+  //chai.config.truncateThreshold = 0;
 
   require(
     [

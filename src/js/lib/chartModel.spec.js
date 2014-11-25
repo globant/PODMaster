@@ -3,38 +3,33 @@
 //jshint devel:true
 define(function(require) {
   'use strict';
-  var chartModel     = require('lib/chartModel');
+  var
+    sampleData  = require('json!modules/dashboard/ejemplo.json'),
+    chartModel  = require('lib/chartModel'),
+    MetricsModel = chartModel.MetricsModel;
 
-  describe('CharModel', function() {
+  describe('MetricsModel', function() {
 
     describe('Base consistency', function() {
+      var
+        metrics = new MetricsModel();
+      it('An empty model should be valid', function(done) {
+        var
+          aMetric;
+        metrics.should.be.an.instanceOf(MetricsModel);
+        aMetric = metrics.get('velocity');
+        aMetric.should.be.an.instanceOf(chartModel.MetricModel);
+        done();
+      });
       it('Simple aggregation should be ok', function(done) {
         var
-          theCollection = new chartModel.ChartSeries();
-        theCollection.reset({
-          aggregated: [
-            {
-              partitions:[
-                {
-                  key:'POD 1',
-                  partition:'pod',
-                },
-                {
-                  key:'2014/Q1',
-                  partition:'year/quarter',
-                }
-              ],
-              metrics:[
-                {
-                  name:'velocity',
-                  value:'123',
-                  unit:'story points'
-                }
-              ],
-            }
-          ]
-        }, {parse: true});
-        theCollection.models[0].should.be.ok;
+          aMetric, aSeries;
+        metrics.set(metrics.parse(sampleData));
+        metrics.should.be.an.instanceOf(MetricsModel);
+        aMetric = metrics.get('velocity');
+        aMetric.should.be.an.instanceOf(chartModel.MetricModel);
+        aSeries = aMetric.get('series');
+        aSeries.should.be.an.instanceOf(chartModel.SeriesCollection);
         done();
       });
     });

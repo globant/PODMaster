@@ -1,16 +1,13 @@
-define(
-  [
-    'underscore',
-    'backbone',
-    'cocktail',
-    'marionette',
-    'd3',
-    'lib/chartMixins'
-  ],
-  function(_, Backbone, Cocktail, Marionette, d3, Mixins ) {
-    'use strict';
+define(function(require) {
+  'use strict';
+  var
+    _  = require('underscore'),
+    d3  = require('d3'),
+    Cocktail  = require('cocktail'),
+    Marionette = require('marionette'),
+    Mixins = require('lib/chartMixins'),
 
-    var ChartBase = Marionette.ItemView.extend({
+    ChartBase = Marionette.ItemView.extend({
 
       //a template-less view
       template: false,
@@ -20,11 +17,6 @@ define(
           this.options,
           _.result(this, 'defaults')
         );
-
-        // jscs:disable disallowDanglingUnderscores
-        this.__super__ = Marionette.ItemView.prototype;
-        this.__super__.initialize(this, arguments);
-        // jscs:enable disallowDanglingUnderscores
       },
 
       render: function() {
@@ -53,11 +45,10 @@ define(
 
     });
 
-    Cocktail.mixin(
-      ChartBase,
-      Mixins.MarginConvention,
-      Mixins.Scales
-    );
-    return ChartBase;
-  }
-);
+  Cocktail.mixin(
+    ChartBase,
+    Mixins.MarginConvention,
+    Mixins.Scales
+  );
+  return ChartBase;
+});
