@@ -1,0 +1,23 @@
+{
+  "_links":{
+    "self":{
+      "href":"/api/statistics/prediction/regression/simple?pair=(1,2)&pair=(2,4.1)&pair=(3,6.05)&pair=(4,7.99)&intercept=true&predict=5&predict=6.1"
+    }
+  },
+  "center": 1.9920000000000002,
+  "lowerBound":  1.875113467250817,
+  "upperBound":  2.10888653274924,
+  "confidenceLevel":  0.95,
+  "intercept":  0.054999999999999716,
+  "predictions": [
+    {
+      "x": 5.0,
+      "y": 10.015
+    },
+    {
+      "x": 6.1,
+      "y": 12.2062
+    }
+  ],
+  "_embedded":{ }
+}

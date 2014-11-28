@@ -12,7 +12,7 @@ define(function(require, exports) {
 
     });
 
-    exports.PointModel = Backbone.Model.extend({
+    exports.YearQuarterPointModel = Backbone.Model.extend({
       parse: function(raw) {
         var
           parseYearQuarter = function(raw) {
@@ -35,6 +35,12 @@ define(function(require, exports) {
           result = Backbone.Model.prototype.toJSON.apply(this, arguments);
         result.x = this.get('x');
         return result;
+      }
+    });
+
+    exports.SprintPointModel = Backbone.Model.extend({
+      parse: function(raw) {
+        return raw;
       }
     });
 
@@ -92,6 +98,11 @@ define(function(require, exports) {
               })
               .map(
                 function(podAggregations, podKey) {
+                  var
+                    PointModel = ({
+                      'year/quarter' : exports.YearQuarterPointModel,
+                      'sprint'       : exports.SprintPointModel
+                    })[data.series];
                   return {
                     name: podKey,
                     values: _.map(
@@ -104,7 +115,7 @@ define(function(require, exports) {
                           foundY = _.findWhere(
                             agg.metrics,
                            {name:'velocity'});
-                        return new exports.PointModel({
+                        return new PointModel({
                             x: foundX.key,
                             y: foundY.value
                           }, {parse:true});
@@ -163,7 +174,10 @@ define(function(require, exports) {
             .groupBy(
               function(partition)
               {
-                return partition === 'pod' ? 'categories' : 'series';
+                return _.contains(
+                  ['pod', 'project'],
+                  partition
+                ) ? 'categories' : 'series';
               }
             )
             .mapValues( ifF( isSizeEqualOne, _.first, _.identity) )

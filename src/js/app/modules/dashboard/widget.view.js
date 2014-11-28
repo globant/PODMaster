@@ -8,8 +8,8 @@ define(function(require) {
       Cocktail  = require('cocktail'),
       Mixins = require('lib/chartMixins'),
       ChartBase = require('lib/chartBaseView'),
-      TheChart = ChartBase.extend({}),
       WidgetView = Marionette.LayoutView.extend({
+        TheChart: ChartBase.extend({}),
         el: 'section#widget',
 
         template: template,
@@ -22,20 +22,20 @@ define(function(require) {
 
         initialize: function() {
           Cocktail.mixin(
-            TheChart,
+            this.TheChart,
             Mixins[this.options.chartType]
           );
+
+        },
+        onShow: function() {
           this.render();
-          this.chart = new TheChart({
+          this.chart = new this.TheChart({
             collection: this.model.get('series'),
             xFormat: function(date) {
               return moment(date).format('MM/YY');
               //return moment(date).format('YYYY/[Q]Q');
             }
           });
-
-        },
-        onShow: function() {
           this.visualization.show(this.chart);
         }
 

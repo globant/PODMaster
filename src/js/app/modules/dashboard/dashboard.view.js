@@ -19,11 +19,19 @@ define(function(require) {
 
       initialize: function() {
         var
-          model = this.model.get('velocity'),
+          model  = this.model.get('velocity'),
           render = _.bind(this.render, this),
-          show = _.bind(this.content.show, this.content);
+          show   = _.bind(this.content.show, this.content),
+          getSeries = _.bind(model.get, model, 'series'),
+          type   = {
+            'year/quarter' : 'LineMonths',
+            'sprint'       : 'LineSprints'
+          },
+          createWidget = function() {
+            return new WidgetView({chartType: type[getSeries().series], model:model});
+          };
         render();
-        show(new WidgetView({chartType:'Line', model:model}));
+        model.bind('reset change', _.compose(show, createWidget));
       }
 
     });

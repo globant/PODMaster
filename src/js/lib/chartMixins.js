@@ -187,7 +187,7 @@ define(function(require) {
 
         },
         // Basic line chart
-        Line:{
+        LineMonths:{
           ////className: d3.Chart.prototype.className + ' bbd3-line',
 
           defaults: {
@@ -302,7 +302,139 @@ define(function(require) {
               ])
               .nice();
           }
+        },
+        // Basic line chart
+        LineSprints:{
+          ////className: d3.Chart.prototype.className + ' bbd3-line',
 
+          defaults: {
+            // Values list on each series
+            valuesAttr: 'values',
+            // Color attribute on each series
+            colorAttr: 'color',
+            // Line interpolation method
+            //interpolate: 'monotone',
+            interpolate: 'linear',
+            xFormat: _.identity,
+            yFormat: _.identity,
+            xValid: _.isFinite,
+            yValid: _.isFinite,
+            // Default color scale for lines
+            colorScale: d3.scale.category10()
+          },
+
+          renderAxes: function() {
+            // X axis
+            var xAxis = d3.svg.axis()
+                .scale(this.scales.x)
+
+                .ticks(d3.max(this.scales.x.domain()))
+                //.tickFormat(this.options.xFormat)
+                .tickSize(-this.height)
+                .tickPadding(5),
+            // Y axis
+                yAxis = d3.svg.axis()
+                .scale(this.scales.y)
+                .orient('left')
+                .ticks(Math.ceil(this.height / 40))
+                .tickFormat(this.options.yFormat)
+                .tickSize(-this.width)
+                .tickPadding(10);
+
+            this.svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + this.height + ')')
+                .call(xAxis)
+                //Render axis legend
+                .append('text')
+                .attr('x', (this.width / 2) )
+                .attr('y',  10 )
+                .attr('dy', '.71em')
+                .style('text-anchor', 'middle')
+                .style('font-size', '16px')
+                .text('Sprints');
+
+            this.svg.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis)
+                //Render axis legend
+                .append('text')
+                .attr('transform',  'rotate(-90)' )
+                .attr('y', -40 )
+                .attr('dy', '.71em')
+                .style('text-anchor', 'middle')
+                .style('font-size', '16px')
+                .text('Completed Story Points');
+          },
+
+          renderData: function() {
+            var
+              x = this.scales.x,
+              y = this.scales.y,
+              opts = this.options,
+              // Lines
+              line = d3.svg.line()
+                .interpolate(opts.interpolate)
+                .defined(function(d) {
+                  return d && opts.yValid(d.get( opts.yAttr ));
+                })
+                .x(function(d) {
+                  return x(d.get( opts.xAttr ));
+                })
+                .y(function(d) {
+                  return y(d.get( opts.yAttr ));
+                });
+            // Series
+            this.svg.selectAll('.series')
+              .data(this.collection.models)
+              .enter()
+                .append('g')
+                .attr('class', 'series')
+                .append('path')
+                  .attr('class', 'line')
+                  .attr('d', function(series) {
+                    return line(series.get(opts.valuesAttr));
+                  })
+                  .style('stroke', function(series, i) {
+                    return series.get(opts.colorAttr) || opts.colorScale(i);
+                  });
+          },
+
+          getXScale: function() {
+            var
+              values = this.collection.pluck('values'),
+              getter = function(prop, o) {
+                return o.get(prop);
+              },
+              boundary = function(minmax) {
+                return _[minmax](
+                  _.map(
+                    values,
+                    _.wrap(
+                      _.wrap('x', getter),
+                      function(get, arr) {
+                        return get(_[minmax](arr, get));
+                      }
+                    )
+                  )
+                );
+              },
+              upper = boundary('max'), lower = boundary('min');
+
+            return d3.scale.ordinal()
+              .domain(_.range(lower, upper + 2))
+              .rangePoints([ 0, this.width ]);
+          },
+
+          getYScale: function() {
+            return d3.scale.linear()
+              .domain([
+                  0, // Force scale to start from zero
+                  this.collection.getLinearExtent(this.options.yAttr, 'max')
+              ])
+              .rangeRound([this.height, 0])
+              .nice();
+          }
         }
     };
 

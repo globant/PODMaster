@@ -23,6 +23,10 @@ define(function(require) {
         this.collection.bind('change reset add remove', this.renderChart, this);
       },
 
+      onShow: function() {
+        this.renderChart();
+      },
+
       renderChart: function() {
         this.ensureSVGElement();
         this.renderMargins();
