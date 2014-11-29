@@ -58,6 +58,15 @@ public class Task extends SnapshotEntity {
     BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL
   }
 
+  /**
+   * Kind of change that a task can have once the sprint associated has started.
+   * This field is necessary for accuracy metric. We need to know if a task is
+   * form the beginning of the sprint was removed or added.
+   */
+  public static enum ChangeDuringSprint {
+    NOCHANGE, REMOVED, ADDED
+  }
+
   @Getter
   @Setter(AccessLevel.PACKAGE)
   private String name;
@@ -98,6 +107,10 @@ public class Task extends SnapshotEntity {
   @Setter(AccessLevel.PACKAGE)
   private Type type;
   
+  @Getter  
+  @Setter(AccessLevel.PACKAGE)
+  private ChangeDuringSprint changeDuringSprint;
+  
   @Setter(AccessLevel.PACKAGE)
   private Date createdDate;
 
@@ -135,6 +148,7 @@ public class Task extends SnapshotEntity {
     this.release = release;
     this.sprint = sprint;
     this.parentTask = parentTask;
+    this.changeDuringSprint = ChangeDuringSprint.NOCHANGE;
   }
 
   /**

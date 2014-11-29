@@ -46,7 +46,7 @@ public class SprintPodMetric extends AbstractMetric {
   }
 
   public double getEstimationAccuracy() {
-    return acceptedStoryPoints / (double) plannedStoryPoints;
+    return plannedStoryPoints / (double) acceptedStoryPoints;
   }
   
   @Override

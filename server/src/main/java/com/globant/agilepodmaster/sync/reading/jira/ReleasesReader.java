@@ -1,17 +1,5 @@
 package com.globant.agilepodmaster.sync.reading.jira;
 
-import java.util.List;
-
-import lombok.Setter;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import com.globant.agilepodmaster.core.TaskBuilder;
 import com.globant.agilepodmaster.sync.BacklogBuilder;
 import com.globant.agilepodmaster.sync.OrganizationBuilder;
@@ -25,8 +13,20 @@ import com.globant.agilepodmaster.sync.reading.IssueTreeBuilder.IssueNode;
 import com.globant.agilepodmaster.sync.reading.Reader;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
+import com.globant.agilepodmaster.sync.reading.jira.responses.Issue.Fields;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
+import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+import lombok.Setter;
 
 /**
  * Reads releases, sprints, task, backlog.
@@ -47,6 +47,9 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
   
   @Autowired
   IssueTreeBuilder issueTreeBuilder;
+  
+  @Autowired
+  SprintReportProcessor sprintReportProcessor;
 
   @Setter
   private ReleaseReaderConfiguration configuration;
@@ -108,24 +111,14 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
     BacklogBuilder backlogBuilder = null;
     for (SprintItem sprint : sprints) {
-
+      
       context.info("Processing sprint: " + sprint.getName());
+      
+      SprintReport sprintReport = project.getJiraRestClient().getSprintReport(
+          sprint.getId(), project.getJiraRapidViewId());
 
-      Sprint jiraSprint = project.getJiraRestClient().getSprint(sprint.getId(),
-          project.getJiraRapidViewId());
-
-      if (sprintIsValid(jiraSprint)) {
-
-        backlogBuilder = releaseBuilder.withSprint(sprint.getName(),
-            DateUtil.getDate(jiraSprint.getStartDate(), context),
-            DateUtil.getDate(jiraSprint.getEndDate(), context));
-
-        backlogBuilder = processSprint(backlogBuilder, project, context, sprint.getId());
-        releaseBuilder = backlogBuilder.addToRelease();
-      } else {
-        context.info("Skipping sprint " + sprint.getName()
-            + ", due to invalid or empty dates");
-      }
+      releaseBuilder = sprintReportProcessor.process(releaseBuilder, context,
+          sprintReport);
     }
 
     backlogBuilder = releaseBuilder.withBacklog();
@@ -135,17 +128,6 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     return releaseBuilder;
   }   
   
-  
-  private BacklogBuilder processSprint(BacklogBuilder backlogBuilder,
-      ReleaseReaderConfiguration.Project project, SyncContext context,
-      int sprintId) {
-    List<Issue> sprintIssues = project.getJiraRestClient().getSprintIssues(
-        sprintId);
-    context.info("Collected " + sprintIssues.size() + " sprint issues");
-
-    return processTasks(backlogBuilder, sprintIssues, context);
-  }
-
   private BacklogBuilder processBacklog(BacklogBuilder backlogBuilder,
       ReleaseReaderConfiguration.Project project, SyncContext context) {
     List<Issue> backlogIssues = project.getJiraRestClient().getBacklogIssues(
@@ -169,44 +151,10 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
   }
 
-  private TaskBuilder addTask(IssueNode issueNode,
-      TaskBuilder taskBuilder) {
-    Issue issue = issueNode.getIssue();
-    boolean hasTimetracking = issue.getFields().getTimetracking() != null;
-    
-    String priority = (issue.getFields().getPriority() != null) ? issue
-        .getFields().getPriority().getName() : DEFAULT_PRIORITY;
+  private TaskBuilder addTask(IssueNode issueNode, TaskBuilder taskBuilder) {
+    Fields issueFields = issueNode.getIssue().getFields();
 
-    String type = (issue.getFields().getIssuetype() != null) ? issue
-        .getFields().getIssuetype().getName() : DEFAULT_TYPE;
-
-    String status = (issue.getFields().getStatus() != null) ? issue.getFields()
-        .getStatus().getName() : DEFAULT_STATUS;
-
-    String severity = (issue.getFields().getSeverity() != null) ? issue
-        .getFields().getSeverity().getValue() : DEFAULT_SEVERITY;
-
-    taskBuilder = taskBuilder
-        .name(issue.getFields().getSummary())
-        .effort(issue.getFields().getStorypoints())
-        .type(type)
-        .status(status)
-        .severity(severity)
-        .priority(priority)
-        .owner(
-            issue.getFields().getAssignee() != null ? issue.getFields()
-                .getAssignee().getEmailAddress() : null)
-
-        .estimated(
-            hasTimetracking ? issue.getFields().getTimetracking()
-                .getOriginalEstimateSeconds() : 0)
-        .remaining(
-            hasTimetracking ? issue.getFields().getTimetracking()
-                .getRemainingEstimateSeconds() : 0)
-        .actual(
-            hasTimetracking ? (issue.getFields().getTimetracking()
-                .getTimeSpentSeconds() != null ? issue.getFields()
-                .getTimetracking().getTimeSpentSeconds().intValue() : 0) : 0);
+    taskBuilder = addTaskDetails(taskBuilder, issueFields);
 
     for (IssueNode subIssueNode : issueNode.getSubIssues()) {
       taskBuilder = taskBuilder.addSubTask();
@@ -216,15 +164,57 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     return taskBuilder;
 
   }
-
-  private boolean sprintIsValid(final Sprint sprint) {
-    if (sprint == null || StringUtils.isEmpty(sprint.getStartDate())
-        || sprint.getStartDate().equalsIgnoreCase("None")
-        || StringUtils.isEmpty(sprint.getEndDate())
-        || sprint.getEndDate().equalsIgnoreCase("None")) {
-      return false;
-    }
-    return true;
+  
+  private TaskBuilder addTaskDetails(TaskBuilder taskBuilder, Fields issueFields) {
+    return taskBuilder
+        .name(issueFields.getSummary())
+        .effort(issueFields.getStorypoints())
+        .type(getIssueType(issueFields))
+        .status(getIssueStatus(issueFields))
+        .severity(getIssueSeverity(issueFields))
+        .priority(getIssuePriority(issueFields))
+        .owner(getOwner(issueFields))
+        .estimated(
+            hasTimetracking(issueFields) ? issueFields.getTimetracking()
+                .getOriginalEstimateSeconds() : 0)
+        .remaining(
+            hasTimetracking(issueFields) ? issueFields.getTimetracking()
+                .getRemainingEstimateSeconds() : 0)
+        .actual(
+            hasTimetracking(issueFields) ? (issueFields.getTimetracking()
+                .getTimeSpentSeconds() != null ? issueFields.getTimetracking()
+                .getTimeSpentSeconds().intValue() : 0) : 0);
   }
+
+  private String getOwner(Fields issueFields) {
+    return issueFields.getAssignee() != null ? issueFields.getAssignee()
+        .getEmailAddress() : null;
+  }
+  
+  private String getIssuePriority(Fields issueFields) {
+    return (issueFields.getPriority() != null) ? issueFields.getPriority()
+        .getName() : DEFAULT_PRIORITY;
+  }    
+
+  private String getIssueType(Fields issueFields) {
+    return (issueFields.getIssuetype() != null) ? issueFields.getIssuetype()
+        .getName() : DEFAULT_TYPE;
+  }
+   
+  private String getIssueStatus(Fields issueFields) {
+    return (issueFields.getStatus() != null) ? issueFields.getStatus()
+        .getName() : DEFAULT_STATUS;
+  }
+
+  private String getIssueSeverity(Fields issueFields) {
+    return (issueFields.getSeverity() != null) ? issueFields.getSeverity()
+        .getValue() : DEFAULT_SEVERITY;
+  }   
+  
+  private boolean hasTimetracking(Fields issueFields) {
+    return issueFields.getTimetracking() != null;
+  }
+
+
 
 }

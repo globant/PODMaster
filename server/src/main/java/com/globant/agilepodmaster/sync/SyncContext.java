@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -60,22 +62,40 @@ public class SyncContext {
    * This class represents a log record of SyncContext.
    */
   @Data
-  private static class SyncLogEntry {
+  public static class SyncLogEntry {
 
     public int sequence;
 
+    @Setter(AccessLevel.NONE)
     public Date createdDate;
 
     public String eventType;
 
     public String message;
 
+    /**
+     * Constructor.
+     * @param sequence number of order.
+     * @param eventType type of event.
+     * @param message the message.
+     */
     public SyncLogEntry(final int sequence, final String eventType,
         final String message) {
       createdDate = new Date();
       this.sequence = sequence;
       this.eventType = eventType;
       this.message = message;
+    }
+
+    /**
+     * Getter of CreatedDate.
+     * @return the date.
+     */
+    public Date getCreatedDate() {
+      return createdDate != null
+          ? (Date) createdDate.clone()
+          : null;
+
     }
 
   }

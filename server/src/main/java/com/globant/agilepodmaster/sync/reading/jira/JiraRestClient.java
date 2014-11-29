@@ -121,13 +121,13 @@ public class JiraRestClient {
     return sprintList.getSprints();
   }
 
-  protected Sprint getSprint(final int sprintId, final String rapidViewId) {
+  protected SprintReport getSprintReport(final int sprintId, final String rapidViewId) {
     
     log.info("Getting Sprint details ...");
     SprintReport sprintReport = connect(rootUrl + SPRINT_REPORT_URL, SprintReport.class
         , rapidViewId, sprintId);
     
-    return sprintReport.getSprint();
+    return sprintReport;
   }
 
 
@@ -155,6 +155,10 @@ public class JiraRestClient {
   }
 
   protected List<Issue> getBacklogIssues(final String projectName) {
+    if (ObjectUtils.isEmpty(customFieldDefinitions)) {
+      customFieldDefinitions = getCustomFieldDefinitions();
+    }
+    
     CustomFieldReplacements customFieldReplacements = new CustomFieldReplacements(
         customFieldDefinitions);
 

@@ -1,17 +1,5 @@
 package com.globant.agilepodmaster.sync;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import lombok.Getter;
-
 import com.globant.agilepodmaster.core.Organization;
 import com.globant.agilepodmaster.core.Pod;
 import com.globant.agilepodmaster.core.PodMember;
@@ -25,6 +13,18 @@ import com.globant.agilepodmaster.core.SprintPodMetric;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.sync.reading.PodsBuilder;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import lombok.Getter;
 
 /**
  * Creates a Snapshot in the DB.
@@ -44,6 +44,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Constructor.
+   * 
    * @param context the context where the process will log.
    */
   public SnapshotBuilder(SyncContext context) {
@@ -53,6 +54,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Assign owner to tasks, calculates metrics, associates entities to snapshot.
+   * 
    * @return the snapshot.
    */
   public Snapshot build() {
@@ -65,20 +67,17 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   private void createProjectMetrics() {
-    for (Project project: snapshot.getProjects()) {
-      for (Pod pod: snapshot.getPods()) {
-        int remainingStoryPoints = (int) 
-            snapshot.getTasks().stream()
+    for (Project project : snapshot.getProjects()) {
+      for (Pod pod : snapshot.getPods()) {
+        int remainingStoryPoints = (int) snapshot.getTasks().stream()
             .filter(t -> project.equals(t.getProject()))
             .filter(t -> t.getOwner() != null)
             .filter(t -> pod.equals(t.getOwner().getPod()))
-            .filter(t -> t.isOpen())
-            .mapToDouble(Task::getEffort)
-            .sum();
-        
+            .filter(t -> t.isOpen()).mapToDouble(Task::getEffort).sum();
+
         ProjectPodMetric projectMetric = new ProjectPodMetric(project, pod);
         projectMetric.setRemainingStoryPoints(remainingStoryPoints);
-        
+
         snapshot.addProjectMetric(projectMetric);
       }
     }
@@ -95,7 +94,8 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
       } catch (NoSuchElementException ne) {
         StringBuilder taskNameList = new StringBuilder();
         taskList.forEach(t -> taskNameList.append(t.getName()).append(" - "));
-        syncContext.warn("Task owner not found: " + ownerEmail + "for tasks: " + taskNameList);
+        syncContext.warn("Task owner not found: " + ownerEmail + "for tasks: "
+            + taskNameList);
       }
 
       taskList.forEach(t -> snapshot.addTask(t));
@@ -103,33 +103,16 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   private void createSprintPodMetrics() {
-    for (Pod pod : snapshot.getPods()) {
-      for (Sprint sprint : snapshot.getSprints()) {
-        double velocity = 
-            streamFor(pod, sprint)
-            .filter(t -> t.isAccepted()).mapToDouble(Task::getEffort).sum();
-        
-        double plannedEffort = streamFor(pod, sprint).mapToDouble(Task::getEffort).sum();
-
-        long numberOfBugs = streamFor(pod, sprint).filter(t -> t.isBug()).count();
-        
-        SprintPodMetric spm = new SprintPodMetric(sprint, pod);
-        spm.setAcceptedStoryPoints((int) velocity);
-        spm.setPlannedStoryPoints((int) plannedEffort);
-        spm.setNumberOfBugs((int) numberOfBugs);
-        
-        snapshot.addSprintMetric(spm);
-      }
-    }
+    
+    SprintPodMetricsGenerator sprintPodMetricsGenerator = new SprintPodMetricsGenerator();
+    
+    List<SprintPodMetric> sprintPodMetrics = sprintPodMetricsGenerator
+        .generates(snapshot.getPods(), snapshot.getSprints(),
+            snapshot.getTasks());
+    
+    snapshot.addSprintMetrics(sprintPodMetrics);
+    
   }
-
-  private Stream<Task> streamFor(Pod pod, Sprint sprint) {
-    return snapshot.getTasks().stream()
-    .filter(t -> sprint.equals(t.getSprint()) && t.getOwner() != null 
-                 && pod.equals(t.getOwner().getPod()))
-    .collect(Collectors.toList()).stream();
-  }
-
 
   @Override
   public PodBuilder withPod(String name) {
@@ -140,13 +123,15 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   @Override
   public OrganizationBuilder withOrganization(String organizationName) {
-    OrganizationBuilder builder = new OrganizationBuilder(organizationName, this);
+    OrganizationBuilder builder = new OrganizationBuilder(organizationName,
+        this);
     builders.add(builder);
     return builder;
   }
 
   /**
    * Add an organization to the snapshot.
+   * 
    * @param organization the organization
    */
   public void addOrganization(Organization organization) {
@@ -155,6 +140,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add a project to the snapshot.
+   * 
    * @param project the project.
    */
   public void addProject(Project project) {
@@ -163,6 +149,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add a product to the snapshot.
+   * 
    * @param product the product.
    */
   public void addProduct(Product product) {
@@ -171,6 +158,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add a release to the snapshot.
+   * 
    * @param release the release.
    */
   public void addRelease(Release release) {
@@ -179,6 +167,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add a sprint to the snapshot.
+   * 
    * @param sprint the sprint.
    */
   public void addSprint(Sprint sprint) {
@@ -187,6 +176,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add a owner to the snapshot tasks and associates the task.
+   * 
    * @param owner the owner.
    * @param task the task.
    */
@@ -197,6 +187,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add the pod to the snapshot.
+   * 
    * @param pod the pod.
    */
   public void addPod(Pod pod) {
@@ -205,6 +196,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
 
   /**
    * Add the pod member to the snapshot.
+   * 
    * @param podMember the pod member.
    */
   public void addPodMember(PodMember podMember) {

@@ -1,18 +1,19 @@
 package com.globant.agilepodmaster.core;
 
-import java.util.Date;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-
+import com.globant.agilepodmaster.core.Task.ChangeDuringSprint;
 import com.globant.agilepodmaster.sync.AbstractBuilder;
 import com.globant.agilepodmaster.sync.BacklogBuilder;
 import com.globant.agilepodmaster.sync.SnapshotBuilder;
 import com.globant.agilepodmaster.sync.SnapshotDataCollector;
 
+import java.util.Date;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+
 public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBuilder<P, T> {
 
-  @Getter(AccessLevel.PROTECTED)
+  @Getter(AccessLevel.PUBLIC)
   private final Task task;
 
   @Getter(AccessLevel.PROTECTED)
@@ -146,6 +147,25 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
 
   }
 
+
+  /**
+   * Indicates that this task was removed during the sprint associated.
+   * @return the same Builder
+   */
+  public TaskBuilder<P, T> removedDuringSprint() {
+    task.setChangeDuringSprint(ChangeDuringSprint.REMOVED);
+    return this;
+  }
+  
+  /**
+   * Indicates that this task was added once the sprint was started.
+   * @return the same Builder
+   */
+  public TaskBuilder<P, T> addedDuringSprint() {
+    task.setChangeDuringSprint(ChangeDuringSprint.ADDED);
+    return this;
+  }
+  
   /**
    * Setter for severity field.
    * 

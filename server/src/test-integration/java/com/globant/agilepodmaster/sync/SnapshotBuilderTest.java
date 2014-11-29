@@ -132,7 +132,7 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
         .withTask()
           .effort(10)
           .name("task6")
-          .owner("juana@gmail.com")
+          .owner("jose@gmail.com")
         .addToSprint()
       .addToRelease()
       .withBacklog()
@@ -206,12 +206,12 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
     BooleanExpression pod1Sp1Query = qspm.pod().eq(pod1).and(qspm.sprint().eq(sprint1));
     SprintPodMetric pod1Sp1m = sprintPodMetricRepository.findOne(pod1Sp1Query);
     assertThat(pod1Sp1m.getPod(), equalTo(pod1));
-    assertThat(pod1Sp1m.getAcceptedStoryPoints(), equalTo(20));
+    assertThat(pod1Sp1m.getAcceptedStoryPoints(), equalTo(30));
     
     BooleanExpression pod1Sp2Query = qspm.pod().eq(pod1).and(qspm.sprint().eq(sprint2));
     SprintPodMetric pod1Sp2m = sprintPodMetricRepository.findOne(pod1Sp2Query);
     assertThat(pod1Sp2m.getPod(), equalTo(pod1));
-    assertThat(pod1Sp2m.getAcceptedStoryPoints(), equalTo(0));
+    assertThat(pod1Sp2m.getAcceptedStoryPoints(), equalTo(10));
     
     BooleanExpression pod2Sp1Query = qspm.pod().eq(pod2).and(qspm.sprint().eq(sprint1));
     SprintPodMetric pod2Sp1m = sprintPodMetricRepository.findOne(pod2Sp1Query);

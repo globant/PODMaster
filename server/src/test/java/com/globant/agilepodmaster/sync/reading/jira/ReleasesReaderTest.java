@@ -37,8 +37,7 @@ public class ReleasesReaderTest extends AbstractUnitTest {
 
   @Autowired
   ReleasesReader releasesReader;
-
-
+  
   /**
    * Testing readInto.
    */
@@ -64,50 +63,54 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     sprintDetails1.setName("Sprint 1");
     sprintDetails1.setStartDate("11/02/2001");
     sprintDetails1.setEndDate("25/02/2001");
+    sprintDetails1.setCompleteDate("26/02/2001");
     
-    when(mockJiraRestClient.getSprint(1,"3")).thenReturn(sprintDetails1);
+    SprintReport sprintReport1 = new SprintReport();
+    
+    SprintReport.Issue issue1 = new SprintReport.Issue();
+    issue1.setKey("id1");
+    issue1.setSummary("Task1");
+    
+    SprintReport.Issue issue2 = new SprintReport.Issue();
+    issue2.setKey("id2");
+    issue2.setSummary("Task2");
+    
+    SprintReport.Issue issue3 = new SprintReport.Issue();
+    issue3.setKey("id3");
+    issue3.setSummary("Task3");
+    
+    SprintReport.Contents sprintContents1 = new SprintReport.Contents();
+    sprintContents1.setCompletedIssues(Arrays.asList(issue1, issue2 ,issue3));
+    
+    sprintReport1.setSprint(sprintDetails1);
+    sprintReport1.setContents(sprintContents1);
+    
+    when(mockJiraRestClient.getSprintReport(1,"3")).thenReturn(sprintReport1);
 
     SprintReport.Sprint sprintDetails2 = new SprintReport.Sprint();
     sprintDetails2.setId(2);
     sprintDetails2.setName("Sprint 2");
     sprintDetails2.setStartDate("26/02/2001");
     sprintDetails2.setEndDate("12/03/2001");
+    sprintDetails2.setCompleteDate("26/04/2001");
     
-    when(mockJiraRestClient.getSprint(2,"3")).thenReturn(sprintDetails2);
+    SprintReport sprintReport2 = new SprintReport();
     
-    Issue issue1 = new Issue();
-    issue1.setId("id1");
-    issue1.setFields(new Issue.Fields());
-    issue1.getFields().setSummary("Task1");
- 
-    Issue issue2 = new Issue();
-    issue2.setId("id2");
-    issue2.setFields(new Issue.Fields());
-    issue2.getFields().setSummary("Task2");    
-    issue2.getFields().setParent(issue1);  
+    SprintReport.Issue issue4 = new SprintReport.Issue();
+    issue4.setKey("id4");
+    issue4.setSummary("Task4");
     
-    Issue issue3 = new Issue();
-    issue3.setId("id3");
-    issue3.setFields(new Issue.Fields());
-    issue3.getFields().setParent(issue1);  
-    issue3.getFields().setSummary("Task3");    
+    SprintReport.Issue issue5 = new SprintReport.Issue();
+    issue5.setKey("id5");
+    issue5.setSummary("Task5");
     
-    when(mockJiraRestClient.getSprintIssues(1)).thenReturn(
-        Arrays.asList(issue1, issue2, issue3));
+    SprintReport.Contents sprintContents2 = new SprintReport.Contents();
+    sprintContents2.setCompletedIssues(Arrays.asList(issue4, issue5));
     
-    Issue issue4 = new Issue();
-    issue4.setId("id4");
-    issue4.setFields(new Issue.Fields());
-    issue4.getFields().setSummary("Task4");    
- 
-    Issue issue5 = new Issue();
-    issue5.setId("id5");
-    issue5.setFields(new Issue.Fields());
-    issue5.getFields().setSummary("Task5");    
-    issue5.getFields().setParent(issue4);   
+    sprintReport2.setSprint(sprintDetails2);
+    sprintReport2.setContents(sprintContents2);
     
-    when(mockJiraRestClient.getSprintIssues(2)).thenReturn(
-        Arrays.asList(issue4, issue5));
+    when(mockJiraRestClient.getSprintReport(2,"3")).thenReturn(sprintReport2);
     
     Issue issue6 = new Issue();
     issue6.setId("id6");
@@ -117,6 +120,7 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     Issue issue7 = new Issue();
     issue7.setId("id7");
     issue7.setFields(new Issue.Fields());
+    issue7.getFields().setParent(issue6);  
     issue7.getFields().setSummary("Task7");    
     
     when(mockJiraRestClient.getBacklogIssues("Teammate Intelligence")).thenReturn(
@@ -124,15 +128,8 @@ public class ReleasesReaderTest extends AbstractUnitTest {
 
     SyncContext context = new SyncContext();
     SnapshotBuilder snapshotBuilder = new SnapshotBuilder(context);
-
-    ReleaseReaderConfiguration.Project projectConfig = new ReleaseReaderConfiguration.Project(
-        "TeammateIntelligence", "Teammate Intelligence", "3", mockJiraRestClient);
-    ReleaseReaderConfiguration.Product productConfig = new ReleaseReaderConfiguration.Product(
-        "FIFA14", Arrays.asList(projectConfig));
-    ReleaseReaderConfiguration configuration = new ReleaseReaderConfiguration(
-        "EA", Arrays.asList(productConfig));
-
-    releasesReader.setConfiguration(configuration);
+    
+    releasesReader.setConfiguration(createConfiguration(mockJiraRestClient));
     releasesReader.readInto(snapshotBuilder, context);
     
     Snapshot snapshot = snapshotBuilder.build();
@@ -167,32 +164,27 @@ public class ReleasesReaderTest extends AbstractUnitTest {
     
     Task task1 = snapshot.getTasks().stream()
         .filter(s -> "Task1".equals(s.getName())).findAny().get();
-//    assertThat( task1.getRelease(), equalTo (null)); 
     assertThat( task1.getSprint(), equalTo(sprint1));     
     
     Task task2 = snapshot.getTasks().stream()
-        .filter(s -> "Task2".equals(s.getName())).findAny().get();  
-//    assertThat( task2.getRelease(), equalTo (null)); 
+        .filter(s -> "Task2".equals(s.getName())).findAny().get();   
     assertThat( task2.getSprint(), equalTo(sprint1));   
-    assertThat( task2.getParentTask(), equalTo(task1)); 
+    assertThat( task2.getParentTask(), equalTo(null)); 
     
     Task task3 = snapshot.getTasks().stream()
         .filter(s -> "Task3".equals(s.getName())).findAny().get(); 
-//    assertThat( task3.getRelease(), equalTo (null)); 
     assertThat( task3.getSprint(), equalTo(sprint1));   
-    assertThat( task3.getParentTask(), equalTo(task1)); 
+    assertThat( task3.getParentTask(), equalTo(null)); 
     
     Task task4 = snapshot.getTasks().stream()
         .filter(s -> "Task4".equals(s.getName())).findAny().get();  
-//    assertThat( task4.getRelease(), equalTo (null)); 
     assertThat( task4.getSprint(), equalTo(sprint2)); 
     assertThat( task4.getParentTask(), equalTo(null)); 
     
     Task task5 = snapshot.getTasks().stream()
         .filter(s -> "Task5".equals(s.getName())).findAny().get();
-//    assertThat( task5.getRelease(), equalTo (null)); 
     assertThat( task5.getSprint(), equalTo(sprint2));   
-    assertThat( task5.getParentTask(), equalTo(task4)); 
+    assertThat( task5.getParentTask(), equalTo(null)); 
     
     Task task6 = snapshot.getTasks().stream()
         .filter(s -> "Task6".equals(s.getName())).findAny().get();  
@@ -204,16 +196,24 @@ public class ReleasesReaderTest extends AbstractUnitTest {
         .filter(s -> "Task7".equals(s.getName())).findAny().get();
     assertThat( task7.getRelease(), equalTo(release));  
     assertThat( task7.getSprint(), equalTo(null));   
-    assertThat( task7.getParentTask(), equalTo(null)); 
+    assertThat( task7.getParentTask(), equalTo(task6)); 
         
     verify(mockJiraRestClient).getSprintList("3");
-    verify(mockJiraRestClient).getSprint(1,"3");
-    verify(mockJiraRestClient).getSprint(2,"3");
-    
-    verify(mockJiraRestClient).getSprintIssues(1);
-    verify(mockJiraRestClient).getSprintIssues(2);    
+    verify(mockJiraRestClient).getSprintReport(1,"3");
+    verify(mockJiraRestClient).getSprintReport(2,"3");
+       
     verify(mockJiraRestClient).getBacklogIssues("Teammate Intelligence");
     
+  }
+  
+  private ReleaseReaderConfiguration createConfiguration(JiraRestClient jiraRestClient) {
+    ReleaseReaderConfiguration.Project projectConfig = new ReleaseReaderConfiguration.Project(
+        "TeammateIntelligence", "Teammate Intelligence", "3", jiraRestClient);
+    ReleaseReaderConfiguration.Product productConfig = new ReleaseReaderConfiguration.Product(
+        "FIFA14", Arrays.asList(projectConfig));
+    ReleaseReaderConfiguration configuration = new ReleaseReaderConfiguration(
+        "EA", Arrays.asList(productConfig));
+    return configuration;
   }
 
 }

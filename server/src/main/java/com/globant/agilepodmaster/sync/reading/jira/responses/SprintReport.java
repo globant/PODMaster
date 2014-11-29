@@ -2,6 +2,8 @@ package com.globant.agilepodmaster.sync.reading.jira.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import lombok.Data;
@@ -26,21 +28,24 @@ public class SprintReport {
   @Data
   public static class Contents {
 
-    private List<CompletedIssue> completedIssues;
 
-    private List<IncompletedIssue> incompletedIssues;
+    /**
+     * Constructor. Initializes lists.
+     */
+    public Contents() {
+      completedIssues = new ArrayList<Issue>();
+      incompletedIssues = new ArrayList<Issue>();
+      puntedIssues = new ArrayList<Issue>();
+      issueKeysAddedDuringSprint = new HashMap<String, Boolean>();
+    }
 
-    private List<PuntedIssue> puntedIssues;
+    private List<Issue> completedIssues;
 
-    private CompletedIssuesEstimateSum completedIssuesEstimateSum;
+    private List<Issue> incompletedIssues;
 
-    private IncompletedIssuesEstimateSum incompletedIssuesEstimateSum;
-
-    private AllIssuesEstimateSum allIssuesEstimateSum;
-
-    private PuntedIssuesEstimateSum puntedIssuesEstimateSum;
+    private List<Issue> puntedIssues;
     
-    private Object issueKeysAddedDuringSprint;
+    private java.util.Map<java.lang.String,java.lang.Boolean> issueKeysAddedDuringSprint;
 
   }
 
@@ -66,11 +71,11 @@ public class SprintReport {
   }
 
   /**
-   * Jira sprint report contents complete issue.
+   * Jira sprint report contents issue.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
-  public static class CompletedIssue {
+  public static class Issue {
 
     private int id;
 
@@ -96,9 +101,9 @@ public class SprintReport {
 
     private boolean hasCustomUserAvatar;
 
-    private String color;
+    private String color;    
 
-    private TrackingStatistic trackingStatistic;
+    private EstimateStatistic estimateStatistic;
 
     private String statusId;
 
@@ -115,9 +120,10 @@ public class SprintReport {
   /**
    * Jira sprint report contents complete issue tracking statistic.
    */
+
   @JsonIgnoreProperties(ignoreUnknown = true)
   @Data
-  public static class TrackingStatistic {
+  public static class EstimateStatistic {
 
     private String statFieldId;
 
@@ -137,191 +143,5 @@ public class SprintReport {
     private String text;
 
   }
-
-  /**
-   * Jira sprint report contents imcomplete issue.
-   */  
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class IncompletedIssue {
-
-    private int id;
-
-    private String key;
-
-    private boolean hidden;
-
-    private String typeName;
-
-    private String typeId;
-
-    private String summary;
-
-    private String typeUrl;
-
-    private boolean done;
-
-    private String assignee;
-
-    private String assigneeName;
-
-    private String avatarUrl;
-
-    private String color;
-
-    private TrackingStatistic2 trackingStatistic;
-
-    private String statusId;
-
-    private String statusName;
-
-    private String statusUrl;
-
-  }
-
-  /**
-   * Jira sprint report contents TrackingStatistic2 StatFieldValue2.
-   */ 
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class StatFieldValue2 {
-
-    private int value;
-
-    private String text;
-
-  }
-
-  /**
-   * Jira sprint report contents TrackingStatistic2.
-   */   
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class TrackingStatistic2 {
-
-    private String statFieldId;
-
-    private StatFieldValue2 statFieldValue;
-
-  }
-
-  /**
-   * Jira sprint report contents TrackingStatistic3 StatFieldValue3.
-   */ 
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class StatFieldValue3 {
-
-    private int value;
-
-    private String text;
-
-  }
   
-  /**
-   * Jira sprint report contents TrackingStatistic3.
-   */   
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class TrackingStatistic3 {
-
-    private String statFieldId;
-
-    private StatFieldValue3 statFieldValue;
-
-  }
-  
-  /**
-   * Jira sprint report contents PuntedIssue.
-   */ 
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class PuntedIssue {
-
-    private int id;
-
-    private String key;
-
-    private boolean hidden;
-
-    private String typeName;
-
-    private String typeId;
-
-    private String summary;
-
-    private String typeUrl;
-
-    private boolean done;
-
-    private String assignee;
-
-    private String assigneeName;
-
-    private String avatarUrl;
-
-    private String color;
-
-    private TrackingStatistic3 trackingStatistic;
-
-    private String statusId;
-
-    private String statusName;
-
-    private String statusUrl;
-
-  }
-  
-  /**
-   * Jira sprint report contents CompletedIssuesEstimateSum.
-   */
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class CompletedIssuesEstimateSum {
-
-    private int value;
-
-    private String text;
-
-  }
-  
-  /**
-   * Jira sprint report contents IncompletedIssuesEstimateSum.
-   */
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class IncompletedIssuesEstimateSum {
-
-    private int value;
-
-    private String text;
-
-  }
-  
-  /**
-   * Jira sprint report contents AllIssuesEstimateSum.
-   */
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class AllIssuesEstimateSum {
-
-    private int value;
-
-    private String text;
-
-  }
-
-  /**
-   * Jira sprint report contents PuntedIssuesEstimateSum.
-   */
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
-  public static class PuntedIssuesEstimateSum {
-
-    private int value;
-
-    private String text;
-
-  }
-
 }

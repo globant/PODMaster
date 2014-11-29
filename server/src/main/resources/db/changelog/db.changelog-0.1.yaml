@@ -520,7 +520,13 @@ databaseChangeLog:
                   name: type
                   type: INTEGER
                   constraints:
-                    nullable: true
+                    nullable: true                    
+              -
+                column:
+                  name: change_during_sprint
+                  type: INTEGER
+                  constraints:
+                    nullable: true                          
               -
                 column:
                   name: owner_id

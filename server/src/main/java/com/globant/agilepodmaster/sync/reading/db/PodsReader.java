@@ -22,14 +22,14 @@ public class PodsReader implements Reader<PodsBuilder> {
   public void readInto(PodsBuilder podsBuilder,  SyncContext context) {
     podsBuilder
     .withPod("POD1")
-      .withPodMember("Walter", "Pacheco", "walter@ea.com").addToPod()
-      .withPodMember("Pedro", "Laurentz", "pedro@ea.com").addToPod()
-      .withPodMember("Maria", "Gomez", "maria@ea.com").addToPod()
+      .withPodMember("Walter", "Pacheco", "walter").addToPod()
+      .withPodMember("Pedro", "Laurentz", "pedro").addToPod()
+      .withPodMember("Maria", "Gomez", "maria").addToPod()
       .addToSnapshot()
-    .withPod("POD2")
-      .withPodMember("Jorge", "Dartes", "jorge@ea.com").addToPod()
-      .withPodMember("Claudia", "Parigi", "claudia@ea.com").addToPod()
-      .withPodMember("Roxana", "Andrade", "roxana@ea.com").addToPod()
+      .withPod("POD2")
+      .withPodMember("Jorge", "Dartes", "jorge").addToPod()
+      .withPodMember("Claudia", "Parigi", "claudia").addToPod()
+      .withPodMember("Roxana", "Andrade", "roxana").addToPod()
       .addToSnapshot();
   }
 

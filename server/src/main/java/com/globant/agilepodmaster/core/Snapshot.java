@@ -2,6 +2,7 @@ package com.globant.agilepodmaster.core;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -107,15 +108,16 @@ public class Snapshot extends AbstractEntity {
     Assert.notNull(creationDate, "creationDate is null");
     this.creationDate = new Date(creationDate.getTime());
   }
-
+  
   /**
-   * Add a SprintPodMetric to this snapshot.
-   * @param spm the SprintPodMetric.
+   * Add a SprintPodMetrics to this snapshot.
+   * @param spms the SprintPodMetrics.
    */
-  public void addSprintMetric(SprintPodMetric spm) {
-    spm.setSnapshot(this);
-    sprintMetrics.add(spm);
+  public void addSprintMetrics(List<SprintPodMetric> spms) {
+    spms.forEach(t -> t.setSnapshot(this));
+    sprintMetrics.addAll(spms);
   }
+
 
   /**
    * Add an organization to this snapshot.

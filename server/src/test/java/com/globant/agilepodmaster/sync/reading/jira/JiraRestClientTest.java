@@ -90,7 +90,7 @@ public class JiraRestClientTest extends AbstractUnitTest {
                            
                 ,MediaType.APPLICATION_JSON));
     
-    Sprint  sprint = jiraRestClient.getSprint(728, "362");
+    Sprint  sprint = jiraRestClient.getSprintReport(728, "362").getSprint();
     mockServer.verify();
     assertThat(sprint.getName(), equalTo("sprintA") );
     

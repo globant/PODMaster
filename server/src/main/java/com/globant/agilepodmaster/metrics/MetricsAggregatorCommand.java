@@ -16,11 +16,21 @@ import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 import com.mysema.query.types.Predicate;
 
+/**
+ * Command that returns metrics.
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class MetricsAggregatorCommand {
   private MetricsAggregator aggregator;
   private AbstractMetricRepository repo;
 
+  /**
+   * Constructor.
+   * @param aggregator service to the the metric values.
+   * @param repo repo to get the metrics.
+   */
   @Autowired
   public MetricsAggregatorCommand(
       MetricsAggregator aggregator, 
@@ -30,6 +40,12 @@ public class MetricsAggregatorCommand {
     this.repo = repo;
   }
 
+  /**
+   * Executes the command.
+   * @param partitioners the partitioners.
+   * @param filters the filters to be applied.
+   * @return a set of aggregations.
+   */
   public Set<MetricAggregation> execute(
       List<Partitioner<? extends Partition<?>>> partitioners, 
       Predicate filters) {
@@ -55,16 +71,31 @@ public class MetricsAggregatorCommand {
     return aggregated;
   }
 
+  /**
+   * Creates a map that has as key a set of partitions and as value a list of
+   * AbstractMetric that matches those partitions.
+   * 
+   * @param spmList list of AbstractMetric.
+   * @param partitioners all possible partitioners.
+   * @return the map.
+   */
   private SprintPodMetricPartitionsMap createPartitions(
       Iterable<? extends AbstractMetric> spmList,
       List<Partitioner<? extends Partition<?>>> partitioners) {
 
     SprintPodMetricPartitionsMap partitions = new SprintPodMetricPartitionsMap();
-    spmList.forEach(spm -> partitions.get(createPartitions(spm, partitioners)).add(spm));
+    spmList.forEach(spm -> partitions.get(createPartitions(spm, partitioners))
+        .add(spm));
 
     return partitions;
   }
 
+  /**
+   * Extract a set of partitions (Pod, Sprint, Year .. ) from an AbstractMetric.
+   * @param data AbstractMetric object.
+   * @param partitioners 
+   * @return a set of partitions.
+   */
   private Set<Partition<?>> createPartitions(
       AbstractMetric data,
       List<Partitioner<? extends Partition<?>>> partitioners) {
