@@ -1,10 +1,14 @@
 package com.globant.agilepodmaster.sync.reading.jira.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.globant.agilepodmaster.core.Sprint;
 
 import java.util.List;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Jira issue.
@@ -12,7 +16,8 @@ import lombok.Data;
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
+@Getter
+@Setter
 @SuppressWarnings("PMD")
 public class Issue {
   
@@ -25,12 +30,14 @@ public class Issue {
   private String key;
 
   private Fields fields;
+  
 
   /**
    * Jira issue fields.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   @SuppressWarnings("PMD")
   public static class Fields {
     private String summary;
@@ -73,7 +80,8 @@ public class Issue {
      * Jira issue fields Timetracking.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class Timetracking {
       private String originalEstimate;
 
@@ -92,7 +100,8 @@ public class Issue {
      * Jira issue fields Issuetype.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class Issuetype {
       private String self;
 
@@ -111,7 +120,8 @@ public class Issue {
      * Jira issue fields priority.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class Priority {
       private String self;
 
@@ -126,7 +136,8 @@ public class Issue {
      * Jira issue fields custom field..
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class CustomField {
       private String id;
 
@@ -137,7 +148,8 @@ public class Issue {
      * Jira issue fields referenced field.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class ReferenceField {
       private String id;
 
@@ -148,7 +160,8 @@ public class Issue {
      * Jira issue fields assigned.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class Assignee {
       private String self;
 
@@ -179,7 +192,8 @@ public class Issue {
      * Jira issue fields reslution.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class Resolution {
       private String self;
 
@@ -194,7 +208,8 @@ public class Issue {
      * Jira issue fields status.
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @Data
+    @Getter
+    @Setter
     public static class Status {
       private String self;
 

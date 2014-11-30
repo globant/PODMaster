@@ -25,7 +25,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class Sprint extends SnapshotEntity {
+public class Sprint extends SnapshotEntity implements Comparable<Sprint> {
   public int number;
   
   @NonNull
@@ -84,4 +84,15 @@ public class Sprint extends SnapshotEntity {
            ? (Date) date.clone()
            : null;
   }
+  
+  @Override
+  public int compareTo(Sprint otherSprint) {
+    if (this.release == otherSprint.getRelease()) {
+
+      return this.startDate.compareTo(otherSprint.getStartDate());
+    }
+    return this.release.hashCode() - otherSprint.getRelease().hashCode();
+
+  }
+  
 }

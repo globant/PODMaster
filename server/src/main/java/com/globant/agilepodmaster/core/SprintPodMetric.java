@@ -32,6 +32,10 @@ public class SprintPodMetric extends AbstractMetric {
 
   @Getter @Setter
   private int plannedStoryPoints;
+  
+  @Getter @Setter
+  private int accumutaledStoryPoints;
+
 
   @Getter @Setter
   private int numberOfBugs;

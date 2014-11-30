@@ -1,6 +1,7 @@
 package com.globant.agilepodmaster.sync;
 
 import com.globant.agilepodmaster.core.Pod;
+import com.globant.agilepodmaster.core.Release;
 import com.globant.agilepodmaster.core.Sprint;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 import com.globant.agilepodmaster.core.Task;
@@ -32,9 +33,21 @@ public class SprintPodMetricsGenerator {
   public List<SprintPodMetric> generates(Set<Pod> pods, Set<Sprint> sprints,
       Set<Task> tasks) {
     List<SprintPodMetric> sprintPodMetrics = new ArrayList<SprintPodMetric>();
+    
+
+    List<Sprint> sortedSprints = asSortedList(sprints);
+
+    double accumulatedStoryPoints = 0;
+
+    Release lastRelease = null;
 
     for (Pod pod : pods) {
-      for (Sprint sprint : sprints) {
+      accumulatedStoryPoints = 0;
+      for (Sprint sprint : sortedSprints) {
+
+        if (lastRelease == null || sprint.getRelease() != lastRelease) {
+          accumulatedStoryPoints = 0;
+        }  
 
         double removedStoryPoints = streamFor(pod, sprint, tasks)
             .filter(
@@ -55,6 +68,9 @@ public class SprintPodMetricsGenerator {
         streamFor(pod, sprint, tasks).filter(t -> t.isAccepted())
             .mapToDouble(Task::getEffort).sum();
 
+        
+        accumulatedStoryPoints = accumulatedStoryPoints + velocity;
+        
         double plannedEffort = noChangedStoryPoints + removedStoryPoints;
 
         long numberOfBugs = streamFor(pod, sprint, tasks)
@@ -64,8 +80,11 @@ public class SprintPodMetricsGenerator {
         spm.setAcceptedStoryPoints((int) velocity);
         spm.setPlannedStoryPoints((int) plannedEffort);
         spm.setNumberOfBugs((int) numberOfBugs);
+        spm.setAccumutaledStoryPoints((int)accumulatedStoryPoints);
 
         sprintPodMetrics.add(spm);
+        
+        lastRelease = sprint.getRelease();
       }
     }
     return sprintPodMetrics;
@@ -80,6 +99,15 @@ public class SprintPodMetricsGenerator {
                 && pod.equals(t.getOwner().getPod()))
         .collect(Collectors.toList()).stream();
   }
+  
+  List<Sprint> orderSprintsByProjectAndStartDate(Set<Sprint> sprints) {
+    return null;
+  }
 
+  private List<Sprint> asSortedList(Set<Sprint> sprintSet) {
+    List<Sprint> list = new ArrayList<Sprint>(sprintSet);
+    java.util.Collections.sort(list);
+    return list;
+  }
 
 }

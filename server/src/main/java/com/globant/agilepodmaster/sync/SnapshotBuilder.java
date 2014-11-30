@@ -67,6 +67,8 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   private void createProjectMetrics() {
+    
+    //TODO not necessary to be assigned and not assigned to closed sprints.
     for (Project project : snapshot.getProjects()) {
       for (Pod pod : snapshot.getPods()) {
         int remainingStoryPoints = (int) snapshot.getTasks().stream()

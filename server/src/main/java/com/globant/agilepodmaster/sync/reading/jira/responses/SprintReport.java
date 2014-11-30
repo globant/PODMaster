@@ -7,13 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Jira sprint report.
  * @author jose.dominguez@globant.com
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
+@Getter
+@Setter
 @SuppressWarnings("PMD")
 public class SprintReport {
 
@@ -25,7 +28,8 @@ public class SprintReport {
    * Jira sprint report contents.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   public static class Contents {
 
 
@@ -53,7 +57,8 @@ public class SprintReport {
    * Jira sprint report sprint.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   public static class Sprint {
 
     private int id;
@@ -74,7 +79,8 @@ public class SprintReport {
    * Jira sprint report contents issue.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   public static class Issue {
 
     private int id;
@@ -122,7 +128,8 @@ public class SprintReport {
    */
 
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   public static class EstimateStatistic {
 
     private String statFieldId;
@@ -135,7 +142,8 @@ public class SprintReport {
    * Jira sprint report contents complete issue tracking statistic statfield value.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   public static class StatFieldValue {
 
     private int value;

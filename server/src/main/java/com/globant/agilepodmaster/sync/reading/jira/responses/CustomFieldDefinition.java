@@ -3,12 +3,15 @@ package com.globant.agilepodmaster.sync.reading.jira.responses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Jira custom fields definition. 
  * @author jose.dominguez@globant.com
  */
-@Data
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CustomFieldDefinition {
 
@@ -24,7 +27,8 @@ public class CustomFieldDefinition {
    * Jira custom fields schema.
    *
    */
-  @Data
+  @Getter
+  @Setter
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Schema {
     private String type;

@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Jira spring list.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
+@Getter
+@Setter
 public class SprintList {
 
   private List<SprintItem> sprints;
@@ -22,7 +25,8 @@ public class SprintList {
    * Jira spring list item.
    */
   @JsonIgnoreProperties(ignoreUnknown = true)
-  @Data
+  @Getter
+  @Setter
   public static class SprintItem {
     private int id;
   

@@ -44,6 +44,11 @@ public class MetricsAggregator {
     int sumStoryPoints = spmStream(list).mapToInt(SprintPodMetric::getAcceptedStoryPoints).sum();
     metrics.add(new Metric<Integer>("velocity", sumStoryPoints, "story points"));
 
+    int accStoryPoints = spmStream(list).mapToInt(
+        SprintPodMetric::getAccumutaledStoryPoints).sum();
+    metrics.add(new Metric<Integer>("accumulated-story-points", accStoryPoints,
+        "story points"));
+
     double accoe = spmStream(list).collect(averagingDouble(SprintPodMetric::getEstimationAccuracy));
     metrics.add(new Metric<Double>("accuracy-of-estimations", accoe, "percentage"));
 
