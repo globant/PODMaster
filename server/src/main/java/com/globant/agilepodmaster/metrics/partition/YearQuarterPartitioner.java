@@ -8,10 +8,18 @@ import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.Quarter;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
+/**
+ * Partitioner for year quarters.
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class YearQuarterPartitioner extends Partitioner<Partition<String>> {
   private static final String PARTITION = "year/quarter";
 
+  /**
+   * Constructor.
+   */
   public YearQuarterPartitioner() {
     super(PARTITION);
   }

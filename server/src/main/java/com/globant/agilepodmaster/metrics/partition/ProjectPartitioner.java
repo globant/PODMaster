@@ -5,10 +5,19 @@ import org.springframework.stereotype.Component;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
+
+/**
+ * Partitioner for projects.
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class ProjectPartitioner extends Partitioner<Partition<String>> {
   private static final String PARTITION = "project";
 
+  /**
+   * Constructor.
+   */
   public ProjectPartitioner() {
     super(PARTITION);
   }

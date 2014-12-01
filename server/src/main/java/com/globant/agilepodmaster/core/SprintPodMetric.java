@@ -17,6 +17,11 @@ import org.hibernate.annotations.Immutable;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 
+/**
+ * Entity that keeps metrics of a Sprint and a Pod.
+ * @author jose.dominguez@globant.com
+ *
+ */
 @Entity
 @Immutable
 @ToString
@@ -44,11 +49,20 @@ public class SprintPodMetric extends AbstractMetric {
   @ManyToOne @NotNull
   private Pod pod;
 
+  /**
+   * Constructor.
+   * @param sprint the sprint.
+   * @param pod the pod.
+   */
   public SprintPodMetric(Sprint sprint, Pod pod) {
     this.sprint = sprint;
     this.pod = pod;
   }
 
+  /**
+   * Calculates and return the accuracy.
+   * @return the accuracy.
+   */
   public double getEstimationAccuracy() {
     return plannedStoryPoints / (double) acceptedStoryPoints;
   }
@@ -58,6 +72,10 @@ public class SprintPodMetric extends AbstractMetric {
     return partitioner.extractPartition(this);
   }
 
+  /**
+   * Return the project associated to this object..
+   * @return the project.
+   */
   public Project getProject() {
     return sprint.getRelease().getProject();
   }

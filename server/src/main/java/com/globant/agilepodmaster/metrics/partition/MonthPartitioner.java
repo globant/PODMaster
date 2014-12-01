@@ -7,10 +7,18 @@ import org.springframework.stereotype.Component;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
+/**
+ * Partitioner for months.
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class MonthPartitioner extends Partitioner<Partition<Integer>> {
   private static final String PARTITION = "month";
 
+  /**
+   * Constructor.
+   */
   public MonthPartitioner() {
     super(PARTITION);
   }

@@ -5,10 +5,19 @@ import org.springframework.stereotype.Component;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
+
+/**
+ * Partitioner for pods..
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class PodPartitioner extends Partitioner<Partition<String>> {
   private static final String PARTITION = "pod";
 
+  /**
+   * Constructor.
+   */
   public PodPartitioner() {
     super(PARTITION);
   }

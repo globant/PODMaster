@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Andres Postiglioni
+ *
+ */
 @Component
 public class PartitionerConverter implements Converter<String, Partitioner<?>> {
   private final List<Partitioner<?>> partitioners;
