@@ -14,15 +14,35 @@
         <style>
             body {
                 font: 14px sans-serif;
-                margin: 15px 20px;
+                margin: 0;
+                position: absolute;
+                width: 100%;
+                height: 100%;
             }
             h2 {
                 margin: 0 0 5px;
             }
-            section#content>div {
-                height: 200px;
-                width: 100%;
-                margin: 0 0 20px;
+            section.main {
+                display: flex;
+                align-items: stretch;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            section#menu::before{
+                content: "Menu";
+            }
+
+            section#content, section#widget {
+                display: flex;
+                flex-grow: 1;
+                border: 1px dashed red;
+            }
+
+            section#chart, section#chart>div {
+                display: flex;
+                flex-grow: 1;
+                border: 1px dashed green;
             }
 
             /* Common chart styles */
@@ -33,11 +53,6 @@
                 shape-rendering: crispEdges;
             }
 
-
-            /* Bar chart styles */
-            svg .x.axis .domain {
-                display: none;
-            }
 
             svg .bar {
                 fill: steelblue;
