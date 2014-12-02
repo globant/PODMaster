@@ -1,42 +1,415 @@
 {
+  "_links": {
+    "self":{
+      "href":"/js/app/modules/dashboard/projected_schedule.json"
+    },
+    "regression_simple":{
+      "href":"/api/statistics/prediction/regression/simple{?pair*}{&intercept}{&predict*}",
+      "tempated":true
+    }
+  },
+  "_embedded": {
+    "regression_simple":{
+        "_links":{
+          "self":{
+            "href":"/api/statistics/prediction/regression/simple?pair=(1,2)&pair=(2,4.1)&pair=(3,6.05)&pair=(4,7.99)&intercept=true&predict=5&predict=6.1"
+          }
+        },
+        "center": 1.9920000000000002,
+        "lowerBound":  1.875113467250817,
+        "upperBound":  2.10888653274924,
+        "confidenceLevel":  0.95,
+        "intercept":  0.054999999999999716,
+        "predictions": [
+          {
+            "x": 5.0,
+            "y": 10.015
+          },
+          {
+            "x": 6.1,
+            "y": 12.2062
+          }
+        ],
+        "_embedded":{ }
+    }
+  },
   "aggregated" : [ {
     "partitions" : [ {
-      "key" : "Project X",
+      "key" : "PrecisionMovement",
       "partition" : "project"
     }, {
-      "key" : 0,
+      "key" : "Sprint 4",
       "partition" : "sprint"
     } ],
     "metrics" : [ {
+      "name" : "accumulated-story-points",
+      "value" : 490,
+      "unit" : "story points"
+    }, {
       "name" : "velocity",
+      "value" : 40,
+      "unit" : "story points"
+    }, {
+      "name" : "bugs",
       "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "accuracy-of-estimations",
+      "value" : 4.833333333333333,
+      "unit" : "percentage"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.41421356237309503,
+      "unit" : "percentage"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "TeammateIntelligence",
+      "partition" : "project"
+    }, {
+      "key" : "Sprint 1",
+      "partition" : "sprint"
+    } ],
+    "metrics" : [ {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.16666666666666666,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.22048120921154246,
+      "unit" : "percentage"
+    }, {
+      "name" : "velocity",
+      "value" : 150,
+      "unit" : "story points"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 150,
       "unit" : "story points"
     } ]
   }, {
     "partitions" : [ {
-      "key" : "Project X",
+      "key" : "TeammateIntelligence",
       "partition" : "project"
-    }, {
-      "key" : 1,
-      "partition" : "sprint"
     } ],
     "metrics" : [ {
-      "name" : "velocity",
+      "name" : "remaining-story-points",
       "value" : 20,
       "unit" : "story points"
     } ]
   }, {
     "partitions" : [ {
-      "key" : "Project X",
+      "key" : "Sprint 2",
+      "partition" : "sprint"
+    }, {
+      "key" : "BallPhysics",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "bugs",
+      "value" : 8,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "velocity",
+      "value" : 190,
+      "unit" : "story points"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 310,
+      "unit" : "story points"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.06927592669941174,
+      "unit" : "percentage"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "Sprint 2",
+      "partition" : "sprint"
+    }, {
+      "key" : "TeammateIntelligence",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 300,
+      "unit" : "story points"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.22048120921154246,
+      "unit" : "percentage"
+    }, {
+      "name" : "velocity",
+      "value" : 150,
+      "unit" : "story points"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "PrecisionMovement",
       "partition" : "project"
     }, {
-      "key" : 2,
+      "key" : "Sprint 1",
       "partition" : "sprint"
     } ],
     "metrics" : [ {
+      "name" : "accuracy-of-estimations",
+      "value" : 1.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.22048120921154246,
+      "unit" : "percentage"
+    }, {
       "name" : "velocity",
-      "value" : 50,
+      "value" : 150,
       "unit" : "story points"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 150,
+      "unit" : "story points"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "Sprint 3",
+      "partition" : "sprint"
+    }, {
+      "key" : "TeammateIntelligence",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.08615786293989425,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 450,
+      "unit" : "story points"
+    }, {
+      "name" : "velocity",
+      "value" : 150,
+      "unit" : "story points"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "Sprint 2",
+      "partition" : "sprint"
+    }, {
+      "key" : "PrecisionMovement",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "accumulated-story-points",
+      "value" : 240,
+      "unit" : "story points"
+    }, {
+      "name" : "velocity",
+      "value" : 90,
+      "unit" : "story points"
+    }, {
+      "name" : "accuracy-of-estimations",
+      "value" : 1.65,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.1357964817893399,
+      "unit" : "percentage"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "BallPhysics",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "remaining-story-points",
+      "value" : 30,
+      "unit" : "story points"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "BallPhysics",
+      "partition" : "project"
+    }, {
+      "key" : "Sprint 1",
+      "partition" : "sprint"
+    } ],
+    "metrics" : [ {
+      "name" : "stability-of-velocity",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.25,
+      "unit" : "percentage"
+    }, {
+      "name" : "velocity",
+      "value" : 120,
+      "unit" : "story points"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 120,
+      "unit" : "story points"
+    }, {
+      "name" : "bugs",
+      "value" : 6,
+      "unit" : "number of bugs"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "Sprint 3",
+      "partition" : "sprint"
+    }, {
+      "key" : "PrecisionMovement",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "stability-of-velocity",
+      "value" : 0.1680743603534397,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "velocity",
+      "value" : 210,
+      "unit" : "story points"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 450,
+      "unit" : "story points"
+    }, {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.7222222222222222,
+      "unit" : "percentage"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "PrecisionMovement",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "remaining-story-points",
+      "value" : 170,
+      "unit" : "story points"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "TeammateIntelligence",
+      "partition" : "project"
+    }, {
+      "key" : "Sprint 4",
+      "partition" : "sprint"
+    } ],
+    "metrics" : [ {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 600,
+      "unit" : "story points"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.08615786293989425,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 0,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "velocity",
+      "value" : 150,
+      "unit" : "story points"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "Sprint 3",
+      "partition" : "sprint"
+    }, {
+      "key" : "BallPhysics",
+      "partition" : "project"
+    } ],
+    "metrics" : [ {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "accumulated-story-points",
+      "value" : 380,
+      "unit" : "story points"
+    }, {
+      "name" : "velocity",
+      "value" : 70,
+      "unit" : "story points"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.5025253169416732,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 3,
+      "unit" : "number of bugs"
+    } ]
+  }, {
+    "partitions" : [ {
+      "key" : "BallPhysics",
+      "partition" : "project"
+    }, {
+      "key" : "Sprint 4",
+      "partition" : "sprint"
+    } ],
+    "metrics" : [ {
+      "name" : "accumulated-story-points",
+      "value" : 480,
+      "unit" : "story points"
+    }, {
+      "name" : "velocity",
+      "value" : 100,
+      "unit" : "story points"
+    }, {
+      "name" : "accuracy-of-estimations",
+      "value" : 0.0,
+      "unit" : "percentage"
+    }, {
+      "name" : "bugs",
+      "value" : 4,
+      "unit" : "number of bugs"
+    }, {
+      "name" : "stability-of-velocity",
+      "value" : 0.3613020955135854,
+      "unit" : "percentage"
     } ]
   } ]
 }

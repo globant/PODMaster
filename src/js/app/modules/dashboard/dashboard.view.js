@@ -19,19 +19,23 @@ define(function(require) {
 
       initialize: function() {
         var
-          model  = this.model.get('velocity'),
           render = _.bind(this.render, this),
           show   = _.bind(this.content.show, this.content),
-          getSeries = _.bind(model.get, model, 'series'),
           type   = {
             'year/quarter' : 'LineMonths',
+            'month'        : 'LineMonths',
             'sprint'       : 'LineSprints'
           },
-          createWidget = function() {
-            return new WidgetView({chartType: type[getSeries().series], model:model});
+          createWidget = function(model) {
+            var
+              seriesAttr = model.get('series').series;
+            return new WidgetView({chartType: type[seriesAttr], model:model});
           };
         render();
-        model.bind('reset change', _.compose(show, createWidget));
+        this.model
+        .get('velocity')
+        //.get('accumulated-story-points')
+          .bind('reset change', _.compose(show, createWidget));
       }
 
     });

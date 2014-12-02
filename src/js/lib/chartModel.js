@@ -38,8 +38,30 @@ define(function(require, exports) {
       }
     });
 
+    exports.MonthPointModel = Backbone.Model.extend({
+      parse: function(raw) {
+        var
+          parseMonth = function(raw) {
+            return moment()
+              .month(raw)
+              .startOf('month')
+              .unix() * 1000;
+          };
+        raw.x = parseMonth(raw.x);
+        return raw;
+      },
+
+      toJSON: function()  {
+        var
+          result = Backbone.Model.prototype.toJSON.apply(this, arguments);
+        result.x = this.get('x');
+        return result;
+      }
+    });
+
     exports.SprintPointModel = Backbone.Model.extend({
       parse: function(raw) {
+        raw.x = raw.x.replace(/[^0-9]*/, '') * 1;
         return raw;
       }
     });
@@ -86,40 +108,67 @@ define(function(require, exports) {
             categories: data.categories,
             series: this.get('series')
           };
-        this.get('series').reset(//new exports.SeriesCollection(
+        this.get('series').reset(
           {
             series:data.series,
-            data: _(data.rawData).groupBy(
-              function(aggregation) {
-                return _.findWhere(
-                  aggregation.partitions,
-                  {partition:data.categories}
-                ).key;
-              })
+            data: _(data.rawData)
+              .groupBy(
+                function(aggregation) {
+                  return _.findWhere(
+                    aggregation.partitions,
+                    {partition:data.categories}
+                  ).key;
+                }
+              )
               .map(
-                function(podAggregations, podKey) {
+                function(aggregations, aggregationKey) {
                   var
                     PointModel = ({
                       'year/quarter' : exports.YearQuarterPointModel,
+                      'month'        : exports.MonthPointModel,
                       'sprint'       : exports.SprintPointModel
                     })[data.series];
                   return {
-                    name: podKey,
-                    values: _.map(
-                      podAggregations,
-                      function(agg) {
+                    name: aggregationKey,
+                    values: _.reduce(
+                      aggregations,
+                      function(result, agg ) {
                         var
+                          sortedXPush = function( array, value ) {
+                            var
+                              getX = function(val) {
+                                return val.get('x');
+                              };
+                            array.splice(
+                              _.sortedIndex(
+                                array,
+                                value,
+                                getX
+                              ),
+                              0,
+                              value
+                            );
+                          },
                           foundX = _.findWhere(
                             agg.partitions,
-                            {partition:data.series}),
+                            {partition:data.series}
+                          ),
                           foundY = _.findWhere(
                             agg.metrics,
-                           {name:'velocity'});
-                        return new PointModel({
+                            {name:data.name}
+                          ),
+                          isValid = !(
+                            _.isUndefined(foundX) || _.isUndefined(foundY)
+                          );
+                        if (isValid) {
+                          sortedXPush( result, new PointModel({
                             x: foundX.key,
                             y: foundY.value
-                          }, {parse:true});
-                      })
+                          },
+                          {parse:true}));
+                        }
+                        return result;
+                      }, [])
                   };
                 }).value()
             },
@@ -134,14 +183,27 @@ define(function(require, exports) {
       scaleY: d3.scale.linear(),
 
       initialize: function() {
-        this.set('velocity', new exports.MetricModel());
+        var
+        metrics = {
+          'accumulated-story-points': exports.MetricModel,
+          'velocity': exports.MetricModel,
+          'bugs': exports.MetricModel,
+          'accuracy-of-estimations': exports.MetricModel,
+          'stability-of-velocity': exports.MetricModel,
+          'remaining-story-points': exports.MetricModel
+        },
+        setter = _.bind(this.set, this),
+        createAndSet = function(metric) {
+          setter( metric, new metrics[metric]());
+        };
+        _(metrics)
+          .keys()
+          .each(createAndSet);
       },
 
       parse: function(partitions) {
         var
-          theMetrics = {
-            velocity:  this.get('velocity')
-          },
+          getMetric = _.bind(this.get, this),
           //Applicative `if`: returns a function that confitionally apply
           // trueF or falseF depending on the result of confF
           ifF = function(condF, trueF, falseF) {
@@ -185,7 +247,7 @@ define(function(require, exports) {
           result = _(metricNames).reduce(
             function(result, metricName) {
               var
-                theMetric = theMetrics[metricName];
+                theMetric = getMetric(metricName);
               result[metricName] = theMetric//this.get(metricName)
               .set(
                 theMetric.parse(
