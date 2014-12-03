@@ -1,8 +1,10 @@
 package com.globant.agilepodmaster.metrics;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import com.globant.agilepodmaster.core.QAbstractMetric;
+import com.globant.agilepodmaster.metrics.filter.BooleanExpressionPropertyEditor;
+import com.globant.agilepodmaster.metrics.partition.Partition;
+import com.globant.agilepodmaster.metrics.partition.Partitioner;
+import com.mysema.query.types.expr.BooleanExpression;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
@@ -12,22 +14,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.globant.agilepodmaster.core.QAbstractMetric;
-import com.globant.agilepodmaster.metrics.filter.BooleanExpressionPropertyEditor;
-import com.globant.agilepodmaster.metrics.partition.Partition;
-import com.globant.agilepodmaster.metrics.partition.Partitioner;
-import com.mysema.query.types.expr.BooleanExpression;
+import java.util.LinkedList;
+import java.util.List;
 
+/**
+ * Controller that offer a rest API for metrics.
+ * @author Andres Postiglioni
+ *
+ */
 @RestController
 @RequestMapping("/snapshots")
 public class MetricsController {
   private MetricsAggregatorCommand command;
 
+  /**
+   * Constructor.
+   * @param command the command that implements the logic.
+   */
   @Autowired
   public MetricsController(MetricsAggregatorCommand command) {
     this.command = command;
   }
 
+  /**
+   * Provides all metrics grouped depending on partitioners and filtered.
+   * @param snapshotId the snapshot id.
+   * @param partitioners the partitioners to group metrics.
+   * @param filters the filters 
+   * @return  A collection of metric aggregations
+   */
   @RequestMapping("/{snapshotid}/metrics")
   public MetricsAggregationCollectionResource metrics(
       @PathVariable("snapshotid") 
@@ -48,7 +63,7 @@ public class MetricsController {
       predicate = BooleanExpression.allOf(filters.toArray(new BooleanExpression[0]));
     }
 
-    Set<MetricAggregation> aggregated = command.execute(partitioners, predicate);
+    List<MetricAggregation> aggregated = command.execute(partitioners, predicate);
 
     MetricsAggregationCollectionResource response = 
         new MetricsAggregationCollectionResource(aggregated);
@@ -61,6 +76,10 @@ public class MetricsController {
     return response;
   }
   
+  /**
+   * Registers custom editor to a binder.
+   * @param binder the binder.
+   */
   @InitBinder
   public void initBinderAll(WebDataBinder binder) {
     binder.registerCustomEditor(BooleanExpression.class, new BooleanExpressionPropertyEditor());

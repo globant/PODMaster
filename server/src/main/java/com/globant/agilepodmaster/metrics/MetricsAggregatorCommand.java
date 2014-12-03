@@ -1,20 +1,21 @@
 package com.globant.agilepodmaster.metrics;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.globant.agilepodmaster.core.AbstractMetric;
+import com.globant.agilepodmaster.core.AbstractMetricRepository;
+import com.globant.agilepodmaster.metrics.partition.Partition;
+import com.globant.agilepodmaster.metrics.partition.PartitionSet;
+import com.globant.agilepodmaster.metrics.partition.Partitioner;
+import com.mysema.query.types.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.core.AbstractMetric;
-import com.globant.agilepodmaster.core.AbstractMetricRepository;
-import com.globant.agilepodmaster.metrics.partition.Partition;
-import com.globant.agilepodmaster.metrics.partition.Partitioner;
-import com.mysema.query.types.Predicate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Command that returns metrics.
@@ -46,27 +47,30 @@ public class MetricsAggregatorCommand {
    * @param filters the filters to be applied.
    * @return a set of aggregations.
    */
-  public Set<MetricAggregation> execute(
+  public List<MetricAggregation> execute(
       List<Partitioner<? extends Partition<?>>> partitioners, 
       Predicate filters) {
 
 //    Iterable<AbstractMetric> spmList = findMetrics(filters);
     Iterable<AbstractMetric> spmList = repo.findAll(filters);
 
-    Map<Set<Partition<?>>, List<AbstractMetric>> partitions = createPartitions(
+    Map<PartitionSet, List<AbstractMetric>> partitions = createPartitions(
         spmList, partitioners);
     
-    Set<MetricAggregation> aggregated = this.aggregate(partitions);
+    List<MetricAggregation> aggregated = this.aggregate(partitions);
 
     return aggregated;
   }
 
-  private Set<MetricAggregation> aggregate(Map<Set<Partition<?>>, List<AbstractMetric>> parts) {
+  private List<MetricAggregation> aggregate(Map<PartitionSet, List<AbstractMetric>> parts) {
 
-    Set<MetricAggregation> aggregated = new HashSet<MetricAggregation>();
-    parts.forEach(
-        (part, lst) -> aggregated.add(new MetricAggregation(part, aggregator.aggregate(lst)))
-    );
+    List<MetricAggregation> aggregated = new ArrayList<MetricAggregation>();
+    
+    List<PartitionSet> sortedKeys = new ArrayList<PartitionSet>(parts.keySet());
+    Collections.sort(sortedKeys);
+    
+    sortedKeys.forEach((sortedKey) -> aggregated.add(new MetricAggregation(sortedKey,
+        aggregator.aggregate(parts.get(sortedKey)))));
 
     return aggregated;
   }
@@ -96,12 +100,11 @@ public class MetricsAggregatorCommand {
    * @param partitioners 
    * @return a set of partitions.
    */
-  private Set<Partition<?>> createPartitions(
+  private PartitionSet createPartitions(
       AbstractMetric data,
       List<Partitioner<? extends Partition<?>>> partitioners) {
 
-    Set<Partition<?>> partitions = new HashSet<Partition<?>>();
-    
+    PartitionSet partitions = new PartitionSet();    
     for ( Partitioner<? extends Partition<?>> partitioner: partitioners) {
       Partition<?> partition = data.visit(partitioner);
       
@@ -114,12 +117,17 @@ public class MetricsAggregatorCommand {
   }
 }
 
+/**
+ * Map of a PartitionSet and a list of AbstractMetric.
+ * @author jose.dominguez@globant.com
+ *
+ */
 @SuppressWarnings("serial")
-class SprintPodMetricPartitionsMap extends HashMap<Set<Partition<?>>, List<AbstractMetric>> {
-  @SuppressWarnings("unchecked")
+class SprintPodMetricPartitionsMap extends HashMap<PartitionSet, List<AbstractMetric>> {
+
   @Override
   public List<AbstractMetric> get(Object key) {
-    this.putIfAbsent((Set<Partition<?>>) key, new LinkedList<AbstractMetric>());
+    this.putIfAbsent((PartitionSet) key, new LinkedList<AbstractMetric>());
     return super.get(key);
   }
 }

@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @EqualsAndHashCode
-public class YearQuarter {
+public class YearQuarter implements Comparable<YearQuarter> {
   private final int year;
   private final Quarter quarter;
 
@@ -28,4 +28,13 @@ public class YearQuarter {
   public String toString() {
     return year + "/" + quarter;
   }
+  
+  @Override
+  public int compareTo(YearQuarter otherYearQuarter) {
+    if (this.year == otherYearQuarter.getYear()) {
+      return this.quarter.compareTo(otherYearQuarter.getQuarter());
+    }
+    return this.year - otherYearQuarter.getYear();
+  }
+  
 }
