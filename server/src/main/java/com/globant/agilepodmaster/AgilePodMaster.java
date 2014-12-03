@@ -100,32 +100,5 @@ public class AgilePodMaster extends SpringBootServletInitializer {
       return new DefaultCurieProvider(CURIE_NAMESPACE, new UriTemplate(
           "http://localhost:8080/alps/{rel}"));
     }
-
-//    @Bean
-//    public EmbeddedServletContainerCustomizer containerCustomizer(
-//      @Value("${keystore.file}") String keystoreFile,
-//      @Value("${keystore.password}") String keystorePassword,
-//      @Value("${keystore.type}") String keystoreType,
-//      @Value("${keystore.alias}") String keystoreAlias) throws FileNotFoundException {
-//      
-//      final String absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
-//       
-//      return (ConfigurableEmbeddedServletContainer factory) -> {
-//          TomcatEmbeddedServletContainerFactory containerFactory = 
-//              (TomcatEmbeddedServletContainerFactory) factory;
-//          containerFactory.addConnectorCustomizers(
-//              (TomcatConnectorCustomizer) (Connector connector) -> {
-//              connector.setSecure(true);
-//              connector.setScheme("https");
-//              connector.setAttribute("keystoreFile", absoluteKeystoreFile);
-//              connector.setAttribute("keystorePass", keystorePassword);
-//              connector.setAttribute("keystoreType", keystoreType);
-//              connector.setAttribute("keyAlias", keystoreAlias);
-//              connector.setAttribute("clientAuth", "false");
-//              connector.setAttribute("sslProtocol", "TLS");
-//              connector.setAttribute("SSLEnabled", true);
-//          });
-//      };
-//    }
   }
 }

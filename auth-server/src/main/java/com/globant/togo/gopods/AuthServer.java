@@ -63,12 +63,5 @@ public class AuthServer extends SpringBootServletInitializer {
   @Import({ ApplicationConfiguration.class })
   @ComponentScan(excludeFilters = @Filter({ Service.class }))
   static class WebConfiguration {
-//    @Bean
-//    public CurieProvider curieProvider() {
-//      return new DefaultCurieProvider(
-//          CURIE_NAMESPACE, 
-//          new UriTemplate("http://localhost:8080/alps/{rel}")
-//      );
-//    }
   }
 }
