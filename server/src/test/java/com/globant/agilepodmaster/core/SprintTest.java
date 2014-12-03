@@ -33,10 +33,10 @@ public class SprintTest {
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.DAY_OF_MONTH, -5);
 
-    Sprint sprint11 = new Sprint("Sprint1", release1, calendar.getTime(), new Date());
-    Sprint sprint12 = new Sprint("Sprint2", release1, new Date(), new Date());
-    Sprint sprint21 = new Sprint("Sprint1", release2, calendar.getTime(), new Date());
-    Sprint sprint22 = new Sprint("Sprint2", release2, new Date(), new Date());
+    Sprint sprint11 = new Sprint("Sprint1", 1, release1, calendar.getTime(), new Date());
+    Sprint sprint12 = new Sprint("Sprint2", 2, release1, new Date(), new Date());
+    Sprint sprint21 = new Sprint("Sprint1", 1, release2, calendar.getTime(), new Date());
+    Sprint sprint22 = new Sprint("Sprint2", 2, release2, new Date(), new Date());
     
     List<Sprint> sortedList = Arrays.asList(sprint12, sprint21, sprint22, sprint11);
 

@@ -68,9 +68,9 @@ public class SprintPodMetricsGeneratorTest extends AbstractUnitTest {
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.DAY_OF_MONTH, -5);
 
-    sprint1 = new Sprint("Sprint1", release1, calendar.getTime(), new Date());
-    sprint2 = new Sprint("Sprint2", release1, new Date(), new Date());
-    sprint21 = new Sprint("Sprint1", release2, new Date(), new Date());
+    sprint1 = new Sprint("Sprint1", 1, release1, calendar.getTime(), new Date());
+    sprint2 = new Sprint("Sprint2", 2, release1, new Date(), new Date());
+    sprint21 = new Sprint("Sprint1", 1, release2, new Date(), new Date());
 
     pod1 = new Pod("Pod1");
 

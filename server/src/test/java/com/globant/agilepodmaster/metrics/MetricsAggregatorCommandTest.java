@@ -75,7 +75,7 @@ public class MetricsAggregatorCommandTest {
         new MetricsAggregator(), createDummyRepo(repo,
             AbstractMetricRepository.class));
 
-    Set<MetricAggregation> aggregations = command.execute(partitioners, null);
+    List<MetricAggregation> aggregations = command.execute(partitioners, null);
 
     System.out.println("---");
     aggregations.forEach(it -> System.out.println(it));
