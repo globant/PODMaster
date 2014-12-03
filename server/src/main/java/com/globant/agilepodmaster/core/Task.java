@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@SuppressWarnings("PMD.TooManyFields")
 public class Task extends SnapshotEntity {
 
   /**

@@ -1,0 +1,84 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.9.RELEASE")
+  }
+}
+
+apply plugin: 'java'
+// Add provided dependency scope
+configurations {
+  provided {
+    dependencies.all { dep ->
+      configurations.default.exclude group: dep.group, module: dep.name
+    }
+  }
+  compile.extendsFrom provided
+  }
+jar {
+  baseName = 'gopods-authserver'
+  version =  '0.1'
+}
+
+apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
+
+apply from: 'buildSrc/jacoco-coverage.gradle'
+
+apply plugin: 'pmd'
+pmd {
+  ruleSetFiles = files("buildSrc/config/pmd/pmd.xml")
+}
+
+//http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
+apply plugin: 'checkstyle' 
+checkstyle {
+  toolVersion = '5.9'
+  configFile = file('buildSrc/config/checkstyle/checkstyle-5.7.xml')
+}
+
+apply plugin: 'findbugs'
+findbugs {
+  toolVersion = '3.0.0'
+  //includeFilter = file("build-config/findbugs/includeFilter.xml")
+}
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+ }
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile("org.springframework.boot:spring-boot-starter-web")
+  compile("org.springframework.boot:spring-boot-starter-security")
+  compile("org.springframework.security.oauth:spring-security-oauth2:2.0.4.RELEASE")
+  compile("org.springframework.security:spring-security-jwt")
+  compile("org.springframework.security:spring-security-acl")
+
+  // tag::actuator[]
+  compile("org.springframework.boot:spring-boot-starter-actuator")
+  // end::actuator[]
+
+  testCompile("junit:junit")
+  testCompile("org.springframework.boot:spring-boot-starter-test")
+
+  runtime("org.hsqldb:hsqldb")
+}
+
+task coverageCheck(type: JacocoCoverageCheck) {
+  lineThreshold = 0
+  branchThreshold = 0
+  instructionThreshold = 0
+  reportTask = jacocoTestAllReport
+} 
+check.dependsOn coverageCheck
+
+distZip.dependsOn check
+distTar.dependsOn check

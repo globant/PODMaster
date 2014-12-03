@@ -165,6 +165,7 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
   }
   
+  @SuppressWarnings("PMD.NPathComplexity")
   private TaskBuilder addTaskDetails(TaskBuilder taskBuilder, Fields issueFields) {
     return taskBuilder
         .name(issueFields.getSummary())

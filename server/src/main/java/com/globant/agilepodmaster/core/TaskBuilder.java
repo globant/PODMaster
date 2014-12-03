@@ -18,6 +18,7 @@ import lombok.Getter;
  * @param <P> type of the parent builder.
  * @param <T> type of this builder .
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBuilder<P, T> {
 
   @Getter(AccessLevel.PUBLIC)

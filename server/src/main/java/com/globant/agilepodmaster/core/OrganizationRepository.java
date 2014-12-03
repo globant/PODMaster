@@ -17,4 +17,5 @@ public interface OrganizationRepository extends CrudRepository<Organization, Lon
    */
   List<Organization> findByName(String name);
 
+  List<Organization> findBySnapshotId(Long snapshotId);
 }

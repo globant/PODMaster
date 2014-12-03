@@ -1,5 +1,9 @@
 package com.globant.agilepodmaster;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -16,12 +20,9 @@ import org.springframework.hateoas.hal.CurieProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Spring Boot application.
@@ -57,7 +58,9 @@ public class AgilePodMaster extends SpringBootServletInitializer {
   @Configuration
   @EnableAsync
   @EnableAutoConfiguration
-  @ComponentScan(includeFilters = @Filter(Service.class), useDefaultFilters = false)
+  @ComponentScan(
+      includeFilters = @Filter({ Service.class, Repository.class }), 
+      useDefaultFilters = false)
   static class ApplicationConfiguration {
   }
 
@@ -68,7 +71,7 @@ public class AgilePodMaster extends SpringBootServletInitializer {
    */
   @Configuration
   @Import({ ApplicationConfiguration.class })
-  @ComponentScan(excludeFilters = @Filter({ Service.class, Configuration.class }))
+  @ComponentScan(excludeFilters = @Filter({ Service.class, Repository.class }))
   static class WebConfiguration {
     @Bean
     public RestTemplate restTemplate() {
@@ -84,7 +87,7 @@ public class AgilePodMaster extends SpringBootServletInitializer {
     @Bean
     public ConversionServiceFactoryBean conversionServiceFactory(List<Converter<?,?>> converters) {
       ConversionServiceFactoryBean conversionServiceFactory = new ConversionServiceFactoryBean();
-      
+
       Set<Object> set = new HashSet<Object>();
       set.addAll(converters);
       conversionServiceFactory.setConverters(set);
@@ -97,7 +100,32 @@ public class AgilePodMaster extends SpringBootServletInitializer {
       return new DefaultCurieProvider(CURIE_NAMESPACE, new UriTemplate(
           "http://localhost:8080/alps/{rel}"));
     }
-    
 
+//    @Bean
+//    public EmbeddedServletContainerCustomizer containerCustomizer(
+//      @Value("${keystore.file}") String keystoreFile,
+//      @Value("${keystore.password}") String keystorePassword,
+//      @Value("${keystore.type}") String keystoreType,
+//      @Value("${keystore.alias}") String keystoreAlias) throws FileNotFoundException {
+//      
+//      final String absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
+//       
+//      return (ConfigurableEmbeddedServletContainer factory) -> {
+//          TomcatEmbeddedServletContainerFactory containerFactory = 
+//              (TomcatEmbeddedServletContainerFactory) factory;
+//          containerFactory.addConnectorCustomizers(
+//              (TomcatConnectorCustomizer) (Connector connector) -> {
+//              connector.setSecure(true);
+//              connector.setScheme("https");
+//              connector.setAttribute("keystoreFile", absoluteKeystoreFile);
+//              connector.setAttribute("keystorePass", keystorePassword);
+//              connector.setAttribute("keystoreType", keystoreType);
+//              connector.setAttribute("keyAlias", keystoreAlias);
+//              connector.setAttribute("clientAuth", "false");
+//              connector.setAttribute("sslProtocol", "TLS");
+//              connector.setAttribute("SSLEnabled", true);
+//          });
+//      };
+//    }
   }
 }
