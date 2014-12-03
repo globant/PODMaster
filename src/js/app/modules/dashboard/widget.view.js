@@ -9,27 +9,34 @@ define(function(require) {
       Mixins = require('lib/chartMixins'),
       ChartBase = require('lib/chartBaseView'),
       WidgetView = Marionette.LayoutView.extend({
-        TheChart: ChartBase.extend({}),
-        el: 'section#widget',
-
+        tagName: 'section',
+        className: 'widget',
         template: template,
-
         regions:{
-          menu:'#header',
-          content: '#left',
-          visualization: '#chart'
+          menu:'header',
+          content: 'section.left',
+          visualization: 'section.chart'
         },
 
         initialize: function() {
+          var
+            type   = {
+              'year/quarter' : 'LineMonths',
+              'month'        : 'LineMonths',
+              'sprint'       : 'LineSprints'
+            },
+            seriesAttr = this.model.get('series').series;
+          this.TheChart = ChartBase.extend({});
           Cocktail.mixin(
             this.TheChart,
-            Mixins[this.options.chartType]
+            Mixins[type[seriesAttr]]
           );
+          this.render();
 
         },
         onShow: function() {
-          this.render();
           this.chart = new this.TheChart({
+            //el: this.visualization.el,
             collection: this.model.get('series'),
             xFormat: function(date) {
               return moment(date).format('MM/YY');

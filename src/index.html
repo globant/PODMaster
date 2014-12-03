@@ -33,16 +33,28 @@
                 content: "Menu";
             }
 
-            section#content, section#widget {
+            section#content,
+            section.widgets,
+            section.widgets section.list,
+            section.widgets section.widget,
+            section.widgets section.widget section.chart,
+            section.widgets section.widget section.chart section.chartContainer {
                 display: flex;
+                flex-direction: column;
                 flex-grow: 1;
-                border: 1px dashed red;
+            }
+            section.widgets {
+                align-items: stretch;
+                flex-direction: column;
             }
 
-            section#chart, section#chart>div {
-                display: flex;
-                flex-grow: 1;
+            section.chartContainer {
                 border: 1px dashed green;
+                box-sizing: content-box;
+            }
+            section.chartContainer svg{
+                display:flex;
+                flex-grow: 1;
             }
 
             /* Common chart styles */

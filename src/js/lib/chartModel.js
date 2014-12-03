@@ -156,16 +156,16 @@ define(function(require, exports) {
                           foundY = _.findWhere(
                             agg.metrics,
                             {name:data.name}
-                          ),
-                          isValid = !(
-                            _.isUndefined(foundX) || _.isUndefined(foundY)
                           );
-                        if (isValid) {
-                          sortedXPush( result, new PointModel({
-                            x: foundX.key,
-                            y: foundY.value
-                          },
-                          {parse:true}));
+                        if (!_.isUndefined(foundX)) {
+                          sortedXPush(
+                            result,
+                            new PointModel({
+                              x: foundX.key,
+                              y: foundY.value
+                            },
+                            {parse:true})
+                          );
                         }
                         return result;
                       }, [])
@@ -190,7 +190,8 @@ define(function(require, exports) {
           'bugs': exports.MetricModel,
           'accuracy-of-estimations': exports.MetricModel,
           'stability-of-velocity': exports.MetricModel,
-          'remaining-story-points': exports.MetricModel
+          'remaining-story-points': Backbone.Model,
+          'PrecisionMovement': Backbone.Model
         },
         setter = _.bind(this.set, this),
         createAndSet = function(metric) {

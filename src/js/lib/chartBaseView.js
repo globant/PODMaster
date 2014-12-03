@@ -9,8 +9,11 @@ define(function(require) {
 
     ChartBase = Marionette.ItemView.extend({
 
-      //a template-less view
-      template: false,
+      tagName: 'section',
+      className: 'chartContainer',
+      //Important: this approache ensure that the svg element
+      //is properly created (avoid namespace issue with backbone)
+      template: _.template('<svg xmlns="http://www.w3.org/2000/svg"></svg>'),
 
       initialize: function() {
         _.defaults(
@@ -20,28 +23,23 @@ define(function(require) {
       },
 
       render: function() {
+        Marionette.ItemView.prototype.render.apply(this, arguments);
+        this.d3 = d3.select(this.$el.find('svg').get(0));
+        this.svg = this.d3.append('g');
         this.collection.bind('change reset add remove', this.renderChart, this);
       },
 
-      onShow: function() {
+      onDomRefresh: function() {
         this.renderChart();
       },
 
       renderChart: function() {
-        this.ensureSVGElement();
         this.renderMargins();
 
         this.scales = this.getScales();
 
         this.renderAxes();
         this.renderData();
-      },
-
-      ensureSVGElement: function() {
-        if ( this.svg ) {
-          return;
-        }
-        this.svg = d3.select(this.el).append('svg').append('g');
       },
 
       renderAxes: function() {},

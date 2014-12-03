@@ -2,6 +2,7 @@ define(function(require) {
     'use strict';
     var
       _             = require('underscore'),
+      Backbone      = require('backbone'),
       Marionette    = require('marionette'),
       template      = require('hbs!app/modules/dashboard/dashboard'),
       WidgetView    = require('modules/dashboard/widget.view'),
@@ -19,23 +20,30 @@ define(function(require) {
 
       initialize: function() {
         var
-          render = _.bind(this.render, this),
-          show   = _.bind(this.content.show, this.content),
-          type   = {
-            'year/quarter' : 'LineMonths',
-            'month'        : 'LineMonths',
-            'sprint'       : 'LineSprints'
-          },
-          createWidget = function(model) {
-            var
-              seriesAttr = model.get('series').series;
-            return new WidgetView({chartType: type[seriesAttr], model:model});
-          };
-        render();
-        this.model
-        .get('velocity')
-        //.get('accumulated-story-points')
-          .bind('reset change', _.compose(show, createWidget));
+          model = this.model,
+          WidgetsCompositeView = Marionette.CompositeView.extend({
+            tagName: 'section',
+            className: 'widgets',
+            template: _.template('<section class="list"></section>'),
+            childView: WidgetView,
+            childViewContainer: 'section.list'
+          }),
+          widgetsCollection = new Backbone.Collection();
+        this.render();
+        this.content
+        .show( new WidgetsCompositeView({ collection:  widgetsCollection }));
+        model.get('velocity')
+        .on(
+          'reset change',
+          _.bind(widgetsCollection.add, widgetsCollection)
+        );
+        model.get('accumulated-story-points')
+        .on(
+          'reset change',
+          _.bind(widgetsCollection.add, widgetsCollection)
+        );
+        //widgetsCollection.add(model.get('velocity'));
+        //widgetsCollection.add(model.get('accumulated-story-points'));
       }
 
     });

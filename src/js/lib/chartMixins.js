@@ -52,17 +52,11 @@ define(function(require) {
             var margin = this.options.margin;
             this.width = this.$el.width() - margin.left - margin.right;
             this.height = this.$el.height() - margin.top - margin.bottom;
-            d3.select('svg', this.el)
-              .attr('width', this.width + margin.left + margin.right)
-              .attr('height', this.height + margin.top + margin.bottom);
-            this.svg
-              .attr('transform',
-                'translate(' +
-                margin.left +
-                ',' +
-                margin.top +
-                ')'
-              );
+            this.d3
+              .style('padding-left', margin.left )
+              .style('padding-top', margin.top )
+              .style('padding-right', margin.right )
+              .style('padding-bottom', margin.bottom );
           }
 
         },
