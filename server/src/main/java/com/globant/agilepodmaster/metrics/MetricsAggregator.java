@@ -4,11 +4,10 @@ import static java.util.stream.Collectors.averagingDouble;
 import com.globant.agilepodmaster.core.AbstractMetric;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
-import com.mysema.util.ArrayUtils;
 
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,53 +15,97 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * Aggregates metrics depending on collect list.
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class MetricsAggregator {
-  public Set<Metric<?>> aggregate(List<AbstractMetric> list) {
+  
+  /**
+   * Aggregates metrics of the list.
+   * 
+   * @param list list with metrics.
+   * @param collect list of metric types to be considered. If collect is null,
+   *        all metrics for that type are considered.
+   * @return the list of metrics aggregated.
+   */
+  public Set<Metric<?>> aggregate(List<AbstractMetric> list,
+      List<String> collect) {
     Set<Metric<?>> metrics = new HashSet<Metric<?>>();
 
-    this.collectSprintPodMetrics(list, metrics);
-    this.collectProjectMetrics(list, metrics);
+    this.collectSprintPodMetrics(list, metrics, collect);
+    this.collectProjectMetrics(list, metrics, collect);
 
     return metrics;
   }
+  
+  private boolean isMetricShowed(List<String> metricNames, String metricName) {
+    return CollectionUtils.isEmpty(metricNames)
+        || metricNames.contains(metricName);
+  }
 
-  private void collectProjectMetrics(List<AbstractMetric> list, Set<Metric<?>> metrics) {
+  private void collectProjectMetrics(List<AbstractMetric> list,
+      Set<Metric<?>> metrics, List<String> collect) {
     if (list.stream().filter(m -> m instanceof ProjectPodMetric).count() < 1) {
       return;
     }
 
-    int remainingSp = pmStream(list).mapToInt(ProjectPodMetric::getRemainingStoryPoints).sum();
-    metrics.add(new Metric<Integer>("remaining-story-points", remainingSp, "story points"));
+    if (isMetricShowed(collect, "remaining-story-points")) {
+      int remainingSp = pmStream(list).mapToInt(
+          ProjectPodMetric::getRemainingStoryPoints).sum();
+
+      metrics.add(new Metric<Integer>("remaining-story-points", remainingSp,
+          "story points"));
+    }
   }
 
-  private void collectSprintPodMetrics(List<AbstractMetric> list, Set<Metric<?>> metrics) {
+  private void collectSprintPodMetrics(List<AbstractMetric> list,
+      Set<Metric<?>> metrics, List<String> collect) {
     if (list.stream().filter(m -> m instanceof SprintPodMetric).count() < 1) {
       return;
     }
 
-    int sumStoryPoints = spmStream(list).mapToInt(SprintPodMetric::getAcceptedStoryPoints).sum();
-    metrics.add(new Metric<Integer>("velocity", sumStoryPoints, "story points"));
+    if (isMetricShowed(collect, "velocity")) {
+      int sumStoryPoints = spmStream(list).mapToInt(
+          SprintPodMetric::getAcceptedStoryPoints).sum();
+      metrics.add(new Metric<Integer>("velocity", sumStoryPoints,
+          "story points"));
+    }
 
-    int accStoryPoints = spmStream(list).mapToInt(
-        SprintPodMetric::getAccumutaledStoryPoints).sum();
-    metrics.add(new Metric<Integer>("accumulated-story-points", accStoryPoints,
-        "story points"));
+    if (isMetricShowed(collect, "accumulated-story-points")) {
+      int accStoryPoints = spmStream(list).mapToInt(
+          SprintPodMetric::getAccumutaledStoryPoints).sum();
+      metrics.add(new Metric<Integer>("accumulated-story-points",
+          accStoryPoints, "story points"));
+    }
 
-    double accoe = spmStream(list).collect(averagingDouble(SprintPodMetric::getEstimationAccuracy));
-    metrics.add(new Metric<Double>("accuracy-of-estimations", accoe, "percentage"));
+    if (isMetricShowed(collect, "accuracy-of-estimations")) {
+      double accoe = spmStream(list).collect(
+          averagingDouble(SprintPodMetric::getEstimationAccuracy));
+      metrics.add(new Metric<Double>("accuracy-of-estimations", accoe,
+          "percentage"));
+    }
 
-    StandardDeviation sdEvaluator = new StandardDeviation();  
-    double stdVelocity = sdEvaluator.evaluate(buildArrayOfStoryPoints(list));
+    if (isMetricShowed(collect, "stability-of-velocity")) {
+      StandardDeviation sdEvaluator = new StandardDeviation();
+      double stdVelocity = sdEvaluator.evaluate(buildArrayOfStoryPoints(list));
+
+      double avgVelocity = spmStream(list).collect(
+          averagingDouble(SprintPodMetric::getAcceptedStoryPoints));
+
+      double sov = 1 - avgVelocity / (avgVelocity + stdVelocity);
+      metrics
+          .add(new Metric<Double>("stability-of-velocity", sov, "percentage"));
+    }
     
-    double avgVelocity = spmStream(list).collect(
-        averagingDouble(SprintPodMetric::getAcceptedStoryPoints));
-    
-    double sov = 1 - avgVelocity / (avgVelocity + stdVelocity);
-    metrics.add(new Metric<Double>("stability-of-velocity", sov, "percentage"));
-    
-    int sumNumberOfBugs = spmStream(list).mapToInt(SprintPodMetric::getNumberOfBugs).sum();
-    metrics.add(new Metric<Integer>("bugs", sumNumberOfBugs, "number of bugs"));
+    if (isMetricShowed(collect, "bugs")) {
+      int sumNumberOfBugs = spmStream(list).mapToInt(
+          SprintPodMetric::getNumberOfBugs).sum();
+      metrics
+          .add(new Metric<Integer>("bugs", sumNumberOfBugs, "number of bugs"));
+    }
     
   }
 

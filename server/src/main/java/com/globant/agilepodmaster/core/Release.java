@@ -25,8 +25,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
-public class Release extends SnapshotEntity {
-  
+public class Release extends SnapshotEntity implements Comparable<Release> {
+
   private int number;
   
   @NonNull
@@ -51,4 +51,10 @@ public class Release extends SnapshotEntity {
     this.name = name;
     this.project = project;
   }
+  
+  @Override
+  public int compareTo(Release otherRelease) {
+    return this.hashCode() - otherRelease.hashCode();
+  }
+  
 }
