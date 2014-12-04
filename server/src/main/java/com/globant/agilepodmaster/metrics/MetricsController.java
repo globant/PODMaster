@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller that offer a rest API for metrics.
@@ -41,6 +42,7 @@ public class MetricsController {
    * @param snapshotId the snapshot id.
    * @param partitioners the partitioners to group metrics.
    * @param filters the filters 
+   * @param collect the list of metrics to be shown. 
    * @return  A collection of metric aggregations
    */
   @RequestMapping("/{snapshotid}/metrics")
@@ -50,7 +52,9 @@ public class MetricsController {
       @RequestParam(value = "aggregation")
         List<Partitioner<? extends Partition<?>>> partitioners, 
       @RequestParam(value = "filter", required = false) 
-        List<BooleanExpression> filters) {
+        List<BooleanExpression> filters,
+      @RequestParam(value = "collect", required = false) 
+      List<String> collect) {
     
     if (filters == null) {
       filters = new LinkedList<BooleanExpression>();
@@ -63,7 +67,7 @@ public class MetricsController {
       predicate = BooleanExpression.allOf(filters.toArray(new BooleanExpression[0]));
     }
 
-    List<MetricAggregation> aggregated = command.execute(partitioners, predicate);
+    Set<MetricAggregation> aggregated = command.execute(partitioners, predicate, collect);
 
     MetricsAggregationCollectionResource response = 
         new MetricsAggregationCollectionResource(aggregated);

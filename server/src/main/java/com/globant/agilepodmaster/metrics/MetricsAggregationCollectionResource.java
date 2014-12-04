@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import java.util.List;
+import java.util.Set;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class MetricsAggregationCollectionResource extends ResourceSupport {
   @Getter
-  private final List<MetricAggregation> aggregated;
+  private final Set<MetricAggregation> aggregated;
 
   /**
    * Constructor.
@@ -26,7 +26,7 @@ public class MetricsAggregationCollectionResource extends ResourceSupport {
    */
   @JsonCreator
   public MetricsAggregationCollectionResource(
-      @JsonProperty("aggregated") List<MetricAggregation> aggregated) {
+      @JsonProperty("aggregated") Set<MetricAggregation> aggregated) {
     this.aggregated = aggregated;
   }
 }

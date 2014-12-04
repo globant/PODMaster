@@ -91,10 +91,10 @@ public class Sprint extends SnapshotEntity implements Comparable<Sprint> {
   
   @Override
   public int compareTo(Sprint otherSprint) {
-    if (this.release == otherSprint.getRelease()) {
+    if (this.release.equals(otherSprint.getRelease())) {
       return this.number - otherSprint.getNumber();
     }
-    return this.release.hashCode() - otherSprint.getRelease().hashCode();
+    return this.release.compareTo(otherSprint.getRelease());
   }
   
 }
