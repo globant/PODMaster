@@ -27,6 +27,7 @@ define(function(require) {
         this.d3 = d3.select(this.$el.find('svg').get(0));
         this.svg = this.d3.append('g');
         this.collection.bind('change reset add remove', this.renderChart, this);
+        this.$el.resize( _.bind( this.renderChart, this));
       },
 
       onDomRefresh: function() {
@@ -34,6 +35,7 @@ define(function(require) {
       },
 
       renderChart: function() {
+        this.d3.selectAll('svg>g>*').remove();
         this.renderMargins();
 
         this.scales = this.getScales();

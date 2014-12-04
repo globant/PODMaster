@@ -9,6 +9,7 @@ require.config({
     'cocktail' : '../vendor/cocktail/Cocktail',
     //##JQuery
     'jquery' : '../vendor/jquery/dist/jquery',
+    'jquery-resize': 'https://rawgit.com/cowboy/jquery-resize/master/jquery.ba-resize',
     'moment' : '../vendor/moment/moment',
     'traverson' : '../vendor/traverson/browser/dist/traverson',
     'hal-model' : 'https://rawgit.com/mikekelly/backbone.hal/master/backbone.hal',
@@ -33,8 +34,12 @@ require.config({
       exports: '_'
     },
 
+    'jquery-resize': {
+      deps: ['jquery']
+    },
+
     'backbone': {
-      deps: ['jquery', 'underscore'],
+      deps: ['jquery', 'jquery-resize', 'underscore'],
       exports: 'Backbone'
     },
 
