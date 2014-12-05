@@ -5,11 +5,22 @@ PODMaster Dashboard Application
 
 ###How to install
 
+####System
+  * apt-get install nodejs npm
+  * npm install -g grunt-cli
+  * npm install -g bower
+
+####Project componentes
   * git clone https://github.com/globant/PODMaster.git
   * npm install
   * bower install
+
+####Before start
+  * grunt lodash:build
+
+####Start to serve
   * grunt server &
-  * go to http://localhost:9001/#index/http://localhost:9001/js/app/modules/dashboard/projected_schedule.json
+  * use a browser, go to http://<your-server-address>:9001/#index/http://<your-server-address>:9001/js/app/modules/dashboard/projected_schedule.json
 
 ###TODO
 
