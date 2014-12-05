@@ -63,8 +63,8 @@ require.config({
       name: 'underscore',
       //location: '../vendor/lodash/modules',
       //main: 'main'
-      location: '../vendor/lodash/',
-      main: 'custom'
+      location: '../vendor/lodash/dist',
+      main: 'lodash.min.js'
     }
   ],
 
