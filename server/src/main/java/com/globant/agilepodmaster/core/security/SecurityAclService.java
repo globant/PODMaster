@@ -2,6 +2,9 @@ package com.globant.agilepodmaster.core.security;
 
 import java.util.List;
 
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -19,9 +22,8 @@ import org.springframework.util.Assert;
 import com.globant.agilepodmaster.core.AbstractEntity;
 
 @Service
+@Slf4j
 public class SecurityAclService {
-  private static Logger logger = LoggerFactory.getLogger(SecurityAclService.class);
-
   private MutableAclService mutableAclService;
 
   public SecurityAclService() {
@@ -43,8 +45,7 @@ public class SecurityAclService {
     acl.insertAce(acl.getEntries().size(), permission, recipient, true);
     mutableAclService.updateAcl(acl);
 
-    logger
-        .debug("Added permission " + permission + " for Sid " + recipient + " contact " + element);
+    log.debug("Added permission " + permission + " for Sid " + recipient + " contact " + element);
   }
 
   @Transactional(readOnly = false)
@@ -71,12 +72,12 @@ public class SecurityAclService {
      * 73022-Should-AclImpl-allow-duplicate-permissions
      */
     if (doesACEExists(element, recipient, permission)) {
-      logger.debug("ACE already exists, element:" + element.getId() + ", Sid:" + recipient
+      log.debug("ACE already exists, element:" + element.getId() + ", Sid:" + recipient
           + ", permission:" + permission);
     } else {
       acl.insertAce(acl.getEntries().size(), permission, recipient, true);
       mutableAclService.updateAcl(acl);
-      logger.debug("Added permission " + permission + " for Sid " + recipient + " contact "
+      log.debug("Added permission " + permission + " for Sid " + recipient + " contact "
           + element);
     }
     return true;
@@ -135,8 +136,8 @@ public class SecurityAclService {
 
     mutableAclService.updateAcl(acl);
 
-    if (logger.isDebugEnabled()) {
-      logger.debug("Deleted Permission:" + permission + " for recipient: " + recipient
+    if (log.isDebugEnabled()) {
+      log.debug("Deleted Permission:" + permission + " for recipient: " + recipient
           + ", for object: " + element);
     }
 

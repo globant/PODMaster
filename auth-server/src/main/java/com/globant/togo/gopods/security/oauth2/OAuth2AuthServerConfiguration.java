@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import lombok.Cleanup;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,18 +61,12 @@ public class OAuth2AuthServerConfiguration extends AuthorizationServerConfigurer
   }
 
   private String readFile(String resourceLocation) throws FileNotFoundException {
-    Scanner scanner = null;
-    try {
-      File resourceFile = ResourceUtils.getFile(resourceLocation);
-      scanner = new Scanner(resourceFile, "UTF-8");
-      scanner.useDelimiter("\\Z");
+    File resourceFile = ResourceUtils.getFile(resourceLocation);
+    
+    @Cleanup Scanner scanner = new Scanner(resourceFile, "UTF-8");
+    scanner.useDelimiter("\\Z");
 
-      return scanner.next();
-    } finally {
-      if (scanner != null) {
-        scanner.close();
-      }
-    }
+    return scanner.next();
   }
 
   @Override
