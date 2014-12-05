@@ -1,3 +1,19 @@
-/buildSrc/
-/gradle/
+# gradle settings
+.gradle/
+
+# temp folders
+bin/
+build/
+
+# eclipse settings
+.classpath
+.project
+.settings/
+.pmd
+
+# tools
+.checkstyle
+
+# OSX trash
 .DS_Store
+
