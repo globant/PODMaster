@@ -1,5 +1,15 @@
 package com.globant.agilepodmaster.sync;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+
+import lombok.Getter;
+
 import com.globant.agilepodmaster.core.Organization;
 import com.globant.agilepodmaster.core.Pod;
 import com.globant.agilepodmaster.core.PodMember;
@@ -14,22 +24,13 @@ import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.sync.reading.PodsBuilder;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-
-import lombok.Getter;
-
 /**
  * Creates a Snapshot in the DB.
  * 
  * @author jose.dominguez@globant.com
  *
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   private Snapshot snapshot;
 
@@ -65,7 +66,6 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   }
 
   private void createProjectMetrics() {
-    
     //TODO not necessary to be assigned and not assigned to closed sprints.
     for (Project project : snapshot.getProjects()) {
       for (Pod pod : snapshot.getPods()) {
