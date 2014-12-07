@@ -50,7 +50,7 @@ public class SprintPodMetricsGeneratorTest extends AbstractUnitTest {
   private PodMember podMember4;
 
   @Autowired
-  private SprintPodMetricsGenerator sprintPodMetricsGenerator;
+  private MetricsGenerator sprintPodMetricsGenerator;
 
   /**
    * Setting sprint, pod, members, release.
@@ -60,9 +60,9 @@ public class SprintPodMetricsGeneratorTest extends AbstractUnitTest {
 
     Organization organization = new Organization("Organization1");
     Product product = new Product("Product1", organization);
-    Project project1 = new Project("Project1", product);
+    Project project1 = new Project("Project1", 500, product);
     release1 = new Release("Release1", project1);
-    Project project2 = new Project("Project2", product);
+    Project project2 = new Project("Project2", 500, product);
     release2 = new Release("Release2", project2);
 
     Calendar calendar = Calendar.getInstance();
@@ -104,7 +104,7 @@ public class SprintPodMetricsGeneratorTest extends AbstractUnitTest {
     Task task2 = builder.getTask();
     task2.setOwner(podMember2);
 
-    List<SprintPodMetric> result = sprintPodMetricsGenerator.generates(
+    List<SprintPodMetric> result = sprintPodMetricsGenerator.generatesSprintPodMetrics(
         new HashSet<Pod>(Arrays.asList(pod1)),
         new HashSet<Sprint>(Arrays.asList(sprint1)),
         new HashSet<Task>(Arrays.asList(task1, task2)));
@@ -135,7 +135,7 @@ public class SprintPodMetricsGeneratorTest extends AbstractUnitTest {
     Task task2 = builder.getTask();
     task2.setOwner(podMember2);
 
-    List<SprintPodMetric> result = sprintPodMetricsGenerator.generates(
+    List<SprintPodMetric> result = sprintPodMetricsGenerator.generatesSprintPodMetrics(
         new HashSet<Pod>(Arrays.asList(pod1)),
         new HashSet<Sprint>(Arrays.asList(sprint1)),
         new HashSet<Task>(Arrays.asList(task1, task2)));
@@ -213,7 +213,7 @@ public class SprintPodMetricsGeneratorTest extends AbstractUnitTest {
     task10.setOwner(podMember2);
    
     
-    List<SprintPodMetric> result = sprintPodMetricsGenerator.generates(
+    List<SprintPodMetric> result = sprintPodMetricsGenerator.generatesSprintPodMetrics(
         new HashSet<Pod>(Arrays.asList(pod1, pod2)),
         new HashSet<Sprint>(Arrays.asList(sprint2, sprint1, sprint21)),
         new HashSet<Task>(Arrays.asList(task1, task2, task3, task4, task5,

@@ -2,6 +2,7 @@ package com.globant.agilepodmaster.metrics;
 import static java.util.stream.Collectors.averagingDouble;
 
 import com.globant.agilepodmaster.core.AbstractMetric;
+import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
@@ -36,6 +37,7 @@ public class MetricsAggregator {
     Set<Metric<?>> metrics = new HashSet<Metric<?>>();
 
     this.collectSprintPodMetrics(list, metrics, collect);
+    this.collectProjectPodMetrics(list, metrics, collect);
     this.collectProjectMetrics(list, metrics, collect);
 
     return metrics;
@@ -46,18 +48,33 @@ public class MetricsAggregator {
         || metricNames.contains(metricName);
   }
 
-  private void collectProjectMetrics(List<AbstractMetric> list,
+  private void collectProjectPodMetrics(List<AbstractMetric> list,
       Set<Metric<?>> metrics, List<String> collect) {
     if (list.stream().filter(m -> m instanceof ProjectPodMetric).count() < 1) {
       return;
     }
+    //TODO no metric so far.
+  }
+  
+  private void collectProjectMetrics(List<AbstractMetric> list,
+      Set<Metric<?>> metrics, List<String> collect) {
+    if (list.stream().filter(m -> m instanceof ProjectMetric).count() < 1) {
+      return;
+    }
 
     if (isMetricShowed(collect, "remaining-story-points")) {
-      int remainingSp = pmStream(list).mapToInt(
-          ProjectPodMetric::getRemainingStoryPoints).sum();
-
+      int remainingSp = pmStream(list).findAny().get()
+          .getRemainingStoryPoints();
       metrics.add(new Metric<Integer>("remaining-story-points", remainingSp,
           "story points"));
+    }
+
+    if (isMetricShowed(collect, "actual-percent-complete")) {
+      double actualPercentComplete = pmStream(list).findAny().get()
+          .getActualPercentComplete();
+
+      metrics.add(new Metric<Double>("actual-percent-complete",
+          actualPercentComplete, "percentage"));
     }
   }
 
@@ -113,8 +130,8 @@ public class MetricsAggregator {
     return list.stream().filter(m -> m instanceof SprintPodMetric).map(m -> (SprintPodMetric) m);
   }
   
-  private Stream<ProjectPodMetric> pmStream(List<AbstractMetric> list) {
-    return list.stream().filter(m -> m instanceof ProjectPodMetric).map(m -> (ProjectPodMetric) m);
+  private Stream<ProjectMetric> pmStream(List<AbstractMetric> list) {
+    return list.stream().filter(m -> m instanceof ProjectMetric).map(m -> (ProjectMetric) m);
   }
   
   private double[] buildArrayOfStoryPoints(List<AbstractMetric> list) {

@@ -1,11 +1,12 @@
 package com.globant.agilepodmaster.metrics.partition;
 
-import java.util.Calendar;
+import com.globant.agilepodmaster.core.ProjectMetric;
+import com.globant.agilepodmaster.core.ProjectPodMetric;
+import com.globant.agilepodmaster.core.SprintPodMetric;
 
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.core.ProjectPodMetric;
-import com.globant.agilepodmaster.core.SprintPodMetric;
+import java.util.Calendar;
 
 /**
  * Partitioner for months.
@@ -34,6 +35,11 @@ public class MonthPartitioner extends Partitioner<Partition<Integer>> {
 
   @Override
   public Partition<Integer> extractPartition(ProjectPodMetric projectMetric) {
+    return null;
+  }
+  
+  @Override
+  public Partition<Integer> extractPartition(ProjectMetric projectMetric) {
     return null;
   }
 }

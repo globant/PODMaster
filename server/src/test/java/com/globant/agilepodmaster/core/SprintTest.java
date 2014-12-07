@@ -25,8 +25,8 @@ public class SprintTest {
     
     Organization organization = new Organization("Organization1");
     Product product = new Product("Product1", organization);
-    Project project1 = new Project("Project1", product);
-    Project project2 = new Project("Project2", product);
+    Project project1 = new Project("Project1", 500, product);
+    Project project2 = new Project("Project2", 500, product);
     Release release1 = new Release("Release1", project1);
     Release release2 = new Release("Release2", project2);
 

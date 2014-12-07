@@ -6,8 +6,8 @@ import static org.junit.Assert.assertThat;
 import com.globant.agilepodmaster.core.AbstractMetricRepository;
 import com.globant.agilepodmaster.core.CollectionBasedQueryDslPredicateExecutor;
 import com.globant.agilepodmaster.core.DummyDataGenerator;
-import com.globant.agilepodmaster.core.ProjectPodMetric;
-import com.globant.agilepodmaster.core.QProjectPodMetric;
+import com.globant.agilepodmaster.core.ProjectMetric;
+import com.globant.agilepodmaster.core.QProjectMetric;
 import com.globant.agilepodmaster.core.QSprintPodMetric;
 import com.globant.agilepodmaster.core.Quarter;
 import com.globant.agilepodmaster.core.SprintPodMetric;
@@ -130,21 +130,24 @@ public class MetricsAggregatorCommandTest {
         projectMetricsScenarioPod()});
   }
 
-  private static Object[] projectMetricsScenarioYearQuarter() {
+  private static Object[] projectMetricsScenarioYearQuarter() {   
+    
     Metric<Integer> remaining = new Metric<Integer>("remaining-story-points",
-        20, "story points");
-
+        80, "story points");
+    
+    Metric<Double> actualPercentComplete = new Metric<Double>("actual-percent-complete",
+        0.2, "percentage");
 
     Set<MetricAggregation> expected = asSet(new MetricAggregation(
-        new HashSet<Partition<?>>(), asSet(remaining)));
+        new HashSet<Partition<?>>(), asSet(remaining, actualPercentComplete)));
 
     List<Partitioner<? extends Partition<?>>> input = Arrays.asList(
         new YearPartitioner(), new QuarterPartitioner());
 
-    Set<ProjectPodMetric> projectMetrics = new DummyDataGenerator()
+    Set<ProjectMetric> projectMetrics = new DummyDataGenerator()
         .buildScenario2().getProjectMetrics();
-    CollectionBasedQueryDslPredicateExecutor<ProjectPodMetric> dataGenerator = createRepoMixin(
-        QProjectPodMetric.projectPodMetric, projectMetrics);
+    CollectionBasedQueryDslPredicateExecutor<ProjectMetric> dataGenerator = createRepoMixin(
+        QProjectMetric.projectMetric, projectMetrics);
 
     return new Object[] {input, expected, dataGenerator, null};
   }
@@ -152,43 +155,46 @@ public class MetricsAggregatorCommandTest {
   private static Object[] projectMetricsScenarioEmptyPartitionersList() {
     
     Metric<Integer> remaining = new Metric<Integer>("remaining-story-points",
-        20, "story points");
+        80, "story points");
+    
+    Metric<Double> actualPercentComplete = new Metric<Double>("actual-percent-complete",
+        0.2, "percentage");
 
 
     Set<MetricAggregation> expected = asSet(new MetricAggregation(
-        new HashSet<Partition<?>>(), asSet(remaining)));
+        new HashSet<Partition<?>>(), asSet(remaining, actualPercentComplete)));
 
     List<Partitioner<? extends Partition<?>>> input = 
         new ArrayList<Partitioner<? extends Partition<?>>>();
 
-    Set<ProjectPodMetric> projectMetrics = new DummyDataGenerator()
+    Set<ProjectMetric> projectMetrics = new DummyDataGenerator()
         .buildScenario2().getProjectMetrics();
-    CollectionBasedQueryDslPredicateExecutor<ProjectPodMetric> dataGenerator = createRepoMixin(
-        QProjectPodMetric.projectPodMetric, projectMetrics);
+    CollectionBasedQueryDslPredicateExecutor<ProjectMetric> dataGenerator = createRepoMixin(
+        QProjectMetric.projectMetric, projectMetrics);
 
-    return new Object[] {input, expected, dataGenerator, null};
+    return new Object[] {
+        input, expected, dataGenerator,
+        Arrays.asList("remaining-story-points", "actual-percent-complete")};
   }
 
   private static Object[] projectMetricsScenarioPod() {
-    Partition<String> partitionPod1 = new Partition<String>("pod",
-        "scenario2-pod1");
-    Partition<String> partitionPod2 = new Partition<String>("pod",
-        "scenario2-pod2");
 
     Metric<Integer> remaining = new Metric<Integer>("remaining-story-points",
-        10, "story points");
+        80, "story points");
+    
+    Metric<Double> actualPercentComplete = new Metric<Double>("actual-percent-complete",
+        0.2, "percentage");
 
     Set<MetricAggregation> expected = asSet(new MetricAggregation(
-        asSet(partitionPod1), asSet(remaining)), new MetricAggregation(
-        asSet(partitionPod2), asSet(remaining)));
+        new HashSet<Partition<?>>(), asSet(remaining, actualPercentComplete)));
 
     List<Partitioner<? extends Partition<?>>> input = Arrays
         .asList(new PodPartitioner());
 
-    Set<ProjectPodMetric> projectMetrics = new DummyDataGenerator()
+    Set<ProjectMetric> projectMetrics = new DummyDataGenerator()
         .buildScenario2().getProjectMetrics();
-    CollectionBasedQueryDslPredicateExecutor<ProjectPodMetric> dataGenerator = createRepoMixin(
-        QProjectPodMetric.projectPodMetric, projectMetrics);
+    CollectionBasedQueryDslPredicateExecutor<ProjectMetric> dataGenerator = createRepoMixin(
+        QProjectMetric.projectMetric, projectMetrics);
 
     return new Object[] {input, expected, dataGenerator, null};
   }
@@ -205,7 +211,7 @@ public class MetricsAggregatorCommandTest {
 
     CollectionBasedQueryDslPredicateExecutor<SprintPodMetric> dataGenerator = createRepoMixin(
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
-            .buildScenario1().getSprintMetrics());
+            .buildScenario1().getSprintPodMetrics());
 
     return new Object[] {input, expected, dataGenerator, Arrays.asList("velocity")};
   }
@@ -234,7 +240,7 @@ public class MetricsAggregatorCommandTest {
 
     CollectionBasedQueryDslPredicateExecutor<SprintPodMetric> dataGenerator = createRepoMixin(
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
-            .buildScenario1().getSprintMetrics());
+            .buildScenario1().getSprintPodMetrics());
 
     return new Object[] {
         input, expected, dataGenerator,
@@ -309,7 +315,7 @@ public class MetricsAggregatorCommandTest {
 
     CollectionBasedQueryDslPredicateExecutor<SprintPodMetric> dataGenerator = createRepoMixin(
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
-            .buildScenario1().getSprintMetrics());
+            .buildScenario1().getSprintPodMetrics());
 
     return new Object[] {input, expected, dataGenerator, Arrays.asList("velocity")};
   }
@@ -412,7 +418,7 @@ public class MetricsAggregatorCommandTest {
 
     CollectionBasedQueryDslPredicateExecutor<SprintPodMetric> dataGenerator = createRepoMixin(
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
-            .buildScenario1().getSprintMetrics());
+            .buildScenario1().getSprintPodMetrics());
 
     return new Object[] {
         input, expected, dataGenerator,
@@ -444,7 +450,7 @@ public class MetricsAggregatorCommandTest {
 
     CollectionBasedQueryDslPredicateExecutor<SprintPodMetric> dataGenerator = createRepoMixin(
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
-            .buildScenario3().getSprintMetrics());
+            .buildScenario3().getSprintPodMetrics());
 
     return new Object[] {input, expected, dataGenerator, Arrays.asList("bugs")};
   }

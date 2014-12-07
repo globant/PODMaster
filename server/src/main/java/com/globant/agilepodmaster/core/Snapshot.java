@@ -74,12 +74,17 @@ public class Snapshot extends AbstractEntity {
   @Getter
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "snapshot_id", insertable = false, updatable = false)
-  private Set<SprintPodMetric> sprintMetrics = new HashSet<SprintPodMetric>();
+  private Set<SprintPodMetric> sprintPodMetrics = new HashSet<SprintPodMetric>();
 
   @Getter
   @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
   @JoinColumn(name = "snapshot_id", insertable = false, updatable = false)
-  private Set<ProjectPodMetric> projectMetrics = new HashSet<ProjectPodMetric>();
+  private Set<ProjectPodMetric> projectPodMetrics = new HashSet<ProjectPodMetric>();
+  
+  @Getter
+  @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+  @JoinColumn(name = "snapshot_id", insertable = false, updatable = false)
+  private Set<ProjectMetric> projectMetrics = new HashSet<ProjectMetric>();
 
   /**
    * Constructor.
@@ -115,7 +120,7 @@ public class Snapshot extends AbstractEntity {
    */
   public void addSprintMetrics(List<SprintPodMetric> spms) {
     spms.forEach(t -> t.setSnapshot(this));
-    sprintMetrics.addAll(spms);
+    sprintPodMetrics.addAll(spms);
   }
 
 
@@ -192,11 +197,21 @@ public class Snapshot extends AbstractEntity {
   }
 
   /**
-   * Add a project metric to this snapshot.
-   * @param projectMetric the project metric.
+   * Add a project pod metric to this snapshot.
+   * @param projectPodMetric the project pod metric.
    */
-  public void addProjectMetric(ProjectPodMetric projectMetric) {
-    projectMetric.setSnapshot(this);
-    projectMetrics.add(projectMetric);
+  public void addProjectPodMetric(ProjectPodMetric projectPodMetric) {
+    projectPodMetric.setSnapshot(this);
+    projectPodMetrics.add(projectPodMetric);
   }
+  
+  /**
+   * Add a ProjectMetrics to this snapshot.
+   * @param pms the ProjectMetrics.
+   */
+  public void addProjectMetrics(List<ProjectMetric> pms) {
+    pms.forEach(t -> t.setSnapshot(this));
+    projectMetrics.addAll(pms);
+  }
+
 }
