@@ -46,7 +46,7 @@ public class IDummyDataGenerator {
     builder
     .withOrganization("scenario2-organization")
       .addProduct("scenario2-product 1")
-        .addProject("scenario2-project 1")
+        .addProject("scenario2-project 1", 500)
           .withRelease("scenario2-release 1")
             .withBacklog()
               .withTask().name("task1").effort(5f).owner(pod1Members[0]).addToSprint()
@@ -103,7 +103,7 @@ public class IDummyDataGenerator {
     builder
     .withOrganization("scenario1-organization")
       .addProduct("scenario1-product 1")
-        .addProject("scenario1-project 1")
+        .addProject("scenario1-project 1", 500)
           .withRelease("scenario1-release 1")
             .withSprint("scenario1-sprint-q1-1", toDate(2014, 01, 1), toDate(2014, 01, 14))
               .withTask().name("task1").effort(5f).owner(pod1Members[0]).status("CLOSED")

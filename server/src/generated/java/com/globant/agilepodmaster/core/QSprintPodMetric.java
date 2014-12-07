@@ -26,6 +26,8 @@ public class QSprintPodMetric extends EntityPathBase<SprintPodMetric> {
 
     public final NumberPath<Integer> acceptedStoryPoints = createNumber("acceptedStoryPoints", Integer.class);
 
+    public final NumberPath<Integer> accumutaledStoryPoints = createNumber("accumutaledStoryPoints", Integer.class);
+
     //inherited
     public final NumberPath<Long> id;
 

@@ -39,6 +39,7 @@ public class ReleaseReaderConfiguration {
     String jiraName;
     String jiraRapidViewId;
     JiraRestClient jiraRestClient;
+    int plannedStoryPoints;
   }
   
 }

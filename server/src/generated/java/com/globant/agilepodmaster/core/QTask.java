@@ -32,6 +32,8 @@ public class QTask extends EntityPathBase<Task> {
 
     public final BooleanPath bug = createBoolean("bug");
 
+    public final EnumPath<Task.ChangeDuringSprint> changeDuringSprint = createEnum("changeDuringSprint", Task.ChangeDuringSprint.class);
+
     public final DateTimePath<java.util.Date> createdDate = createDateTime("createdDate", java.util.Date.class);
 
     public final NumberPath<Double> effort = createNumber("effort", Double.class);

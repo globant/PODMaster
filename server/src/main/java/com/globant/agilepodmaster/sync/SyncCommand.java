@@ -90,13 +90,16 @@ public class SyncCommand {
             projectName, "jira.password");
         String jiraUrlroot = loadProjectProperty(orgName, productName,
             projectName, "jira.urlroot");
+        //TODO manage NumberFormatException exception.
+        int plannedStoryPoints = Integer.valueOf(loadProjectProperty(orgName,
+            productName, projectName, "planned_story_points"));
 
         JiraRestClient jiraRestClient = new JiraAPIFactory()
             .withCredentials(jiraUsername, jiraPassword)
             .withTemplate(restTemplate).withUrlRoot(jiraUrlroot).create();
 
         projectConfigs.add(new ReleaseReaderConfiguration.Project(projectName,
-            jiraProjectName, jiraRapidViewId, jiraRestClient));
+            jiraProjectName, jiraRapidViewId, jiraRestClient, plannedStoryPoints));
       }
       ReleaseReaderConfiguration.Product productConfig = new ReleaseReaderConfiguration.Product(
           productName, projectConfigs);

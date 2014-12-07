@@ -5,15 +5,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.transaction.Transactional;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.OrganizationRepository;
 import com.globant.agilepodmaster.core.Pod;
@@ -21,7 +12,10 @@ import com.globant.agilepodmaster.core.PodMember;
 import com.globant.agilepodmaster.core.PodMemberRepository;
 import com.globant.agilepodmaster.core.PodRepository;
 import com.globant.agilepodmaster.core.ProductRepository;
+import com.globant.agilepodmaster.core.ProjectMetric;
+import com.globant.agilepodmaster.core.ProjectMetricRepository;
 import com.globant.agilepodmaster.core.ProjectRepository;
+import com.globant.agilepodmaster.core.QProjectMetric;
 import com.globant.agilepodmaster.core.QSprintPodMetric;
 import com.globant.agilepodmaster.core.Release;
 import com.globant.agilepodmaster.core.ReleaseRepository;
@@ -34,6 +28,15 @@ import com.globant.agilepodmaster.core.SprintRepository;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.TaskRepository;
 import com.mysema.query.types.expr.BooleanExpression;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
 
 
 /**
@@ -73,6 +76,9 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
 
   @Autowired
   SprintPodMetricRepository sprintPodMetricRepository;
+  
+  @Autowired  
+  ProjectMetricRepository projectMetricRepository;
 
   /**
    * Test what was store in the DB.
@@ -95,7 +101,7 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
       .addToSnapshot()
     .withOrganization("Org Prueba")
       .addProduct("Prod prueba")
-       .addProject("Proj prueba")
+       .addProject("Proj prueba", 100)
         .withRelease("release1")
         .withSprint("sprint1", new Date(), new Date())
         .withTask()
@@ -200,6 +206,15 @@ public class SnapshotBuilderTest extends AbstractIntegrationTest {
 
     podMembers = podMemberRepository.findByPod(pod2);
     assertThat(podMembers, hasSize(2));
+    
+    
+    QProjectMetric qpm = QProjectMetric.projectMetric;
+    
+    BooleanExpression projectQuery = qpm.project().name.eq("Proj prueba");
+    ProjectMetric pm = projectMetricRepository.findOne(projectQuery);
+    assertThat(pm, notNullValue());
+    assertThat(pm.getRemainingStoryPoints(), equalTo(40));
+    assertThat(pm.getActualPercentComplete(), equalTo(0.6));
     
     QSprintPodMetric qspm = QSprintPodMetric.sprintPodMetric;
 

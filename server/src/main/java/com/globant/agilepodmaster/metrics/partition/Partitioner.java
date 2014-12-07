@@ -1,9 +1,10 @@
 package com.globant.agilepodmaster.metrics.partition;
 
-import lombok.EqualsAndHashCode;
-
+import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
+
+import lombok.EqualsAndHashCode;
 
 /**
  * Abstract class to extract partitions from a Metric. Each Partition (Pod, Project, Quarter,
@@ -56,4 +57,11 @@ public abstract class Partitioner<P> {
    * @return the partition.
    */
   public abstract P extractPartition(ProjectPodMetric projectPodMetric);
+  
+  /**
+   * Extract a partition form a Project metric.
+   * @param projectMetric the Project metric.
+   * @return the partition.
+   */
+  public abstract P extractPartition(ProjectMetric projectMetric);
 }

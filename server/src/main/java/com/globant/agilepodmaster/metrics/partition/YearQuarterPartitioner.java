@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.Quarter;
 import com.globant.agilepodmaster.core.SprintPodMetric;
@@ -32,6 +33,11 @@ public class YearQuarterPartitioner extends Partitioner<Partition<String>> {
 
   @Override
   public Partition<String> extractPartition(ProjectPodMetric projectMetric) {
+    return null;
+  }
+  
+  @Override
+  public Partition<String> extractPartition(ProjectMetric projectMetric) {
     return null;
   }
 }

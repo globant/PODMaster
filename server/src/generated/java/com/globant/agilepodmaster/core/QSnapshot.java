@@ -37,13 +37,15 @@ public class QSnapshot extends EntityPathBase<Snapshot> {
 
     public final SetPath<Product, QProduct> products = this.<Product, QProduct>createSet("products", Product.class, QProduct.class, PathInits.DIRECT2);
 
-    public final SetPath<ProjectPodMetric, QProjectPodMetric> projectMetrics = this.<ProjectPodMetric, QProjectPodMetric>createSet("projectMetrics", ProjectPodMetric.class, QProjectPodMetric.class, PathInits.DIRECT2);
+    public final SetPath<ProjectMetric, QProjectMetric> projectMetrics = this.<ProjectMetric, QProjectMetric>createSet("projectMetrics", ProjectMetric.class, QProjectMetric.class, PathInits.DIRECT2);
+
+    public final SetPath<ProjectPodMetric, QProjectPodMetric> projectPodMetrics = this.<ProjectPodMetric, QProjectPodMetric>createSet("projectPodMetrics", ProjectPodMetric.class, QProjectPodMetric.class, PathInits.DIRECT2);
 
     public final SetPath<Project, QProject> projects = this.<Project, QProject>createSet("projects", Project.class, QProject.class, PathInits.DIRECT2);
 
     public final SetPath<Release, QRelease> releases = this.<Release, QRelease>createSet("releases", Release.class, QRelease.class, PathInits.DIRECT2);
 
-    public final SetPath<SprintPodMetric, QSprintPodMetric> sprintMetrics = this.<SprintPodMetric, QSprintPodMetric>createSet("sprintMetrics", SprintPodMetric.class, QSprintPodMetric.class, PathInits.DIRECT2);
+    public final SetPath<SprintPodMetric, QSprintPodMetric> sprintPodMetrics = this.<SprintPodMetric, QSprintPodMetric>createSet("sprintPodMetrics", SprintPodMetric.class, QSprintPodMetric.class, PathInits.DIRECT2);
 
     public final SetPath<Sprint, QSprint> sprints = this.<Sprint, QSprint>createSet("sprints", Sprint.class, QSprint.class, PathInits.DIRECT2);
 
