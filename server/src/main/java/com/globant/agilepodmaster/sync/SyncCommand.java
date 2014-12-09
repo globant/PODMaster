@@ -91,7 +91,7 @@ public class SyncCommand {
         String jiraUrlroot = loadProjectProperty(orgName, productName,
             projectName, "jira.urlroot");
         //TODO manage NumberFormatException exception.
-        int plannedStoryPoints = Integer.valueOf(loadProjectProperty(orgName,
+        int plannedStoryPoints = Integer.parseInt(loadProjectProperty(orgName,
             productName, projectName, "planned_story_points"));
 
         JiraRestClient jiraRestClient = new JiraAPIFactory()

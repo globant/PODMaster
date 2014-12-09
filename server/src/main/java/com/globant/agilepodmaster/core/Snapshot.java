@@ -195,15 +195,6 @@ public class Snapshot extends AbstractEntity {
     podMember.setSnapshot(this);
     podMembers.add(podMember);
   }
-
-  /**
-   * Add a project pod metric to this snapshot.
-   * @param projectPodMetric the project pod metric.
-   */
-  public void addProjectPodMetric(ProjectPodMetric projectPodMetric) {
-    projectPodMetric.setSnapshot(this);
-    projectPodMetrics.add(projectPodMetric);
-  }
   
   /**
    * Add a ProjectMetrics to this snapshot.
