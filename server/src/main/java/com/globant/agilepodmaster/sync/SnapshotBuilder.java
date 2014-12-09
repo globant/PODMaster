@@ -67,6 +67,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
     return snapshot;
   }
 
+
   private void assignOwnersToTasks() {
     for (Entry<String, List<Task>> entry : tasks.entrySet()) {
       String ownerEmail = entry.getKey();
