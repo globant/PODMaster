@@ -3,6 +3,7 @@ package com.globant.agilepodmaster.metrics;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import com.globant.agilepodmaster.core.AbstractMetric;
 import com.globant.agilepodmaster.core.AbstractMetricRepository;
 import com.globant.agilepodmaster.core.CollectionBasedQueryDslPredicateExecutor;
 import com.globant.agilepodmaster.core.DummyDataGenerator;
@@ -33,6 +34,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 
@@ -48,7 +50,7 @@ public class MetricsAggregatorCommandTest {
   private Set<MetricAggregation> expectedResult;
   private List<Partitioner<? extends Partition<?>>> partitioners;
   private Object repo;
-  private List<String> collect;
+  private  List<Function<List<AbstractMetric>, Metric<?>>> collectList;
 
   /**
    * Constructor.
@@ -56,15 +58,16 @@ public class MetricsAggregatorCommandTest {
    * @param partitioners input partitioners.
    * @param expectedResult expected results.
    * @param repo repository to be used.
-   * @param collect list of metrics to be shown.
+   * @param collectList list of metrics to be shown.
    */
   public MetricsAggregatorCommandTest(
       List<Partitioner<? extends Partition<?>>> partitioners,
-      Set<MetricAggregation> expectedResult, Object repo, List<String> collect) {
+      Set<MetricAggregation> expectedResult, Object repo,
+      List<Function<List<AbstractMetric>, Metric<?>>> collectList) {
     this.expectedResult = expectedResult;
     this.partitioners = partitioners;
     this.repo = repo;
-    this.collect = collect;
+    this.collectList = collectList;
   }
 
   /**
@@ -76,7 +79,7 @@ public class MetricsAggregatorCommandTest {
         new MetricsAggregator(), createDummyRepo(repo,
             AbstractMetricRepository.class));
 
-    Set<MetricAggregation> aggregations = command.execute(partitioners, null, collect);
+    Set<MetricAggregation> aggregations = command.execute(partitioners, null, collectList);
 
     System.out.println("---");
     aggregations.forEach(it -> System.out.println(it));
@@ -171,10 +174,11 @@ public class MetricsAggregatorCommandTest {
         .buildScenario2().getProjectMetrics();
     CollectionBasedQueryDslPredicateExecutor<ProjectMetric> dataGenerator = createRepoMixin(
         QProjectMetric.projectMetric, projectMetrics);
-
+    
     return new Object[] {
         input, expected, dataGenerator,
-        Arrays.asList("remaining-story-points", "actual-percent-complete")};
+        Arrays.asList( MetricsAggregator.metricCalculatorMap.get("remaining-story-points"), 
+            MetricsAggregator.metricCalculatorMap.get("actual-percent-complete"))};
   }
 
   private static Object[] projectMetricsScenarioPod() {
@@ -213,7 +217,10 @@ public class MetricsAggregatorCommandTest {
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
             .buildScenario1().getSprintPodMetrics());
 
-    return new Object[] {input, expected, dataGenerator, Arrays.asList("velocity")};
+    
+    return new Object[] {
+        input, expected, dataGenerator,
+        Arrays.asList( MetricsAggregator.metricCalculatorMap.get("velocity"))};
   }
 
   private static Object[] scenarioPod() {
@@ -244,7 +251,8 @@ public class MetricsAggregatorCommandTest {
 
     return new Object[] {
         input, expected, dataGenerator,
-        Arrays.asList("velocity", "stability-of-velocity")};
+        Arrays.asList( MetricsAggregator.metricCalculatorMap.get("velocity"), 
+            MetricsAggregator.metricCalculatorMap.get("stability-of-velocity"))};
   }
 
   private static Object[] scenarioYearQuarterPod() {
@@ -317,7 +325,9 @@ public class MetricsAggregatorCommandTest {
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
             .buildScenario1().getSprintPodMetrics());
 
-    return new Object[] {input, expected, dataGenerator, Arrays.asList("velocity")};
+    return new Object[] {
+        input, expected, dataGenerator,
+        Arrays.asList(MetricsAggregator.metricCalculatorMap.get("velocity"))};
   }
 
   private static Object[] scenarioSprintPod() {
@@ -422,7 +432,8 @@ public class MetricsAggregatorCommandTest {
 
     return new Object[] {
         input, expected, dataGenerator,
-        Arrays.asList("velocity", "accumulated-story-points")};
+        Arrays.asList(MetricsAggregator.metricCalculatorMap.get("velocity"), 
+            MetricsAggregator.metricCalculatorMap.get("accumulated-story-points"))};
   }
 
   private static Object[] scenarioSprintPodBugs() {
@@ -434,10 +445,10 @@ public class MetricsAggregatorCommandTest {
     Partition<Integer> sprint1 = new Partition<Integer>("sprint", 1);
     Partition<Integer> sprint2 = new Partition<Integer>("sprint", 2);
 
-    Metric<Integer> bugs1 = new Metric<Integer>("bugs", 1, "number of bugs");
-    Metric<Integer> bugs2 = new Metric<Integer>("bugs", 2, "number of bugs");
-    Metric<Integer> bugs3 = new Metric<Integer>("bugs", 3, "number of bugs");
-    Metric<Integer> bugs4 = new Metric<Integer>("bugs", 4, "number of bugs");
+    Metric<Integer> bugs1 = new Metric<Integer>("bugs", 1, "number");
+    Metric<Integer> bugs2 = new Metric<Integer>("bugs", 2, "number");
+    Metric<Integer> bugs3 = new Metric<Integer>("bugs", 3, "number");
+    Metric<Integer> bugs4 = new Metric<Integer>("bugs", 4, "number");
 
     Set<MetricAggregation> expected = asSet(
         new MetricAggregation(asSet(partitionPod1, sprint1), asSet(bugs1)),
@@ -452,7 +463,9 @@ public class MetricsAggregatorCommandTest {
         QSprintPodMetric.sprintPodMetric, new DummyDataGenerator()
             .buildScenario3().getSprintPodMetrics());
 
-    return new Object[] {input, expected, dataGenerator, Arrays.asList("bugs")};
+    return new Object[] {
+        input, expected, dataGenerator,
+        Arrays.asList(MetricsAggregator.metricCalculatorMap.get("bugs"))};
   }
 
 

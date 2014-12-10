@@ -8,13 +8,16 @@ import com.mysema.query.types.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Command that returns metrics.
@@ -42,32 +45,41 @@ public class MetricsAggregatorCommand {
 
   /**
    * Executes the command.
+   * 
    * @param partitioners the partitioners.
    * @param filters the filters to be applied.
-   * @param collect list of metrics to be shown.
+   * @param calculators list of metrics to be calculated. If it is empty, all metrics
+   *        are shown.
    * @return a set of aggregations.
    */
   public Set<MetricAggregation> execute(
-      List<Partitioner<? extends Partition<?>>> partitioners, 
-      Predicate filters, List<String> collect) {
+      List<Partitioner<? extends Partition<?>>> partitioners,
+      Predicate filters,
+      List<Function<List<AbstractMetric>, Metric<?>>> calculators) {
+    
+    if (CollectionUtils.isEmpty(calculators)) {
+      calculators = new ArrayList<Function<List<AbstractMetric>, Metric<?>>>(
+          MetricsAggregator.metricCalculatorMap.values());
+    }
 
-//    Iterable<AbstractMetric> spmList = findMetrics(filters);
+    // Iterable<AbstractMetric> spmList = findMetrics(filters);
     Iterable<AbstractMetric> spmList = repo.findAll(filters);
 
     Map<Set<Partition<?>>, List<AbstractMetric>> partitions = createPartitions(
         spmList, partitioners);
-    
-    Set<MetricAggregation> aggregated = this.aggregate(partitions, collect);
+
+    Set<MetricAggregation> aggregated = this.aggregate(partitions, calculators);
 
     return aggregated;
   }
 
   private Set<MetricAggregation> aggregate(
-      Map<Set<Partition<?>>, List<AbstractMetric>> parts, List<String> collect) {
+      Map<Set<Partition<?>>, List<AbstractMetric>> parts,
+      List<Function<List<AbstractMetric>, Metric<?>>> calculators) {
 
     Set<MetricAggregation> aggregated = new HashSet<MetricAggregation>();
     parts.forEach((part, lst) -> aggregated.add(new MetricAggregation(part,
-        aggregator.aggregate(lst, collect))));
+        aggregator.aggregate(lst, calculators))));
 
     return aggregated;
   }
