@@ -9,13 +9,13 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
@@ -66,7 +66,17 @@ public class MetricsControllerTest extends AbstractIntegrationTest {
 
     HttpEntity<String> requestEntity = new HttpEntity<String>("parameters", headers);
     
-    RestTemplate rest = new TestRestTemplate();
+    ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
+
+    resource.setAccessTokenUri("http://localhost:9080/oauth/token");
+    resource.setClientId("clientapp");
+    resource.setClientSecret("123456");
+    resource.setId("restservice");
+    resource.setUsername("roy");
+    resource.setPassword("spring");
+
+    OAuth2RestTemplate rest = new OAuth2RestTemplate(resource);
+    
     ResponseEntity<String> responseEntity = rest.exchange(
         baseUrl, HttpMethod.GET, requestEntity, String.class);
     

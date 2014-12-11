@@ -45,12 +45,24 @@ public class JsonBuilder {
     return this;
   }
 
+  /**
+   * Add a property with a nested value.
+   * @param name the name.
+   * @param function the function with the value.
+   * @return the builder.
+   */
   public JsonBuilder withNestedObject(String name, Function<JsonBuilder, JsonBuilder> function) {
     JsonBuilder builder = new JsonBuilder();
     addToBody(name, function.apply(builder).toString());
     return this;
   }
 
+  /**
+   * Add a property with an array as value.
+   * @param name the name.
+   * @param function the function that represents the array.
+   * @return the builder.
+   */
   public JsonBuilder withArray(String name, Function<ArrayBuilder, ArrayBuilder> function) {
     ArrayBuilder arrayBuilder = new ArrayBuilder();
     addToBody(name, function.apply(arrayBuilder).toString());
@@ -58,6 +70,10 @@ public class JsonBuilder {
     return this;
   }
 
+  /**
+   * Build the json as String.
+   * @return the String.
+   */
   public String build() {
     return this.toString();
   }
@@ -75,9 +91,19 @@ public class JsonBuilder {
 
   }
   
+  /**
+   * Static Clas to build an array.
+   *
+   */
   public static class ArrayBuilder {
     @Getter
     private List<String> elements = new LinkedList<String>();
+    
+    /**
+     * Add an element as a nested value.
+     * @param function the function with the value.
+     * @return the builder.
+     */
     public ArrayBuilder addNestedObject(Function<JsonBuilder, JsonBuilder> function) {
       JsonBuilder builder = new JsonBuilder();
       elements.add(function.apply(builder).toString());

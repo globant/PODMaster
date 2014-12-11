@@ -11,6 +11,14 @@ import java.util.Date;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+/**
+ * Builder for tasks.
+ * @author Andres Postiglioni.
+ *
+ * @param <P> type of the parent builder.
+ * @param <T> type of this builder .
+ */
+@SuppressWarnings("PMD.TooManyMethods")
 public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBuilder<P, T> {
 
   @Getter(AccessLevel.PUBLIC)
@@ -193,6 +201,10 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
     return this;
   }
 
+  /**
+   * Add a sub task to a task builder.
+   * @return the TaskBuilder.
+   */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public  TaskBuilder<TaskBuilder, TaskBuilder> addSubTask() {
     TaskBuilder<TaskBuilder, TaskBuilder> nestedBuilder = 
@@ -201,11 +213,19 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
     return nestedBuilder;
   }
   
+  /**
+   * Add this builder to other TaskBuilder.
+   * @return a TaskBuilder.
+   */
   @SuppressWarnings("rawtypes")
   public TaskBuilder addToTask() {
     return (TaskBuilder)this.getParentBuilder();
   }
   
+  /**
+   * Add this builder to a Sprint.
+   * @return a BacklogBuilder.
+   */
   @SuppressWarnings("rawtypes")
   public BacklogBuilder addToSprint() {
     P parentBuilder = this.getParentBuilder();
@@ -219,12 +239,27 @@ public class TaskBuilder<P, T extends SnapshotDataCollector> extends AbstractBui
     snapshotBuilder.addTaskAssignedTo(owner, task);
   }
 
+  /**
+   * Builds a task builder for a backlog or sprint.
+   * @param release a release.
+   * @param sprint a sprint.
+   * @param backlogBuilder a backlogBuilder.
+   * @return the task builder.
+   */
   public static TaskBuilder<BacklogBuilder, TaskBuilder<?,?>> taskBuilder(
       Release release, Sprint sprint, BacklogBuilder backlogBuilder) {
     return new TaskBuilder<BacklogBuilder, TaskBuilder<?,?>>(null, release, sprint,
         backlogBuilder);
   }
 
+  /**
+   * Builds a task builder for a subtask.
+   * @param task a parent task.
+   * @param release a release.
+   * @param sprint a sprint.
+   * @param taskBuilder a taskBuilder.
+   * @return the task builder.
+   */
   @SuppressWarnings("rawtypes")
   public static TaskBuilder<TaskBuilder, TaskBuilder> subTaskBuilder(Task task,
       Release release, Sprint sprint, TaskBuilder<?,?> taskBuilder) {

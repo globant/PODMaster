@@ -5,7 +5,7 @@ import com.globant.agilepodmaster.core.Pod;
 import com.globant.agilepodmaster.core.PodMember;
 import com.globant.agilepodmaster.core.Product;
 import com.globant.agilepodmaster.core.Project;
-import com.globant.agilepodmaster.core.ProjectPodMetric;
+import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.Release;
 import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.Sprint;
@@ -14,6 +14,8 @@ import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.sync.reading.PodsBuilder;
 import com.globant.agilepodmaster.sync.reading.ReleasesBuilder;
 
+import org.springframework.util.Assert;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import lombok.Getter;
 
@@ -32,6 +32,7 @@ import lombok.Getter;
  * @author jose.dominguez@globant.com
  *
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   private Snapshot snapshot;
 
@@ -48,6 +49,7 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
    * @param context the context where the process will log.
    */
   public SnapshotBuilder(SyncContext context) {
+    Assert.notNull(context, "syncContext cannot be null");
     this.syncContext = context;
     this.snapshot = new Snapshot("Snapshot " + new Date());
   }
@@ -61,29 +63,10 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
     builders.forEach(b -> b.collect(this));
     snapshot.setCreationDate(new Date());
     this.assignOwnersToTasks();
-    this.createSprintPodMetrics();
-    this.createProjectMetrics();
+    this.createMetrics();
     return snapshot;
   }
 
-  private void createProjectMetrics() {
-    
-    //TODO not necessary to be assigned and not assigned to closed sprints.
-    for (Project project : snapshot.getProjects()) {
-      for (Pod pod : snapshot.getPods()) {
-        int remainingStoryPoints = (int) snapshot.getTasks().stream()
-            .filter(t -> project.equals(t.getProject()))
-            .filter(t -> t.getOwner() != null)
-            .filter(t -> pod.equals(t.getOwner().getPod()))
-            .filter(t -> t.isOpen()).mapToDouble(Task::getEffort).sum();
-
-        ProjectPodMetric projectMetric = new ProjectPodMetric(project, pod);
-        projectMetric.setRemainingStoryPoints(remainingStoryPoints);
-
-        snapshot.addProjectMetric(projectMetric);
-      }
-    }
-  }
 
   private void assignOwnersToTasks() {
     for (Entry<String, List<Task>> entry : tasks.entrySet()) {
@@ -103,16 +86,22 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
       taskList.forEach(t -> snapshot.addTask(t));
     }
   }
-
-  private void createSprintPodMetrics() {
+  
+  private void createMetrics() {
     
-    SprintPodMetricsGenerator sprintPodMetricsGenerator = new SprintPodMetricsGenerator();
+    MetricsGenerator metricsGenerator = new MetricsGenerator();
     
-    List<SprintPodMetric> sprintPodMetrics = sprintPodMetricsGenerator
-        .generates(snapshot.getPods(), snapshot.getSprints(),
+    List<SprintPodMetric> sprintPodMetrics = metricsGenerator
+        .generatesSprintPodMetrics(snapshot.getPods(), snapshot.getSprints(),
             snapshot.getTasks());
     
     snapshot.addSprintMetrics(sprintPodMetrics);
+    
+    List<ProjectMetric> projectMetrics = metricsGenerator
+        .generatesProjectMetrics(snapshot.getProjects(),
+            snapshot.getTasks());
+    
+    snapshot.addProjectMetrics(projectMetrics);
     
   }
 
@@ -204,4 +193,5 @@ public class SnapshotBuilder implements PodsBuilder, ReleasesBuilder {
   public void addPodMember(PodMember podMember) {
     snapshot.addPodMember(podMember);
   }
+  
 }

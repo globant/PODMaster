@@ -26,11 +26,13 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class Sprint extends SnapshotEntity implements Comparable<Sprint> {
-  public int number;
-  
+
   @NonNull
   @Getter
   private String name;
+  
+  @Getter
+  public int number;
   
   @NonNull
   @ManyToOne
@@ -45,17 +47,19 @@ public class Sprint extends SnapshotEntity implements Comparable<Sprint> {
   /**
    * Constructor.
    * @param name the name of the sprint.
+   * @param number the number of the sprint. 
    * @param release the release of the sprint.
    * @param startDate the start date of the sprint.
    * @param endDate the end date of the sprint.
    */
-  public Sprint(String name, Release release, Date startDate, Date endDate) {
+  public Sprint(String name, int number, Release release, Date startDate, Date endDate) {
     super();
     Assert.notNull(name, "name must not be null");
     Assert.notNull(release, "release must not be null");
     Assert.notNull(startDate, "startDate must not be null");
     Assert.notNull(endDate, "endDate must not be null");
     this.name = name;
+    this.number = number;
     this.release = release;
     this.startDate = new Date(startDate.getTime());
     this.endDate = new Date(endDate.getTime());
@@ -87,12 +91,10 @@ public class Sprint extends SnapshotEntity implements Comparable<Sprint> {
   
   @Override
   public int compareTo(Sprint otherSprint) {
-    if (this.release == otherSprint.getRelease()) {
-
-      return this.startDate.compareTo(otherSprint.getStartDate());
+    if (this.release.equals(otherSprint.getRelease())) {
+      return this.number - otherSprint.getNumber();
     }
-    return this.release.hashCode() - otherSprint.getRelease().hashCode();
-
+    return this.release.compareTo(otherSprint.getRelease());
   }
   
 }

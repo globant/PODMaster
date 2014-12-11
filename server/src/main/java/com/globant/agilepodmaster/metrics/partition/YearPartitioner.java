@@ -4,13 +4,22 @@ import java.util.Calendar;
 
 import org.springframework.stereotype.Component;
 
+import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.ProjectPodMetric;
 import com.globant.agilepodmaster.core.SprintPodMetric;
 
+/**
+ * Partitioner for year.
+ * @author Andres Postiglioni.
+ *
+ */
 @Component
 public class YearPartitioner extends Partitioner<Partition<Integer>> {
   private static final String PARTITION = "year";
 
+  /**
+   * Constructor.
+   */
   public YearPartitioner() {
     super(PARTITION);
   }
@@ -24,6 +33,11 @@ public class YearPartitioner extends Partitioner<Partition<Integer>> {
 
   @Override
   public Partition<Integer> extractPartition(ProjectPodMetric projectMetric) {
+    return null;
+  }
+  
+  @Override
+  public Partition<Integer> extractPartition(ProjectMetric projectMetric) {
     return null;
   }
 }

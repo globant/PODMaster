@@ -22,5 +22,11 @@ import com.globant.agilepodmaster.metrics.partition.Partitioner;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractMetric extends SnapshotEntity {
+  
+  /**
+   * Extract a partition from this object.
+   * @param partitioner the partitioner to be used.
+   * @return the partition.
+   */
   public abstract Partition<?> visit(Partitioner<? extends Partition<?>> partitioner);
 }
