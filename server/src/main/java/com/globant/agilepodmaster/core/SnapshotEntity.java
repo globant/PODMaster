@@ -1,0 +1,21 @@
+package com.globant.agilepodmaster.core;
+
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * Represents an entity that belongs to a snapshot. 
+ * @author Andres Postiglioni.
+ *
+ */
+@MappedSuperclass
+@Getter
+@Setter(AccessLevel.PACKAGE)
+public abstract class SnapshotEntity extends AbstractEntity {
+  @ManyToOne
+  private Snapshot snapshot;
+}
