@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import com.globant.agilepodmaster.core.AbstractEntity;
+import com.globant.agilepodmaster.AbstractEntity;
 
 /**
  * Entity that represents a widget.

@@ -1,9 +1,9 @@
 package com.globant.agilepodmaster.metrics;
 
-import com.globant.agilepodmaster.core.AbstractMetric;
-import com.globant.agilepodmaster.core.AbstractMetricRepository;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
+import com.globant.agilepodmaster.snapshot.AbstractMetric;
+import com.globant.agilepodmaster.snapshot.AbstractMetricRepository;
 import com.mysema.query.types.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;

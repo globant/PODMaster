@@ -3,6 +3,8 @@ package com.globant.agilepodmaster.core;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
+import com.globant.agilepodmaster.metrics.Quarter;
+
 import org.junit.Test;
 
 import java.util.Arrays;

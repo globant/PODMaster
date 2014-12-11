@@ -6,16 +6,17 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
-import com.globant.agilepodmaster.core.Snapshot;
-import com.globant.agilepodmaster.core.Task;
-import com.globant.agilepodmaster.core.Task.ChangeDuringSprint;
-import com.globant.agilepodmaster.sync.ReleaseBuilder;
-import com.globant.agilepodmaster.sync.SnapshotBuilder;
+import com.globant.agilepodmaster.readers.releases.SprintReportProcessor;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport.EstimateStatistic;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport.Issue;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport.StatFieldValue;
+import com.globant.agilepodmaster.release.ReleaseBuilder;
+import com.globant.agilepodmaster.snapshot.Snapshot;
+import com.globant.agilepodmaster.snapshot.SnapshotBuilder;
 import com.globant.agilepodmaster.sync.SyncContext;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.EstimateStatistic;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Issue;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.StatFieldValue;
+import com.globant.agilepodmaster.task.Task;
+import com.globant.agilepodmaster.task.Task.ChangeDuringSprint;
 
 import org.junit.Before;
 import org.junit.Test;

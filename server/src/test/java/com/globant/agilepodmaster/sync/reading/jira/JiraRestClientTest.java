@@ -10,11 +10,13 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
+import com.globant.agilepodmaster.readers.releases.JiraAPIFactory;
+import com.globant.agilepodmaster.readers.releases.JiraRestClient;
+import com.globant.agilepodmaster.readers.releases.jira.responses.CustomFieldDefinition;
+import com.globant.agilepodmaster.readers.releases.jira.responses.Issue;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintList.SprintItem;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport.Sprint;
 import com.globant.agilepodmaster.sync.ConexionResponseErrorException;
-import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
-import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintList.SprintItem;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Sprint;
 
 import org.junit.Before;
 import org.junit.Rule;

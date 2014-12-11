@@ -2,10 +2,12 @@ package com.globant.agilepodmaster.core;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 
+import com.globant.agilepodmaster.AbstractEntity;
 import com.mysema.query.types.path.*;
-
 import com.mysema.query.types.PathMetadata;
+
 import javax.annotation.Generated;
+
 import com.mysema.query.types.Path;
 
 

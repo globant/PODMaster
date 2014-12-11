@@ -10,7 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.globant.agilepodmaster.core.AbstractEntity;
+import com.globant.agilepodmaster.AbstractEntity;
 import com.globant.agilepodmaster.widget.Widget;
 
 /**

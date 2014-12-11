@@ -2,9 +2,9 @@ package com.globant.agilepodmaster.metrics.partition;
 
 import org.springframework.stereotype.Component;
 
-import com.globant.agilepodmaster.core.ProjectMetric;
-import com.globant.agilepodmaster.core.ProjectPodMetric;
-import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.snapshot.ProjectMetric;
+import com.globant.agilepodmaster.snapshot.ProjectPodMetric;
+import com.globant.agilepodmaster.snapshot.SprintPodMetric;
 
 
 /**

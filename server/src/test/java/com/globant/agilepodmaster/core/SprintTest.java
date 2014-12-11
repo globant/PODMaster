@@ -3,6 +3,12 @@ package com.globant.agilepodmaster.core;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import com.globant.agilepodmaster.product.Organization;
+import com.globant.agilepodmaster.product.Product;
+import com.globant.agilepodmaster.project.Project;
+import com.globant.agilepodmaster.release.Release;
+import com.globant.agilepodmaster.sprint.Sprint;
+
 import org.junit.Test;
 
 import java.util.Arrays;

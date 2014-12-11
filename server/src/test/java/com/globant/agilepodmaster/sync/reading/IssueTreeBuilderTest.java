@@ -6,9 +6,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
-import com.globant.agilepodmaster.sync.reading.IssueTreeBuilder.IssueNode;
-import com.globant.agilepodmaster.sync.reading.jira.responses.Issue;
-import com.globant.agilepodmaster.sync.reading.jira.responses.Issue.Fields;
+import com.globant.agilepodmaster.readers.releases.IssueTreeBuilder;
+import com.globant.agilepodmaster.readers.releases.IssueTreeBuilder.IssueNode;
+import com.globant.agilepodmaster.readers.releases.jira.responses.Issue;
+import com.globant.agilepodmaster.readers.releases.jira.responses.Issue.Fields;
 
 import org.junit.Ignore;
 import org.junit.Test;

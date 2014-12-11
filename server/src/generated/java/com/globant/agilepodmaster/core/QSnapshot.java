@@ -2,10 +2,23 @@ package com.globant.agilepodmaster.core;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
 
+import com.globant.agilepodmaster.pod.Pod;
+import com.globant.agilepodmaster.pod.PodMember;
+import com.globant.agilepodmaster.product.Organization;
+import com.globant.agilepodmaster.product.Product;
+import com.globant.agilepodmaster.project.Project;
+import com.globant.agilepodmaster.release.Release;
+import com.globant.agilepodmaster.snapshot.ProjectMetric;
+import com.globant.agilepodmaster.snapshot.ProjectPodMetric;
+import com.globant.agilepodmaster.snapshot.Snapshot;
+import com.globant.agilepodmaster.snapshot.SprintPodMetric;
+import com.globant.agilepodmaster.sprint.Sprint;
+import com.globant.agilepodmaster.task.Task;
 import com.mysema.query.types.path.*;
-
 import com.mysema.query.types.PathMetadata;
+
 import javax.annotation.Generated;
+
 import com.mysema.query.types.Path;
 import com.mysema.query.types.path.PathInits;
 

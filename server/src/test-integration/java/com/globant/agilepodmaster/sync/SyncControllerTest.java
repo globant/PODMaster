@@ -11,7 +11,7 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.globant.agilepodmaster.AbstractIntegrationTest;
-import com.globant.agilepodmaster.core.SnapshotRepository;
+import com.globant.agilepodmaster.snapshot.SnapshotRepository;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

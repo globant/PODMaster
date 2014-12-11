@@ -15,7 +15,7 @@ import lombok.ToString;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.globant.agilepodmaster.core.AbstractEntity;
+import com.globant.agilepodmaster.AbstractEntity;
 import com.globant.agilepodmaster.widget.Widget;
 
 /**

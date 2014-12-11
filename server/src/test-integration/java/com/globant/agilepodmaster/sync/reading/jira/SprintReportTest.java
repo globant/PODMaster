@@ -6,8 +6,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 import com.globant.agilepodmaster.AbstractIntegrationTest;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
-import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport.Issue;
+import com.globant.agilepodmaster.readers.releases.JiraAPIFactory;
+import com.globant.agilepodmaster.readers.releases.JiraRestClient;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport;
+import com.globant.agilepodmaster.readers.releases.jira.responses.SprintReport.Issue;
 
 import org.junit.Before;
 import org.junit.Test;

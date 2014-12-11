@@ -3,21 +3,20 @@ package com.globant.agilepodmaster.metrics;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.globant.agilepodmaster.core.AbstractMetric;
-import com.globant.agilepodmaster.core.AbstractMetricRepository;
 import com.globant.agilepodmaster.core.CollectionBasedQueryDslPredicateExecutor;
 import com.globant.agilepodmaster.core.DummyDataGenerator;
-import com.globant.agilepodmaster.core.ProjectMetric;
 import com.globant.agilepodmaster.core.QProjectMetric;
 import com.globant.agilepodmaster.core.QSprintPodMetric;
-import com.globant.agilepodmaster.core.Quarter;
-import com.globant.agilepodmaster.core.SprintPodMetric;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 import com.globant.agilepodmaster.metrics.partition.PodPartitioner;
 import com.globant.agilepodmaster.metrics.partition.QuarterPartitioner;
 import com.globant.agilepodmaster.metrics.partition.SprintPartitioner;
 import com.globant.agilepodmaster.metrics.partition.YearPartitioner;
+import com.globant.agilepodmaster.snapshot.AbstractMetric;
+import com.globant.agilepodmaster.snapshot.AbstractMetricRepository;
+import com.globant.agilepodmaster.snapshot.ProjectMetric;
+import com.globant.agilepodmaster.snapshot.SprintPodMetric;
 import com.mysema.query.types.path.EntityPathBase;
 
 import org.junit.Test;

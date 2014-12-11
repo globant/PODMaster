@@ -1,6 +1,7 @@
 package com.globant.agilepodmaster.core;
 
-import com.globant.agilepodmaster.sync.SnapshotBuilder;
+import com.globant.agilepodmaster.snapshot.Snapshot;
+import com.globant.agilepodmaster.snapshot.SnapshotBuilder;
 import com.globant.agilepodmaster.sync.SyncContext;
 
 import java.time.LocalDate;

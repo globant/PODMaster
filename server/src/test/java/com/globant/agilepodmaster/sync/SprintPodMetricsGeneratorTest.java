@@ -5,16 +5,18 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 import com.globant.agilepodmaster.AbstractUnitTest;
-import com.globant.agilepodmaster.core.Organization;
-import com.globant.agilepodmaster.core.Pod;
-import com.globant.agilepodmaster.core.PodMember;
-import com.globant.agilepodmaster.core.Product;
-import com.globant.agilepodmaster.core.Project;
-import com.globant.agilepodmaster.core.Release;
-import com.globant.agilepodmaster.core.Sprint;
-import com.globant.agilepodmaster.core.SprintPodMetric;
-import com.globant.agilepodmaster.core.Task;
-import com.globant.agilepodmaster.core.TaskBuilder;
+import com.globant.agilepodmaster.pod.Pod;
+import com.globant.agilepodmaster.pod.PodMember;
+import com.globant.agilepodmaster.product.Organization;
+import com.globant.agilepodmaster.product.Product;
+import com.globant.agilepodmaster.project.Project;
+import com.globant.agilepodmaster.release.Release;
+import com.globant.agilepodmaster.snapshot.MetricsGenerator;
+import com.globant.agilepodmaster.snapshot.SprintPodMetric;
+import com.globant.agilepodmaster.sprint.BacklogBuilder;
+import com.globant.agilepodmaster.sprint.Sprint;
+import com.globant.agilepodmaster.task.Task;
+import com.globant.agilepodmaster.task.TaskBuilder;
 
 import org.junit.Before;
 import org.junit.Test;

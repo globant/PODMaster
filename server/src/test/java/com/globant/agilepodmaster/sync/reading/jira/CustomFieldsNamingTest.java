@@ -7,7 +7,8 @@ import static org.junit.Assert.assertThat;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.globant.agilepodmaster.sync.reading.jira.responses.IssuesSearchResult;
+import com.globant.agilepodmaster.readers.releases.CustomFieldsNaming;
+import com.globant.agilepodmaster.readers.releases.jira.responses.IssuesSearchResult;
 
 import org.junit.Test;
 

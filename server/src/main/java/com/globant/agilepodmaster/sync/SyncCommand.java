@@ -1,11 +1,13 @@
 package com.globant.agilepodmaster.sync;
 
-import com.globant.agilepodmaster.core.Snapshot;
-import com.globant.agilepodmaster.core.SnapshotRepository;
-import com.globant.agilepodmaster.sync.reading.db.PodsReader;
-import com.globant.agilepodmaster.sync.reading.jira.JiraAPIFactory;
-import com.globant.agilepodmaster.sync.reading.jira.JiraRestClient;
-import com.globant.agilepodmaster.sync.reading.jira.ReleasesReader;
+import com.globant.agilepodmaster.readers.pods.PodsReader;
+import com.globant.agilepodmaster.readers.releases.JiraAPIFactory;
+import com.globant.agilepodmaster.readers.releases.JiraRestClient;
+import com.globant.agilepodmaster.readers.releases.ReleaseReaderConfiguration;
+import com.globant.agilepodmaster.readers.releases.ReleasesReader;
+import com.globant.agilepodmaster.snapshot.Snapshot;
+import com.globant.agilepodmaster.snapshot.SnapshotBuilder;
+import com.globant.agilepodmaster.snapshot.SnapshotRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

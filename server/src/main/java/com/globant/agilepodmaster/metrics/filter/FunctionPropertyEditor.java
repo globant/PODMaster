@@ -1,8 +1,8 @@
 package com.globant.agilepodmaster.metrics.filter;
 
-import com.globant.agilepodmaster.core.AbstractMetric;
 import com.globant.agilepodmaster.metrics.Metric;
 import com.globant.agilepodmaster.metrics.MetricsAggregator;
+import com.globant.agilepodmaster.snapshot.AbstractMetric;
 
 import java.beans.PropertyEditorSupport;
 import java.util.List;

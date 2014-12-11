@@ -3,7 +3,8 @@ package com.globant.agilepodmaster.sync.reading.jira;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 
-import com.globant.agilepodmaster.sync.reading.jira.responses.CustomFieldDefinition;
+import com.globant.agilepodmaster.readers.releases.CustomFieldReplacements;
+import com.globant.agilepodmaster.readers.releases.jira.responses.CustomFieldDefinition;
 
 import org.junit.Test;
 

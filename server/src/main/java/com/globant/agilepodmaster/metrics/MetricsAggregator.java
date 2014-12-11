@@ -2,9 +2,9 @@ package com.globant.agilepodmaster.metrics;
 
 import static java.util.stream.Collectors.averagingDouble;
 
-import com.globant.agilepodmaster.core.AbstractMetric;
-import com.globant.agilepodmaster.core.ProjectMetric;
-import com.globant.agilepodmaster.core.SprintPodMetric;
+import com.globant.agilepodmaster.snapshot.AbstractMetric;
+import com.globant.agilepodmaster.snapshot.ProjectMetric;
+import com.globant.agilepodmaster.snapshot.SprintPodMetric;
 
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.springframework.stereotype.Component;
