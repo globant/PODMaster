@@ -99,7 +99,7 @@ public class SynchronizationTest extends AbstractIntegrationTest {
         .withUrlRoot("http://nglb008dxu00.tx.corp.globant.com:8080/").create();
 
     ReleaseReaderConfiguration.Project project = new ReleaseReaderConfiguration.Project(
-        "TeammateIntelligence", "Teammate Intelligence", "3", jiraRestClient);
+        "TeammateIntelligence", "Teammate Intelligence", "3", jiraRestClient, 500);
     ReleaseReaderConfiguration.Product product = new ReleaseReaderConfiguration.Product(
         "FIFA14", Arrays.asList(project));
     ReleaseReaderConfiguration configuration = new ReleaseReaderConfiguration(

@@ -36,18 +36,22 @@ import lombok.Setter;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ReleasesReader implements Reader<ReleasesBuilder> {
-  
+
   private static final String DEFAULT_STATUS = "Open";
 
   private static final String DEFAULT_TYPE = "Task";
-  
+
   private static final String DEFAULT_PRIORITY = "Major";
-  
+
   private static final String DEFAULT_SEVERITY = "Major";
-  
+
+  private static final String SPRINT_CLOSED = "CLOSED";
+
+  private static final String SPRINT_ACTIVE = "ACTIVE";
+
   @Autowired
   IssueTreeBuilder issueTreeBuilder;
-  
+
   @Autowired
   SprintReportProcessor sprintReportProcessor;
 
@@ -69,7 +73,8 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     }
   }
 
-  private ProductBuilder processProduct(OrganizationBuilder organizationBuilder,
+  private ProductBuilder processProduct(
+      OrganizationBuilder organizationBuilder,
       ReleaseReaderConfiguration.Product product, SyncContext context) {
 
     ProductBuilder productBuilder = organizationBuilder.addProduct(product
@@ -81,22 +86,22 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     }
     return productBuilder;
   }
-  
-  private ProjectBuilder processProject(ProductBuilder productBuilder,
-      ReleaseReaderConfiguration.Project project, SyncContext context) {
-    
-    context.info("Processing project: " + project.getJiraName());
 
-    ProjectBuilder projectBuilder = productBuilder.addProject(project
-        .getProjectName());
+  private ProjectBuilder processProject(ProductBuilder productBuilder,
+      ReleaseReaderConfiguration.Project projectConfiguration, SyncContext context) {
+
+    context.info("Processing project: " + projectConfiguration.getJiraName());
+
+    ProjectBuilder projectBuilder = productBuilder.addProject(projectConfiguration
+        .getProjectName(),projectConfiguration.getPlannedStoryPoints() );
 
     // TODO we need read Jira versions and iterate per each version.
     ReleaseBuilder releaseBuilder = projectBuilder.withRelease("FAKE Release");
-    releaseBuilder = processRelease(releaseBuilder, project, context);
+    releaseBuilder = processRelease(releaseBuilder, projectConfiguration, context);
     return releaseBuilder.addToProject();
 
   }
- 
+
   private ReleaseBuilder processRelease(ReleaseBuilder releaseBuilder,
       ReleaseReaderConfiguration.Project project, SyncContext context) {
 
@@ -111,23 +116,31 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
 
     BacklogBuilder backlogBuilder = null;
     for (SprintItem sprint : sprints) {
-      
-      context.info("Processing sprint: " + sprint.getName());
-      
+
       SprintReport sprintReport = project.getJiraRestClient().getSprintReport(
           sprint.getId(), project.getJiraRapidViewId());
 
-      releaseBuilder = sprintReportProcessor.process(releaseBuilder, context,
-          sprintReport);
+      if (sprint.getState().equals(SPRINT_CLOSED)) {
+        context.info("Processing closed sprint: " + sprint.getName());
+        releaseBuilder = sprintReportProcessor.processClosedSprint(
+            releaseBuilder, context, sprintReport);
+      } else if (sprint.getState().equals(SPRINT_ACTIVE)) {
+        context.info("Processing active sprint: " + sprint.getName());
+        releaseBuilder = sprintReportProcessor.processActiveSprint(
+            releaseBuilder, context, sprintReport);
+      } else {
+        context.warn("Sprint " + sprint.getName() + " with unknown state: "
+            + sprint.getState());
+      }
     }
 
     backlogBuilder = releaseBuilder.withBacklog();
     backlogBuilder = processBacklog(backlogBuilder, project, context);
     releaseBuilder = backlogBuilder.addToRelease();
-    
+
     return releaseBuilder;
-  }   
-  
+  }
+
   private BacklogBuilder processBacklog(BacklogBuilder backlogBuilder,
       ReleaseReaderConfiguration.Project project, SyncContext context) {
     List<Issue> backlogIssues = project.getJiraRestClient().getBacklogIssues(
@@ -137,14 +150,14 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     return processTasks(backlogBuilder, backlogIssues, context);
 
   }
-  
+
   private BacklogBuilder processTasks(BacklogBuilder backlogBuilder,
       List<Issue> issues, SyncContext context) {
 
     List<IssueNode> listRoots = issueTreeBuilder.buildTree(issues);
 
     for (IssueNode issueNode : listRoots) {
-      TaskBuilder taskBuilder = addTask(issueNode, backlogBuilder.withTask()); 
+      TaskBuilder taskBuilder = addTask(issueNode, backlogBuilder.withTask());
       backlogBuilder = taskBuilder.addToSprint();
     }
     return backlogBuilder;
@@ -191,17 +204,17 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
     return issueFields.getAssignee() != null ? issueFields.getAssignee()
         .getEmailAddress() : null;
   }
-  
+
   private String getIssuePriority(Fields issueFields) {
     return (issueFields.getPriority() != null) ? issueFields.getPriority()
         .getName() : DEFAULT_PRIORITY;
-  }    
+  }
 
   private String getIssueType(Fields issueFields) {
     return (issueFields.getIssuetype() != null) ? issueFields.getIssuetype()
         .getName() : DEFAULT_TYPE;
   }
-   
+
   private String getIssueStatus(Fields issueFields) {
     return (issueFields.getStatus() != null) ? issueFields.getStatus()
         .getName() : DEFAULT_STATUS;
@@ -210,8 +223,8 @@ public class ReleasesReader implements Reader<ReleasesBuilder> {
   private String getIssueSeverity(Fields issueFields) {
     return (issueFields.getSeverity() != null) ? issueFields.getSeverity()
         .getValue() : DEFAULT_SEVERITY;
-  }   
-  
+  }
+
   private boolean hasTimetracking(Fields issueFields) {
     return issueFields.getTimetracking() != null;
   }

@@ -36,7 +36,7 @@ public class SprintReportProcessor {
    * @param report the SprintReport object.
    * @return a ReleaseBulder with information of a sprint and its tasks.
    */
-  public ReleaseBuilder process(ReleaseBuilder releaseBuilder,
+  public ReleaseBuilder processClosedSprint(ReleaseBuilder releaseBuilder,
       SyncContext context, SprintReport report) {
 
     Sprint jiraSprint = report.getSprint();
@@ -48,7 +48,7 @@ public class SprintReportProcessor {
           DateUtil.getDate(jiraSprint.getStartDate(), context),
           DateUtil.getDate(jiraSprint.getEndDate(), context));
 
-      backlogBuilder = processContent(backlogBuilder, context,
+      backlogBuilder = processContentOfClosedSprint(backlogBuilder, context,
           report.getContents());
 
       releaseBuilder = backlogBuilder.addToRelease();
@@ -59,15 +59,49 @@ public class SprintReportProcessor {
     return releaseBuilder;
 
   }
+  
+  /**
+   * Process a SprintReport of an Active Sprint. For GoPods all these tasks
+   * belong to the backlog. It adds to backlog completed and uncompleted tasks
+   * of the active sprint.
+   * 
+   * @param releaseBuilder the release builder.
+   * @param context the context where to log.
+   * @param report the SprintReport object.
+   * @return a ReleaseBuilder with information of a sprint and its tasks.
+   */
+  public ReleaseBuilder processActiveSprint(ReleaseBuilder releaseBuilder,
+      SyncContext context, SprintReport report) {
 
-  private BacklogBuilder processContent(BacklogBuilder backlogBuilder,
+    BacklogBuilder backlogBuilder = releaseBuilder.withBacklog();
+    
+    for (Issue issue : report.getContents().getCompletedIssues()) {
+      TaskBuilder taskBuilder = addTask(issue, backlogBuilder.withTask());
+      backlogBuilder = taskBuilder.addToSprint();
+    }
+
+    // Process Incomplete issues
+    for (Issue issue : report.getContents().getIncompletedIssues()) {
+      TaskBuilder taskBuilder = addTask(issue, backlogBuilder.withTask());
+      backlogBuilder = taskBuilder.addToSprint();
+    }
+
+    releaseBuilder = backlogBuilder.addToRelease();
+
+    return releaseBuilder;
+
+  }
+  
+  
+
+  private BacklogBuilder processContentOfClosedSprint(BacklogBuilder backlogBuilder,
       SyncContext context, SprintReport.Contents contents) {
 
-    // Process Complete issues
-
+    // Process added issues
     Set<String> addedDuringSprint = contents.getIssueKeysAddedDuringSprint()
         .keySet();
 
+    // Process Complete issues
     for (Issue issue : contents.getCompletedIssues()) {
       TaskBuilder taskBuilder = addTask(issue, backlogBuilder.withTask());
       if (addedDuringSprint.contains(issue.getKey())) {

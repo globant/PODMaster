@@ -10,7 +10,6 @@ import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.Task;
 import com.globant.agilepodmaster.core.Task.ChangeDuringSprint;
 import com.globant.agilepodmaster.sync.ReleaseBuilder;
-import com.globant.agilepodmaster.sync.ReleaseReaderConfiguration;
 import com.globant.agilepodmaster.sync.SnapshotBuilder;
 import com.globant.agilepodmaster.sync.SyncContext;
 import com.globant.agilepodmaster.sync.reading.jira.responses.SprintReport;
@@ -54,16 +53,14 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
 
     releaseBuilder = snapshotBuilder.withPod("POD1")
         .withPodMember("pedro", "Dominguez", "pedro").addToPod()
-        .withPodMember("maria", "Gomez", "maria").addToPod()
-        .addToSnapshot().withPod("POD2")
-        .withPodMember("Ruben", "Dartes", "rube").addToPod()
-        .withPodMember("Juana", "Manso", "juana").addToPod()
-        .addToSnapshot().withOrganization("Org Prueba")
-        .addProduct("Prod prueba").addProject("Proj prueba")
-        .withRelease("release1");
+        .withPodMember("maria", "Gomez", "maria").addToPod().addToSnapshot()
+        .withPod("POD2").withPodMember("Ruben", "Dartes", "rube").addToPod()
+        .withPodMember("Juana", "Manso", "juana").addToPod().addToSnapshot()
+        .withOrganization("Org Prueba").addProduct("Prod prueba")
+        .addProject("Proj prueba", 500).withRelease("release1");
 
   }
-  
+
   /**
    * Testing task properties.
    */
@@ -78,10 +75,10 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     sprintDetails.setCompleteDate("26/02/2001");
 
     SprintReport.Contents sprintContents = new SprintReport.Contents();
-    
+
     StatFieldValue statFieldValue = new StatFieldValue();
     statFieldValue.setValue(90);
-    
+
     EstimateStatistic trackingStatistic = new EstimateStatistic();
     trackingStatistic.setStatFieldId("effort");
     trackingStatistic.setStatFieldValue(statFieldValue);
@@ -95,40 +92,40 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     issue1.setPriorityName("critical");
     issue1.setTypeName("bug");
     issue1.setStatusName("open");
-    
+
     sprintContents.setCompletedIssues(Arrays.asList(issue1));
-    
+
     SprintReport report = new SprintReport();
     report.setSprint(sprintDetails);
     report.setContents(sprintContents);
 
-    releaseBuilder = sprintReportProcessor.process(releaseBuilder, context,
-        report);
+    releaseBuilder = sprintReportProcessor.processClosedSprint(releaseBuilder,
+        context, report);
 
     Snapshot snapshot = snapshotBuilder.build();
-    
+
     assertThat(snapshot.getTasks(), hasSize(1));
-    
+
     Task task = snapshot.getTasks().iterator().next();
-    
+
     assertThat(task.getName(), equalTo("K1-Summary"));
     assertThat(task.getEffort(), equalTo(90.0));
     assertThat(task.getPriority(), equalTo(Task.Priority.CRITICAL));
-    
+
     assertThat(task.getStatus(), equalTo(Task.Status.OPEN));
     assertThat(task.getType(), equalTo(Task.Type.BUG));
-    
+
     assertThat(task.getOwner().getFirstName(), equalTo("pedro"));
 
-    
+
   }
-  
+
 
   /**
-   * Testing that should detect invalid Sprints.
+   * Testing that should add 4 different tasks in closed Sprint.
    */
   @Test
-  public void testShouldAdd4DiferentTaskProperly() {
+  public void testShouldAdd4DiferentTaskInClosedSprint() {
 
     SprintReport.Sprint sprintDetails = new SprintReport.Sprint();
     sprintDetails.setId(1);
@@ -173,8 +170,8 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     report.setSprint(sprintDetails);
     report.setContents(sprintContents);
 
-    releaseBuilder = sprintReportProcessor.process(releaseBuilder, context,
-        report);
+    releaseBuilder = sprintReportProcessor.processClosedSprint(releaseBuilder,
+        context, report);
 
     Snapshot snapshot = snapshotBuilder.build();
 
@@ -201,13 +198,92 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     }
 
   }
-  
+
+  /**
+   * Testing that should add 2 different task in active Sprints. Punted task are
+   * considered then when we search for tasks that are associated to no sprint.
+   * Issues Added During the sprint is not relevant for active sprints.
+   */
+  @Test
+  public void testShouldAdd4DiferentTaskProperlyInActiveSprint() {
+
+    SprintReport.Sprint sprintDetails = new SprintReport.Sprint();
+    sprintDetails.setId(1);
+    sprintDetails.setName("Sprint 1");
+
+    SprintReport.Contents sprintContents = new SprintReport.Contents();
+
+    Issue issue1 = new Issue();
+    issue1.setId(1);
+    issue1.setKey("K1");
+    issue1.setStatusName("Closed");
+    issue1.setSummary("K1-Summary");
+
+    Issue issue2 = new Issue();
+    issue2.setId(2);
+    issue2.setKey("K2");
+    issue2.setStatusName("Closed");
+    issue2.setSummary("K2-Summary");
+
+    sprintContents.setCompletedIssues(Arrays.asList(issue1, issue2));
+
+    Issue issue3 = new Issue();
+    issue3.setId(3);
+    issue3.setKey("K3");
+    issue3.setStatusName("Open");
+    issue3.setSummary("K3-Summary");
+
+    sprintContents.setIncompletedIssues(Arrays.asList(issue3));
+
+    Issue issue4 = new Issue();
+    issue4.setId(4);
+    issue4.setKey("K4");
+    issue4.setSummary("K4-Summary");
+
+    sprintContents.setPuntedIssues(Arrays.asList(issue4));
+
+    Map<String, Boolean> addedKeys = new HashMap<String, Boolean>();
+    addedKeys.put("K2", Boolean.TRUE);
+    sprintContents.setIssueKeysAddedDuringSprint(addedKeys);
+
+    SprintReport report = new SprintReport();
+    report.setSprint(sprintDetails);
+    report.setContents(sprintContents);
+
+    releaseBuilder = sprintReportProcessor.processActiveSprint(releaseBuilder,
+        context, report);
+
+    Snapshot snapshot = snapshotBuilder.build();
+
+    assertThat(snapshot.getTasks(), hasSize(3));
+
+    for (Task task : snapshot.getTasks()) {
+
+      if (task.getName().equals("K1-Summary")) {
+        assertThat(task.getChangeDuringSprint(),
+            equalTo(ChangeDuringSprint.NOCHANGE));
+        assertThat(task.getSprint(), equalTo(null));
+        assertThat(task.getStatus(), equalTo(Task.Status.CLOSED));
+      } else if (task.getName().equals("K2-Summary")) {
+        assertThat(task.getChangeDuringSprint(),
+            equalTo(ChangeDuringSprint.NOCHANGE));
+        assertThat(task.getSprint(), equalTo(null));
+        assertThat(task.getStatus(), equalTo(Task.Status.CLOSED));
+      } else if (task.getName().equals("K3-Summary")) {
+        assertThat(task.getChangeDuringSprint(),
+            equalTo(ChangeDuringSprint.NOCHANGE));
+        assertThat(task.getSprint(), equalTo(null));
+        assertThat(task.getStatus(), equalTo(Task.Status.OPEN));
+      }
+    }
+
+  }
 
   /**
    * Testing that should detect invalid Sprints.
    */
   @Test
-  public void testShouldAvoidOpenSprints() {
+  public void testShouldAvoidOpenSprintsInClosedSprint() {
 
     SyncContext context = new SyncContext();
 
@@ -220,7 +296,7 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     SprintReport report = new SprintReport();
     report.setSprint(sprintDetails1);
 
-    releaseBuilder = sprintReportProcessor.process(releaseBuilder, context,
+    releaseBuilder = sprintReportProcessor.processClosedSprint(releaseBuilder, context,
         report);
 
     assertThat(context.getLogEntries(), hasSize(1));
@@ -235,7 +311,7 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
    * Testing that should detect invalid Sprints.
    */
   @Test
-  public void testShouldAvoidMissingDatesSprints() {
+  public void testShouldAvoidMissingDatesSprintsInClosedSprint() {
 
     SyncContext context = new SyncContext();
 
@@ -248,7 +324,7 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     SprintReport report = new SprintReport();
     report.setSprint(sprintDetails1);
 
-    releaseBuilder = sprintReportProcessor.process(releaseBuilder, context,
+    releaseBuilder = sprintReportProcessor.processClosedSprint(releaseBuilder, context,
         report);
 
     assertThat(context.getLogEntries(), hasSize(1));
@@ -258,7 +334,7 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
         containsString("Skipping"));
 
   }
-  
+  /*
   private ReleaseReaderConfiguration createConfiguration(JiraRestClient jiraRestClient) {
     ReleaseReaderConfiguration.Project projectConfig = new ReleaseReaderConfiguration.Project(
         "TeammateIntelligence", "Teammate Intelligence", "3", jiraRestClient);
@@ -267,5 +343,5 @@ public class SprintReportProcessorTest extends AbstractUnitTest {
     ReleaseReaderConfiguration configuration = new ReleaseReaderConfiguration(
         "EA", Arrays.asList(productConfig));
     return configuration;
-  }
+  }*/
 }

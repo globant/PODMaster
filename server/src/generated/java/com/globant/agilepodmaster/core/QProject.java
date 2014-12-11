@@ -31,6 +31,8 @@ public class QProject extends EntityPathBase<Project> {
 
     public final StringPath name = createString("name");
 
+    public final NumberPath<Integer> plannedStoryPoints = createNumber("plannedStoryPoints", Integer.class);
+
     protected QProduct product;
 
     // inherited
