@@ -44,7 +44,7 @@ public class FunctionPropertyEditor extends PropertyEditorSupport {
         return entry.getKey();
       }
     }
-    return "";
+    throw new IllegalArgumentException("Unknown metric for function: " + function);
   }
 
   @Override

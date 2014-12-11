@@ -26,12 +26,16 @@ import java.util.stream.Stream;
  *
  */
 @Component
+@SuppressWarnings("PMD.TooManyMethods")
 public class MetricsAggregator {
   
   public static final Map<String, Function<List<AbstractMetric>, Metric<?>>> metricCalculatorMap = 
-      new HashMap<String, Function<List<AbstractMetric>, Metric<?>>>();
-
-  static {
+      createMetricCalculatorMap();
+      
+  private static final Map<String, Function<List<AbstractMetric>, Metric<?>>> 
+        createMetricCalculatorMap() {
+    Map<String, Function<List<AbstractMetric>, Metric<?>>> metricCalculatorMap = 
+        new HashMap<String, Function<List<AbstractMetric>, Metric<?>>>();
     metricCalculatorMap.put("remaining-story-points",
         MetricsAggregator::calculateRemainigStoryPoints);
     metricCalculatorMap.put("actual-percent-complete",
@@ -44,6 +48,8 @@ public class MetricsAggregator {
     metricCalculatorMap.put("stability-of-velocity",
         MetricsAggregator::calculateStabilityOfVelocity);
     metricCalculatorMap.put("bugs", MetricsAggregator::calculateBugs);
+
+    return metricCalculatorMap;
   }
   
   static Metric<?> calculateRemainigStoryPoints(List<AbstractMetric> list) {
