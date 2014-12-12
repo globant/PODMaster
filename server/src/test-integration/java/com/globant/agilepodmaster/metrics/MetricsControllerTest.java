@@ -24,7 +24,6 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.globant.agilepodmaster.AbstractIntegrationTest;
-import com.globant.agilepodmaster.core.IDummyDataGenerator;
 import com.globant.agilepodmaster.snapshot.Snapshot;
 import com.globant.agilepodmaster.snapshot.SnapshotRepository;
 

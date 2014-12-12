@@ -1,9 +1,9 @@
 package com.globant.agilepodmaster.snapshot;
 
 import com.globant.agilepodmaster.AbstractEntity;
+import com.globant.agilepodmaster.organization.Organization;
 import com.globant.agilepodmaster.pod.Pod;
 import com.globant.agilepodmaster.pod.PodMember;
-import com.globant.agilepodmaster.product.Organization;
 import com.globant.agilepodmaster.product.Product;
 import com.globant.agilepodmaster.project.Project;
 import com.globant.agilepodmaster.release.Release;

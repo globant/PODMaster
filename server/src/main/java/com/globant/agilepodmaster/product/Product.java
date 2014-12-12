@@ -1,6 +1,7 @@
 package com.globant.agilepodmaster.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.globant.agilepodmaster.organization.Organization;
 import com.globant.agilepodmaster.snapshot.SnapshotEntity;
 
 import javax.persistence.Entity;

@@ -10,18 +10,18 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ConfidenceInterval {
-  /** The center of the interval **/
+  /** The center of the interval. **/
   private final double center;
 
-  /** Lower endpoint of the interval */
+  /** Lower endpoint of the interval. */
   private final double lowerBound;
 
-  /** Upper endpoint of the interval */
+  /** Upper endpoint of the interval. */
   private final double upperBound;
 
   /**
    * The asserted probability that the interval contains the population
-   * parameter
+   * parameter.
    */
   private final double confidenceLevel;
 }

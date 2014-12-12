@@ -1,5 +1,7 @@
 package com.globant.agilepodmaster.product;
 
+import com.globant.agilepodmaster.organization.Organization;
+
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

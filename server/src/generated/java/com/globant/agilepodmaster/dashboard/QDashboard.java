@@ -20,7 +20,7 @@ public class QDashboard extends EntityPathBase<Dashboard> {
 
     public static final QDashboard dashboard = new QDashboard("dashboard");
 
-    public final com.globant.agilepodmaster.core.QAbstractEntity _super = new com.globant.agilepodmaster.core.QAbstractEntity(this);
+    public final com.globant.agilepodmaster.QAbstractEntity _super = new com.globant.agilepodmaster.QAbstractEntity(this);
 
     //inherited
     public final NumberPath<Long> id = _super.id;

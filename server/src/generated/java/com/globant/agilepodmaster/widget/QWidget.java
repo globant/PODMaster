@@ -19,7 +19,7 @@ public class QWidget extends EntityPathBase<Widget> {
 
     public static final QWidget widget = new QWidget("widget");
 
-    public final com.globant.agilepodmaster.core.QAbstractEntity _super = new com.globant.agilepodmaster.core.QAbstractEntity(this);
+    public final com.globant.agilepodmaster.QAbstractEntity _super = new com.globant.agilepodmaster.QAbstractEntity(this);
 
     public final NumberPath<Integer> height = createNumber("height", Integer.class);
 

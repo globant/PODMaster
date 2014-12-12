@@ -1,17 +1,17 @@
 package com.globant.agilepodmaster.snapshot;
 
+import com.globant.agilepodmaster.organization.Organization;
+import com.globant.agilepodmaster.organization.OrganizationBuilder;
 import com.globant.agilepodmaster.pod.Pod;
 import com.globant.agilepodmaster.pod.PodBuilder;
 import com.globant.agilepodmaster.pod.PodMember;
-import com.globant.agilepodmaster.product.Organization;
-import com.globant.agilepodmaster.product.OrganizationBuilder;
+import com.globant.agilepodmaster.pod.PodsBuilder;
 import com.globant.agilepodmaster.product.Product;
 import com.globant.agilepodmaster.project.Project;
-import com.globant.agilepodmaster.readers.pods.PodsBuilder;
-import com.globant.agilepodmaster.readers.releases.ReleasesBuilder;
 import com.globant.agilepodmaster.release.Release;
 import com.globant.agilepodmaster.sprint.Sprint;
 import com.globant.agilepodmaster.sync.SyncContext;
+import com.globant.agilepodmaster.sync.jira.ReleasesBuilder;
 import com.globant.agilepodmaster.task.Task;
 
 import org.springframework.util.Assert;

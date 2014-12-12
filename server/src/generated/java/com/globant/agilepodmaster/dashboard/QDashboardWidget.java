@@ -22,7 +22,7 @@ public class QDashboardWidget extends EntityPathBase<DashboardWidget> {
 
     public static final QDashboardWidget dashboardWidget = new QDashboardWidget("dashboardWidget");
 
-    public final com.globant.agilepodmaster.core.QAbstractEntity _super = new com.globant.agilepodmaster.core.QAbstractEntity(this);
+    public final com.globant.agilepodmaster.QAbstractEntity _super = new com.globant.agilepodmaster.QAbstractEntity(this);
 
     public final BooleanPath collapsed = createBoolean("collapsed");
 

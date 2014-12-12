@@ -7,17 +7,27 @@ import java.util.regex.Pattern;
 
 import lombok.NoArgsConstructor;
 
-import com.globant.agilepodmaster.core.QSprintPodMetric;
+import com.globant.agilepodmaster.snapshot.QSprintPodMetric;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.expr.ComparableExpression;
 import com.mysema.query.types.expr.StringExpression;
 
+/**
+ * Property Editor to map strings to Boolean Expressions.
+ * 
+ * @author Andres Postiglioni
+ *
+ */
 @NoArgsConstructor
 public class BooleanExpressionPropertyEditor extends PropertyEditorSupport {
   private static final String REGEX = "(?<operand1>.+?)(?<operator>==|=|!=|<>)(?<operand2>.+)";
   private static final Pattern PATTERN = Pattern.compile(REGEX);
 
+  /**
+   * Constructor.
+   * @param value the boolean expression.
+   */
   public BooleanExpressionPropertyEditor(BooleanExpression value) {
     super(value);
   }

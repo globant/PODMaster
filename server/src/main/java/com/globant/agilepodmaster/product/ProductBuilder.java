@@ -1,5 +1,7 @@
 package com.globant.agilepodmaster.product;
 
+import com.globant.agilepodmaster.organization.Organization;
+import com.globant.agilepodmaster.organization.OrganizationBuilder;
 import com.globant.agilepodmaster.project.ProjectBuilder;
 import com.globant.agilepodmaster.snapshot.AbstractBuilder;
 import com.globant.agilepodmaster.snapshot.SnapshotBuilder;

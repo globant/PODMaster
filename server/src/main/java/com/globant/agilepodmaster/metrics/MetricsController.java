@@ -1,11 +1,11 @@
 package com.globant.agilepodmaster.metrics;
 
-import com.globant.agilepodmaster.core.QAbstractMetric;
 import com.globant.agilepodmaster.metrics.filter.BooleanExpressionPropertyEditor;
 import com.globant.agilepodmaster.metrics.filter.FunctionPropertyEditor;
 import com.globant.agilepodmaster.metrics.partition.Partition;
 import com.globant.agilepodmaster.metrics.partition.Partitioner;
 import com.globant.agilepodmaster.snapshot.AbstractMetric;
+import com.globant.agilepodmaster.snapshot.QAbstractMetric;
 import com.mysema.query.types.expr.BooleanExpression;
 
 import org.springframework.beans.factory.annotation.Autowired;
