@@ -1,12 +1,17 @@
 package com.globant.agilepodmaster.metrics;
 
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.createNotVerifyingHttpRequestFactory;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.restoreMemento;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.trustAllCertificates;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -27,6 +32,7 @@ import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.IDummyDataGenerator;
 import com.globant.agilepodmaster.core.Snapshot;
 import com.globant.agilepodmaster.core.SnapshotRepository;
+import com.globant.agilepodmaster.ssl.SSLTestHelper.Memento;
 
 /**
  * Test for MetricsController.
@@ -34,11 +40,23 @@ import com.globant.agilepodmaster.core.SnapshotRepository;
  *
  */
 public class MetricsControllerTest extends AbstractIntegrationTest {
+  private static Memento sslMemento;
+
   @Autowired
   private SnapshotRepository repo;
 
   private Snapshot snapshot;
 
+  @BeforeClass
+  public static void beforeClass() {
+    sslMemento = trustAllCertificates();
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    restoreMemento(sslMemento);
+  }
+  
   /**
    * Creates data for testing in the DB.
    */
@@ -56,8 +74,9 @@ public class MetricsControllerTest extends AbstractIntegrationTest {
   public void test() throws IOException, ProcessingException {
     String schemaResource = 
         "/com/globant/agilepodmaster/metrics/metrics-collection-resource.schema.json";
-    String baseUrl = "http://localhost:" + this.getServerPort() + "/snapshots/"
-        + snapshot.getId() + "/metrics?aggregation=pod";
+    String baseUrl = super.buildServerUrl(
+        String.format("/snapshots/%d/metrics?aggregation=pod", snapshot.getId())
+    );
 
     JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
@@ -68,7 +87,7 @@ public class MetricsControllerTest extends AbstractIntegrationTest {
     
     ResourceOwnerPasswordResourceDetails resource = new ResourceOwnerPasswordResourceDetails();
 
-    resource.setAccessTokenUri("http://localhost:9080/oauth/token");
+    resource.setAccessTokenUri("https://localhost:9080/oauth/token");
     resource.setClientId("clientapp");
     resource.setClientSecret("123456");
     resource.setId("restservice");
@@ -76,6 +95,7 @@ public class MetricsControllerTest extends AbstractIntegrationTest {
     resource.setPassword("spring");
 
     OAuth2RestTemplate rest = new OAuth2RestTemplate(resource);
+    rest.setRequestFactory(createNotVerifyingHttpRequestFactory());
     
     ResponseEntity<String> responseEntity = rest.exchange(
         baseUrl, HttpMethod.GET, requestEntity, String.class);

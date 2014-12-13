@@ -1,8 +1,25 @@
 package com.globant.agilepodmaster.sync;
 
 
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.createNotVerifyingTestRestTemplate;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.restoreSSLContext;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.trustSelfSignedSSL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
@@ -12,19 +29,6 @@ import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
 import com.globant.agilepodmaster.AbstractIntegrationTest;
 import com.globant.agilepodmaster.core.SnapshotRepository;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Test for SyncController.
@@ -43,7 +47,7 @@ public class SyncControllerTest extends AbstractIntegrationTest {
   @Test
   public void testShouldReturnCorrectJsonSchema() throws IOException, ProcessingException {
     String schemaResource = "/com/globant/agilepodmaster/sync/sync-response-resource.schema.json";
-    String baseUrl = "http://localhost:" + this.getServerPort() + "/sync";
+    String baseUrl = super.buildServerUrl("/sync");
 
     JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
 
@@ -52,7 +56,7 @@ public class SyncControllerTest extends AbstractIntegrationTest {
 
     HttpEntity<String> requestEntity = new HttpEntity<String>("parameters", headers);
     
-    RestTemplate rest = new TestRestTemplate();
+    RestTemplate rest = createNotVerifyingTestRestTemplate();
     ResponseEntity<String> responseEntity = rest.exchange(
         baseUrl, HttpMethod.POST, requestEntity, String.class);
     
@@ -65,5 +69,14 @@ public class SyncControllerTest extends AbstractIntegrationTest {
     ProcessingReport validationReport = validator.validate(schema, json);
     assertThat(validationReport.isSuccess(), equalTo(true));
   }
-  
+
+  @BeforeClass
+  public static void beforeClass() {
+    trustSelfSignedSSL();
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    restoreSSLContext();
+  }
 }

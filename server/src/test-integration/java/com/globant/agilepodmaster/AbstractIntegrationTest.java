@@ -1,7 +1,5 @@
 package com.globant.agilepodmaster;
 
-import lombok.Getter;
-
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
@@ -14,16 +12,23 @@ import com.globant.agilepodmaster.AgilePodMaster.WebConfiguration;
 
 /**
  * Base class for all integration tests.
+ * 
  * @author Andres Postiglioni.
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {
-    ApplicationConfiguration.class, WebConfiguration.class})
 @WebAppConfiguration
 @IntegrationTest("server.port:0")
+@SpringApplicationConfiguration(classes = { 
+    ApplicationConfiguration.class, WebConfiguration.class })
 public abstract class AbstractIntegrationTest {
   @Value("${local.server.port}")
-  @Getter
   private int serverPort;
+
+  private String protocol = "https";
+
+  private String host = "localhost";
+
+  public String buildServerUrl(String path) {
+    return String.format("%s://%s:%d%s", protocol, host, serverPort, path);
+  }
 }

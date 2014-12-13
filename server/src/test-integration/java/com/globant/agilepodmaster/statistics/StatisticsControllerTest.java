@@ -1,16 +1,20 @@
 package com.globant.agilepodmaster.statistics;
 
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.createNotVerifyingTestRestTemplate;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.restoreSSLContext;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.trustSelfSignedSSL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.globant.agilepodmaster.AbstractIntegrationTest;
-import com.globant.agilepodmaster.JsonBuilder;
+import com.globant.agilepodmaster.json.JsonBuilder;
 
 /**
  * Test for StatisticsController.
@@ -18,14 +22,22 @@ import com.globant.agilepodmaster.JsonBuilder;
  *
  */
 public class StatisticsControllerTest extends AbstractIntegrationTest {
+  @BeforeClass
+  public static void beforeClass() {
+    trustSelfSignedSSL();
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    restoreSSLContext();
+  }
   
   /**
    * Testing RegressionSimple.
    */
   @Test
   public void testRegressionSimple() {
-    final String BASE_URL = "http://localhost:" + this.getServerPort() 
-        + "/statistics/prediction/regression/simple?";
+    final String BASE_URL = super.buildServerUrl("/statistics/prediction/regression/simple?");
 
     String requestParams = "pair=(1,2)&pair=(2,4.1)&pair=(3,6.05)&pair=(4,7.99)"
                          + "&intercept=true"
@@ -47,7 +59,7 @@ public class StatisticsControllerTest extends AbstractIntegrationTest {
                     n -> n.withProperty("x", 6.1).withProperty("y", 12.2062)))
         .build();
 
-    RestTemplate rest = new TestRestTemplate();
+    RestTemplate rest = createNotVerifyingTestRestTemplate();
 
     // Follow location
     ResponseEntity<String> getResponse = rest.getForEntity(BASE_URL + requestParams, String.class);
@@ -67,15 +79,14 @@ public class StatisticsControllerTest extends AbstractIntegrationTest {
    */
   @Test
   public void normalApproximation() {
-    final String BASE_URL = 
-        "http://localhost:" + this.getServerPort() + "/statistics/approximation/normal?";
+    final String BASE_URL = super.buildServerUrl("/statistics/approximation/normal?");
     String requestParams = "data=1&data=1.5&data=1.55&data=0.95&data=0.8";
     String expected = new JsonBuilder().withProperty("center", 1.16)
         .withProperty("lowerBound", 0.8605036503340853)
         .withProperty("upperBound", 1.4594963496659146)
         .withProperty("confidenceLevel", 0.95).build();
     
-    RestTemplate rest = new TestRestTemplate();
+    RestTemplate rest = createNotVerifyingTestRestTemplate();
     
     // Follow location
     ResponseEntity<String> getResponse = rest.getForEntity(BASE_URL + requestParams, String.class);

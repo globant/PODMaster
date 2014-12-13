@@ -1,15 +1,19 @@
 package com.globant.agilepodmaster.dashboard;
 
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.createNotVerifyingTestRestTemplate;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.restoreSSLContext;
+import static com.globant.agilepodmaster.ssl.SSLTestHelper.trustSelfSignedSSL;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 
-import com.globant.agilepodmaster.AbstractIntegrationTest;
+import java.net.URI;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
+import com.globant.agilepodmaster.AbstractIntegrationTest;
 
 /**
  * Integrity test for service.
@@ -26,20 +30,29 @@ import java.net.URI;
  *
  */
 public class DashboardResourceTest extends AbstractIntegrationTest {
+  @BeforeClass
+  public static void beforeClass() {
+    trustSelfSignedSSL();
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    restoreSSLContext();
+  }
+
   /**
    * Inserts through the service a dashboard to the db and then remove it using
    * also the service. Finally check through the service that the dashboard does
    * not exist.
-   *
    */
   @Test
   public void shouldCreateFollowAndDelete() {
-    final String BASE_URL = "http://localhost:" + this.getServerPort() + "/dashboards";
+    final String BASE_URL = super.buildServerUrl("/dashboards");
 
     String requestJson = DashboardJsonFixtures.createDashboard(Dashboard.DashboardType.Account)
         .withWidget("Widget Title", "Widget Name").buildJson();
 
-    RestTemplate rest = new TestRestTemplate();
+    RestTemplate rest = createNotVerifyingTestRestTemplate();
 
     // Post new Dashboard
     HttpHeaders headers = new HttpHeaders();
@@ -62,7 +75,7 @@ public class DashboardResourceTest extends AbstractIntegrationTest {
 
     System.out.println("XXXX>" + getResponse.getBody());
     // TODO: Assert that body matches the expected json
-    
+
     // Delete
     rest.delete(location);
 

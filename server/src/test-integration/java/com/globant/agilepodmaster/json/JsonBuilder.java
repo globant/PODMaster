@@ -1,4 +1,4 @@
-package com.globant.agilepodmaster;
+package com.globant.agilepodmaster.json;
 
 import java.util.LinkedList;
 import java.util.List;
